@@ -6,12 +6,15 @@ using System.Text;
 using Finn_klone.Backend.Hubs;
 using System.IO;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+{
+    ContentRootPath = Path.Combine(Directory.GetCurrentDirectory(), "Backend")
+});
 
 // autentifisering med JWT
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secretKey = jwtSettings["SecretKey"];
-var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot", "uploads");
 
 //lager wwwroot-mappa hvis den ikke eksisterer
 if (!Directory.Exists(uploadsPath))
@@ -54,7 +57,7 @@ builder.Services.AddCors(options =>
 });
 
 builder.Configuration
-    .SetBasePath(Path.Combine(Directory.GetCurrentDirectory()))
+    .SetBasePath(builder.Environment.ContentRootPath)
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddEnvironmentVariables();
 
@@ -76,9 +79,9 @@ var app = builder.Build();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();  
-app.UseCors("AllowFrontend");
 
 
 app.UseEndpoints(endpoints =>

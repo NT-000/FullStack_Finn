@@ -5,6 +5,8 @@ import fs from 'fs'
 export default defineConfig({
   plugins: [vue()],
   server: {
+    port: 5173,
+    strictPort: true,
     historyApiFallback: true,
     https: {
       key: fs.readFileSync('C:/Users/nicth/Documents/GitHub/GET_Prepared/Backup_oppgaver/BackupFiles/Finn-klone/localhost-key.pem'),

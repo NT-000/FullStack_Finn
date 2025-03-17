@@ -43,7 +43,7 @@ export function useLogin() {
             store.setUser(userInfo.value)
             console.log("Logged-in user:", userInfo.value);
             
-            router.push('/mainpage')
+            await router.push('/mainpage')
         }
         catch(error){
             console.log('error login',error)
