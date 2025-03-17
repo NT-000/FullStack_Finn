@@ -1,0 +1,6 @@
+@Finn_klone_HostAddress = http://localhost:5205
+
+GET {{Finn_klone_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
