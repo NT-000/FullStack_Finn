@@ -1,7 +1,7 @@
 import {ref, watchEffect} from 'vue'
 import axios from 'axios'
 import {useRouter} from 'vue-router'
-import useStore from './useStore'
+import store from "../composables/useStore";
 
 //For å sjekke innlogget bruker
 const decodeJwt = (token) => {
@@ -22,8 +22,6 @@ export function useLogin() {
     const loading = ref(false)
     const error = ref(null)
     const router = useRouter();
-    const {user} = useStore();
-    const store = useStore();
     
     watchEffect( () => {
         userInfo.value = decodeJwt(token.value);
@@ -39,11 +37,10 @@ export function useLogin() {
             token.value = response.data.token;
             localStorage.setItem('jwt', token.value);
             axios.defaults.headers.common['Authorization'] = 'Bearer ' + token.value;
-            user.value = decodeJwt(token.value);
             store.setUser(userInfo.value)
             console.log("Logged-in user:", userInfo.value);
-            
-            await router.push('/mainpage')
+            console.log("Logged-in user store.user.value:", store.user.value);
+            router.push('/mainpage')
         }
         catch(error){
             console.log('error login',error)

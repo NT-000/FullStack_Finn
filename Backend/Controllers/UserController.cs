@@ -29,7 +29,7 @@ public class UserController : ControllerBase
     {
         var userId = User.FindFirst("id")?.Value;
         var email = User.FindFirst("email")?.Value;
-        if (userId == null) return Unauthorized(); // 401-status code
+        if (userId == null) return Unauthorized("Restricted access to page"); // 401-status code
 
         string query = "SELECT Id, Name, Email, Rating FROM Users WHERE Id = @Id";
         var user = await _db.QueryFirstOrDefaultAsync<User>(query, new { Id = userId });
@@ -37,16 +37,6 @@ public class UserController : ControllerBase
         if (user == null) return NotFound("User not found.");
 
         return Ok(user);
-    }
-
-    // Henter alle brukere
-    [Authorize]
-    [HttpGet]
-    public async Task<IActionResult> GetUsers()
-    {
-        string query = "SELECT Id, Name, Email, Rating FROM Users";
-        var users = await _db.QueryAsync<User>(query);
-        return Ok(users);
     }
 
     // Henter èn bruker basert på ID, brukes for visning av andres profiler, tatt bort email fra query.
@@ -63,6 +53,16 @@ public class UserController : ControllerBase
 
         return Ok(user);
     }
+    // Henter alle brukere
+    [Authorize]
+    [HttpGet]
+    public async Task<IActionResult> GetUsers()
+    {
+        string query = "SELECT Id, Name, Email, Rating FROM Users";
+        var users = await _db.QueryAsync<User>(query);
+        return Ok(users);
+    }
+
 
 
     // Oppretter en ny bruker

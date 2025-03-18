@@ -4,6 +4,8 @@ using Finn_klone;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
+using System.IO;
+
 [Route("api/ads")]
 [ApiController]
 public class AdController : ControllerBase
@@ -98,7 +100,7 @@ VALUES (@Title, @Description, @Condition, @Price, @Category, @UserId, GETDATE())
                         continue;
 
                     // lager en unik filsti
-                    var fileName = $"{Guid.NewGuid()}_{(file.FileName)}";
+                    var fileName = $"{Guid.NewGuid()}_{(file.FileName)}"; // sikrer unik sti til filen
                     var fullPath = Path.Combine("wwwroot", "uploads", fileName);
 
                     await using (var stream = new FileStream(fullPath, FileMode.Create)) 
@@ -118,6 +120,7 @@ VALUES (@Title, @Description, @Condition, @Price, @Category, @UserId, GETDATE())
         }
         catch (Exception ex)
         {
+            Console.WriteLine($",{ex.Message}");
             return StatusCode(500, ex.Message);
         }
     }

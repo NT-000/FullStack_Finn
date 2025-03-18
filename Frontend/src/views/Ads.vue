@@ -25,6 +25,7 @@ const search= ref('');
 
 const filteredSearch = computed(() =>{
   const searchTerm = search.value.toLowerCase();
+  console.log(ads.value[0]);
   return [
     ...users.value.filter(user => user.name?.toLowerCase().includes(searchTerm)),
     ...ads.value.filter(ad => ad.title?.toLowerCase().includes(searchTerm)),
