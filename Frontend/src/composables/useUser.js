@@ -10,24 +10,17 @@ export function useUser(){
         try{
             const url = userId ? `/api/users/${userId}` : `/api/users/profile`;
             console.log(`Fetching user profile from: ${url}`);
-            const res = await axios.get(url,{
-                headers: {Authorization: `Bearer ${localStorage.getItem('jwt')}`,
-                },
-            });
+            const res = await axios.get(url)
             user.value = res.data;
-        }
+            }
+        
         catch(err){
             console.log(error)
             error.value = 'Something went wrong when loading userprofile'
         }
-    };
-    watchEffect(() => {
-        const token = localStorage.getItem("jwt");
-        if (token) {
-            fetchUserProfile();
-        } else {
-            user.value = null;
+        finally{
+            loading.value = false
         }
-    });
+    };
     return {user, error, loading, fetchUserProfile}
 }

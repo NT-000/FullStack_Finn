@@ -100,6 +100,29 @@ public class UserController : ControllerBase
 
         var jwt = new Jwt(_config);
         var token = jwt.GenerateToken(user.Id, user.Email);
+        
+        // Sett JWT som cookie med HttpOnly og Secure
+        Response.Cookies.Append("jwt", token, new CookieOptions
+        {
+            HttpOnly = true,      // forhindrer JavaScript-tilgang
+            Secure = true,        // sendes kun over HTTPS
+            SameSite = SameSiteMode.Strict,
+            Expires = DateTimeOffset.UtcNow.AddHours(1)
+        });
         return Ok(new { token });
+    }
+    
+    // slette og fjerne cookie ved utlogging
+    [HttpPost("logout")]
+    public IActionResult Logout()
+    {
+        Response.Cookies.Delete("jwt", new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.Strict
+        });
+
+        return Ok(new { message = "Logged out." });
     }
 }
