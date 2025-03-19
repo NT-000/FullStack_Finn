@@ -24,8 +24,6 @@ export function useUser(){
             loading.value = false
         }
     };
-    watchEffect(async() => {
-       await fetchUserProfile();
-    });
+
     return {user, error, loading, fetchUserProfile}
 }

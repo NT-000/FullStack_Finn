@@ -8,8 +8,9 @@ export const useAdStore = defineStore('adStore', {
     actions: {
         async fetchAds() {
             try {
-                const response = await axios.get('https://localhost:5205/api/ads');
+                const response = await axios.get('/api/ads', {withCredentials: true});
                 this.ads = response.data;
+                console.log("Ads:",response.data);
             } catch (error) {
                 console.error("Error fetching ads:", error);
             }
@@ -17,6 +18,9 @@ export const useAdStore = defineStore('adStore', {
     },
     getters: {
         getAdsByUser: (state) => (userId) => {
+            if(!userId){
+                return [];
+            }
             return state.ads.filter(ad => ad.userId === userId);
         }
     }
