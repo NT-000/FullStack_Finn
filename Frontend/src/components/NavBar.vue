@@ -1,9 +1,10 @@
 <script setup>
 import {computed, onMounted, watchEffect} from 'vue'
 import { useLogout } from "../composables/useLogout";
-import store from "../composables/useStore";
+import {useStore} from "../composables/useStore";
 
-const {user} = store;
+const store = useStore();
+console.log(" Vue-component:", store.user.value);
 const { logOut } = useLogout();
 
 const currentUser = computed(() => store.user.value)
@@ -16,12 +17,12 @@ watchEffect(()=>{
 
 <template>
   <nav>
-    <p v-if="currentUser  && currentUser.email">
-      Logged in user: {{ currentUser.email }}
+    <p v-if="currentUser && currentUser.name">
+      Logged in user: {{ currentUser.name }}
     </p>
     <p v-else></p>
     <button v-if="currentUser && currentUser.email" @click="logOut">Logg ut</button>
-    <div v-if="currentUser  && currentUser.email">
+    <div v-if="currentUser && currentUser.email">
       <RouterLink to="/mainpage"><button>Main Page</button></RouterLink>
       <RouterLink to="/ads"><button>Annonser</button></RouterLink>
       <RouterLink to="/users/profile"><button>Profile</button></RouterLink>

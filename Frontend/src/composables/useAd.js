@@ -12,10 +12,7 @@ export function useAd() {
             error.value = null
             message.value = null
 
-            const res = await axios.post('/api/ads', adData, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('jwt')}`
-                }
+            const res = await axios.post('/api/ads', adData, {withCredentials: true
             })
             message.value = res.data
         }

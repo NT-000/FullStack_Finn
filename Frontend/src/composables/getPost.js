@@ -10,7 +10,7 @@ export function getPost(apiRoute) {
         loading.value = true;
         error.value = null;
         try {
-            const { data } = await axios.get(`/api${apiRoute}`);
+            const { data } = await axios.get(`/api${apiRoute}`,{withCredentials: true});
             console.log('data from:', apiRoute );
             item.value = data;
         } catch (err) {

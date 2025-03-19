@@ -2,6 +2,15 @@
 
 import NavBar from "./components/NavBar.vue";
 import { RouterLink, RouterView } from 'vue-router'
+import { onMounted } from "vue";
+import useStore from "./composables/useStore";
+
+const store = useStore();
+
+onMounted(() => {
+  store.initializeUser();
+  console.log("running initializeUser()...");
+});
 
 </script>
 

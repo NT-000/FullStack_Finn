@@ -5,6 +5,7 @@ using Microsoft.Data.SqlClient;
 using System.Text;
 using Finn_klone.Backend.Hubs;
 using System.IO;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
@@ -85,7 +86,12 @@ builder.Services.AddSignalR(); // SignalR for direkte-updates, ligner på onsnap
 var app = builder.Build();
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")),
+    RequestPath = ""
+});
 app.UseRouting();
 app.UseCors("AllowFrontend");
 app.UseAuthentication();

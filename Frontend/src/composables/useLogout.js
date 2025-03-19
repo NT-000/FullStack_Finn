@@ -1,15 +1,15 @@
 
 import axios from "axios";
-import store from "../composables/useStore";
+import {useStore} from "../composables/useStore";
 import {useRouter} from "vue-router";
 
-
+const store = useStore();
 export function useLogout() {
     
     const router = useRouter();
     const logOut = async ()  => {
         try{
-            await axios.post('/api/users/logout');
+            await axios.post('/api/users/logout', {withCredentials: true});
             store.clearUser();
             console.log("After logout, user:", store.user.value);
             router.push('/')

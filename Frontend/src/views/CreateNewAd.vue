@@ -1,13 +1,16 @@
 <script setup>
 import { ref } from 'vue'
 import axios from 'axios'
+import {useStore} from "../composables/useStore.js"
+
+const store = useStore();
 
 const title = ref('')
 const description = ref('')
 const category = ref('')
 const condition = ref('')
 const price = ref(0)
-const userId = ref(1) // f.eks. innlogget brukers ID
+const userId = store.user.id;
 const files = ref([]) // filer brukeren laster opp
 
 async function handleSubmit(e) {
@@ -62,6 +65,10 @@ function handleFileChange(e) {
         <option>Guns</option>
         <option>Hand-weapons</option>
       </select>
+    </div>
+    <div>
+      <label>Price</label>
+      <input type="number" v-model="price" />
     </div>
     <div>
       <label>Description</label>
