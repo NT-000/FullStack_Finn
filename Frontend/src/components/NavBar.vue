@@ -22,7 +22,7 @@ watchEffect(()=>{
     </p>
     <p v-else></p>
     <button v-if="currentUser && currentUser.email" @click="logOut">Logg ut</button>
-    <div v-if="currentUser && currentUser.email">
+    <div v-if="currentUser  && currentUser.email">
       <RouterLink to="/mainpage"><button>Main Page</button></RouterLink>
       <RouterLink to="/ads"><button>Annonser</button></RouterLink>
       <RouterLink to="/users/profile"><button>Profile</button></RouterLink>

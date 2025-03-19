@@ -115,7 +115,7 @@ VALUES (@Title, @Description, @Condition, @Price, @Category, @UserId, GETDATE())
                         await file.CopyToAsync(stream); // lagrer fila på server
                     }
 
-                    var imageUrl = $"/uploads/{fileName}";
+                    var imageUrl = $"https://localhost:5205/uploads/{fileName}";
 
                     string queryImages = "INSERT INTO AdImages (AdId, ImageUrl) VALUES (@AdId, @ImageUrl)"; // Oppretter rad i AdImages som binder AdId til ImageUrl
                     await _db.ExecuteAsync(queryImages, new { AdId = adId, ImageUrl = imageUrl });

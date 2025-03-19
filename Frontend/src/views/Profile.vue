@@ -35,9 +35,10 @@ const filteredAds = computed(() => {
     <p><strong>Email:</strong> {{ computedUser.email }}</p>
     <p><strong>Rating:</strong> {{ computedUser.rating }}</p>
     <div v-if="filteredAds.length > 0">
-      <div v-for="ad in filteredAds":key="ad.id">
+      <div v-for="ad in filteredAds" :key="ad.id">
+        
         <div class="ad">
-        {{ad.title}}
+          <RouterLink :to="{name: 'AdDetails', params:{id:ad.id}}"> {{ad.title}}</RouterLink>
         <div v-if="ad.images.length > 0" class="image">
           <div v-for="image in ad.images" :key="image.id">
             <img :src="image.imageUrl" alt="x" />
