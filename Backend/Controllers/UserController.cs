@@ -31,7 +31,7 @@ public class UserController : ControllerBase
         var email = User.FindFirst("email")?.Value;
         if (userId == null) return Unauthorized("Restricted access to page"); // 401-status code
 
-        string query = "SELECT Id, Name, Email, Rating FROM Users WHERE Id = @Id";
+        string query = "SELECT * FROM Users WHERE Id = @Id";
         var user = await _db.QueryFirstOrDefaultAsync<User>(query, new { Id = userId });
 
         if (user == null) return NotFound("User not found.");
@@ -45,7 +45,7 @@ public class UserController : ControllerBase
     public async Task<IActionResult> GetUser(int id)
     {
         
-        string query = "SELECT Id, Name, Rating FROM Users WHERE Id = @Id";
+        string query = "SELECT Id, Name, Rating, ProfileImageUrl FROM Users WHERE Id = @Id";
         var user = await _db.QueryFirstOrDefaultAsync<User>(query, new { Id = id });
 
         if (user == null)
@@ -67,7 +67,7 @@ public class UserController : ControllerBase
 
     // Oppretter en ny bruker
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterDto newUser)
+    public async Task<IActionResult> Register([FromForm] RegisterDto newUser, IFormFile file)
     {
         var existingUser = await _db.QueryFirstOrDefaultAsync<User>("SELECT * FROM Users WHERE Email = @Email", new { newUser.Email });
     
@@ -75,10 +75,32 @@ public class UserController : ControllerBase
         { 
             return BadRequest("Email already exists.");
         }
+
+        string profileImageUrl = null;
+
+        if (file.Length > 0)
+        {
+            var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/profileImages");
+            if (!Directory.Exists(uploadFolder))
+            {
+                Directory.CreateDirectory(uploadFolder);
+            }
+            var fileName = $"{Guid.NewGuid()}_{(file.FileName)}";
+            var filePath = Path.Combine(uploadFolder, fileName);
+
+            await using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(fileStream);
+            }
+
+            profileImageUrl = $"https://localhost:5205/uploads/profileImages/{fileName}";
+        }   
+        
         string hashedPassword = BCrypt.Net.BCrypt.HashPassword(newUser.Password);
         var result = await _db.ExecuteAsync(
-            "INSERT INTO Users(Name, Email, PasswordHash) VALUES (@Name, @Email, @PasswordHash)",
-            new { newUser.Name, newUser.Email, PasswordHash = hashedPassword });
+            "INSERT INTO Users(Name, Email, PasswordHash, ProfileImageUrl) VALUES (@Name, @Email, @PasswordHash, @ProfileImageUrl)",
+            new { newUser.Name, newUser.Email, PasswordHash = hashedPassword, ProfileImageUrl = profileImageUrl });
+        
         if (result > 0)
         {
             return Ok("User registered successfully.");

@@ -98,15 +98,14 @@ VALUES (@Title, @Description, @Condition, @Price, @Category, @UserId, GETDATE())
                 Price = adDto.Price,
                 UserId = adDto.UserId,
             });
-            if (adDto.Files != null && adDto.Files.Count > 0)
+            if (adDto.Files.Count > 0)
             {
                 var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
                 foreach (var file in adDto.Files)
                 {
                     if (file == null || file.Length == 0)
                         continue;
-
-                    // lager en unik filsti
+                    
                     var fileName = $"{Guid.NewGuid()}_{(file.FileName)}"; // sikrer unik sti til filen
                     var filePath = Path.Combine(uploadFolder, fileName);
 

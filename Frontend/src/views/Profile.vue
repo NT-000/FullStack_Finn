@@ -15,6 +15,8 @@ const computedUser = computed(() => store.user.value);
 onMounted(async () => {
   await fetchUserProfile();
   await adStore.fetchAds();
+  console.log("computed user",computedUser.value);
+  console.log("computed user profileImage path",computedUser.value.profileImageUrl);
 });
 
 watchEffect(() => {
@@ -31,6 +33,7 @@ const filteredAds = computed(() => {
 <template>
   <h2>{{ userId ? "Other profile" : "My profile" }}</h2>
   <div v-if="computedUser && computedUser.name">
+    <img :src="`${computedUser.profileImageUrl}`" alt="profilePic"/>
     <p><strong>Name:</strong> {{ computedUser.name }}</p>
     <p><strong>Email:</strong> {{ computedUser.email }}</p>
     <p><strong>Rating:</strong> {{ computedUser.rating }}</p>

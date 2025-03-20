@@ -8,5 +8,6 @@ public class User
    public string PasswordHash { get; set; }
    public int Rating { get; set; }
    public bool IsAdmin { get; set; }
-   public List<Ad> Ads { get; set; } = new List<Ad>();
+   public string? ProfileImageUrl { get; set; }
+   public List<Ad> Ads { get; set; }
 }
