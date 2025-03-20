@@ -1,16 +1,19 @@
 <script setup>
-
+const props = defineProps({
+  user: Object,
+  ads: Array,
+})
 </script>
 
 <template>
-  <h2>{{ computedUser.name}}'s page</h2>
-  <div v-if="computedUser && computedUser.name">
-    <img :src="`${computedUser.profileImageUrl}`" alt="profilePic"/>
-    <p><strong>Name:</strong> {{ computedUser.name }}</p>
-    <p><strong>Email:</strong> {{ computedUser.email }}</p>
-    <p><strong>Rating:</strong> {{ computedUser.rating }}</p>
-    <div v-if="filteredAds.length > 0">
-      <div v-for="ad in filteredAds" :key="ad.id">
+  <h2>{{ props.user.name}}'s page</h2>
+  <div v-if="props.user && props.user.name">
+    <img :src="`${props.user.profileImageUrl}`" alt="profilePic"/>
+    <p><strong>Name:</strong> {{ props.user.name }}</p>
+    <p><strong>Email:</strong> {{ props.user.email }}</p>
+    <p><strong>Rating:</strong> {{ props.user.rating }}</p>
+    <div v-if="ads.length > 0">
+      <div v-for="ad in ads" :key="ad.id">
 
         <div class="ad">
           <RouterLink :to="{name: 'AdDetails', params:{id:ad.id}}"> {{ad.title}}</RouterLink>
@@ -29,5 +32,10 @@
 </template>
 
 <style scoped>
-
+img{
+  width: 20%;
+  height: 20%;
+  border-radius: 5px;
+  border: solid 1px white;
+}
 </style>

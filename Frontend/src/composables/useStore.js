@@ -1,7 +1,7 @@
 import {computed, ref} from "vue";
 import axios from "axios";
 
-    const user = ref({});
+const user = ref({});
 export function useStore() {
 
     const setUser = (newUser) => {

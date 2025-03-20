@@ -41,7 +41,7 @@ public class UserController : ControllerBase
 
     // Henter èn bruker basert på ID, brukes for visning av andres profiler, tatt bort email fra query.
     [Authorize]
-    [HttpGet("{id}")]
+    [HttpGet("profile/{id}")]
     public async Task<IActionResult> GetUser(int id)
     {
         

@@ -4,23 +4,26 @@ import { useStore } from "../composables/useStore";
 import { useUser } from "../composables/useUser";
 import {useRoute} from "vue-router";
 import {useAdStore} from "../stores/adStore.js";
+import MyProfile from "../components/MyProfile.vue";
+import OtherProfile from "../components/OtherProfile.vue";
+
 
 const adStore = useAdStore();
 const route = useRoute();
 const userId = ref(route.params.id || null);
 const store = useStore();
-const { fetchUserProfile } = useUser();
+const {user,fetchUserProfile } = useUser();
 const computedUser = computed(() => store.user.value);
+
+const isOwnProfile = computed(() => {
+  return !userId.value || Number(userId.value) === computedUser.value?.id;
+});
 
 onMounted(async () => {
   await fetchUserProfile(userId.value);
   await adStore.fetchAds();
   console.log("computed user",computedUser.value);
   console.log("computed user profileImage path",computedUser.value.profileImageUrl);
-});
-
-watchEffect(() => {
-  console.log("change in store.user:", computedUser.value);
 });
 
 const filteredAds = computed(() => {
@@ -31,29 +34,12 @@ const filteredAds = computed(() => {
 </script>
 
 <template>
-  <h2>{{ userId ? "Other profile" : "My profile" }}</h2>
-  <div v-if="computedUser && computedUser.name">
-    <img :src="`${computedUser.profileImageUrl}`" alt="profilePic"/>
-    <p><strong>Name:</strong> {{ computedUser.name }}</p>
-    <p><strong>Email:</strong> {{ computedUser.email }}</p>
-    <p><strong>Rating:</strong> {{ computedUser.rating }}</p>
-    <div v-if="filteredAds.length > 0">
-      <div v-for="ad in filteredAds" :key="ad.id">
-        
-        <div class="ad">
-          <RouterLink :to="{name: 'AdDetails', params:{id:ad.id}}"> {{ad.title}}</RouterLink>
-        <div v-if="ad.images.length > 0" class="image">
-          <div v-for="image in ad.images" :key="image.id">
-            <img :src="image.imageUrl" alt="x" />
-          </div>
-        </div>
-        </div>
-        </div>
-    </div>
+  <div v-if="isOwnProfile">
+<MyProfile :user="computedUser" :ads="filteredAds"/>
   </div>
-  <div v-else>
-    <p>Loading user...</p>
+  <div v-else> <OtherProfile :user="user" :ads="filteredAds" />
   </div>
+
 </template>
 
 <style scoped>

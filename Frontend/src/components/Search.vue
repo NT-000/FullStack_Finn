@@ -1,17 +1,36 @@
 <script setup>
+import {computed, onMounted, ref} from "vue";
+import Profile from "../views/Profile.vue";
+import {getRoute} from "../composables/getRoute.js";
 
+const search= ref('');
+const {items : users, loading, error, fetchData} = getRoute('/users');
+
+const filteredSearch = computed(() =>{
+  const searchTerm = search.value.toLowerCase();
+  return users.value.filter(user => user.name?.toLowerCase().includes(searchTerm))
+  
+})
+onMounted(()=>{
+  fetchData()
+})
 </script>
 
 <template>
-  <div class="nav-wrapper2">
-    <form>
+
       <div class="input-field">
-        <input id="search" type="search" required>
-        <label class="label-icon" for="search"><i class="material-icons">search</i></label>
-        <i class="material-icons">close</i>
+        <input id="search" v-model="search" type="search">
+        <label>Search</label>
       </div>
-    </form>
-  </div>
+
+    <div v-if="filteredSearch.length > 0">
+      <div class="search">
+        <div v-for="user in filteredSearch" :key="user.id">
+        <RouterLink :to="{name: 'UserProfile', params: {id:user.id}}">{{user.name}}</RouterLink>
+        </div>
+      </div>
+    </div>
+  
 </template>
 
 <style scoped>
