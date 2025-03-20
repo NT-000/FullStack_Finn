@@ -1,11 +1,11 @@
 <script setup>
 
 import NavBar from "./components/NavBar.vue";
-import { RouterLink, RouterView } from 'vue-router'
-import { onMounted } from "vue";
-import useStore from "./composables/useStore";
+import {RouterView} from 'vue-router'
+import {onMounted} from "vue";
+import {useUserStore} from "./stores/useUserStore.js";
 
-const store = useStore();
+const store = useUserStore();
 
 onMounted(() => {
   store.initializeUser();
@@ -29,9 +29,11 @@ onMounted(() => {
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.vue:hover {
   filter: drop-shadow(0 0 2em #42b883aa);
 }

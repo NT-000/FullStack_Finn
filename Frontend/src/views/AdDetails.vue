@@ -4,7 +4,7 @@ import SingleAd from "../components/SingleAd.vue";
 </script>
 
 <template>
-  <SingleAd />
+  <SingleAd/>
 </template>
 
 <style scoped>

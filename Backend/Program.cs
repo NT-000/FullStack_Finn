@@ -1,11 +1,10 @@
 using System.Data;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.Data.SqlClient;
 using System.Text;
 using Finn_klone.Backend.Hubs;
-using System.IO;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
@@ -15,13 +14,10 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 // autentifisering med JWT
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secretKey = jwtSettings["SecretKey"];
-var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot", "uploads");
+var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
 
 //lager wwwroot-mappa hvis den ikke eksisterer
-if (!Directory.Exists(uploadsPath))
-{
-    Directory.CreateDirectory(uploadsPath);
-}
+if (!Directory.Exists(uploadsPath)) Directory.CreateDirectory(uploadsPath);
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -50,10 +46,7 @@ builder.Services.AddAuthorization();
 builder.WebHost.ConfigureKestrel(options =>
 {
     options.ListenAnyIP(5204); // HTTP
-    options.ListenAnyIP(5205, listenOptions =>
-    {
-        listenOptions.UseHttps();
-    });
+    options.ListenAnyIP(5205, listenOptions => { listenOptions.UseHttps(); });
 });
 
 builder.Services.AddCors(options =>
@@ -67,16 +60,14 @@ builder.Services.AddCors(options =>
 
 builder.Configuration
     .SetBasePath(builder.Environment.ContentRootPath)
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile("appsettings.json", false, true)
     .AddEnvironmentVariables();
 
 // Henter connectionstring fra appsettings.
 var connectionString = builder.Configuration.GetConnectionString("SqlConnection");
 
 if (string.IsNullOrEmpty(connectionString))
-{
     throw new InvalidOperationException("Connection string 'SqlConnection' not found.");
-}
 
 builder.Services.AddScoped<IDbConnection>(db => new SqlConnection(connectionString));
 
@@ -95,7 +86,7 @@ app.UseStaticFiles(new StaticFileOptions
 app.UseRouting();
 app.UseCors("AllowFrontend");
 app.UseAuthentication();
-app.UseAuthorization();  
+app.UseAuthorization();
 
 
 app.UseEndpoints(endpoints =>

@@ -1,19 +1,18 @@
 <script setup>
-import {computed, watchEffect, onMounted, ref} from "vue";
-import { useStore } from "../composables/useStore";
-import { useUser } from "../composables/useUser";
+import {computed, onMounted, ref, watchEffect} from "vue";
+import {useUser} from "../composables/useUser";
 import {useRoute} from "vue-router";
 import {useAdStore} from "../stores/adStore.js";
 import MyProfile from "../components/MyProfile.vue";
 import OtherProfile from "../components/OtherProfile.vue";
+import { useUserStore } from '../stores/useUserStore.js';
 
-
+const userStore = useUserStore();
 const adStore = useAdStore();
 const route = useRoute();
 const userId = ref(route.params.id || null);
-const store = useStore();
-const {user,fetchUserProfile } = useUser();
-const computedUser = computed(() => store.user.value);
+const {user, fetchUserProfile} = useUser();
+const computedUser = computed(() => userStore.user);
 
 const isOwnProfile = computed(() => {
   return !userId.value || Number(userId.value) === computedUser.value?.id;
@@ -22,8 +21,8 @@ const isOwnProfile = computed(() => {
 onMounted(async () => {
   await fetchUserProfile(userId.value);
   await adStore.fetchAds();
-  console.log("computed user",computedUser.value);
-  console.log("computed user profileImage path",computedUser.value.profileImageUrl);
+  console.log("computed user", computedUser.value);
+  console.log("computed user profileImage path", computedUser.value.profileImageUrl);
 });
 
 const filteredAds = computed(() => {
@@ -31,19 +30,24 @@ const filteredAds = computed(() => {
   console.log("Decoded user ID:", computedUser.value?.id, "user email:", computedUser.value?.email);
   return adStore.getAdsByUser(routeId || computedUser.value?.id);
 });
+
+watchEffect(() => {
+  console.log("filteredAds:", filteredAds.value);
+});
 </script>
 
 <template>
   <div v-if="isOwnProfile">
-<MyProfile :user="computedUser" :ads="filteredAds"/>
+    <MyProfile :ads="filteredAds" :user="computedUser"/>
   </div>
-  <div v-else> <OtherProfile :user="user" :ads="filteredAds" />
+  <div v-else>
+    <OtherProfile :ads="filteredAds" :user="user"/>
   </div>
 
 </template>
 
 <style scoped>
-img{
+img {
   width: 20%;
   height: 20%;
   border-radius: 5px;

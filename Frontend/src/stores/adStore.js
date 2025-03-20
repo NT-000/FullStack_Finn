@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia';
+import {defineStore} from 'pinia';
 import axios from 'axios';
 
 export const useAdStore = defineStore('adStore', {
@@ -10,7 +10,7 @@ export const useAdStore = defineStore('adStore', {
             try {
                 const response = await axios.get('/api/ads', {withCredentials: true});
                 this.ads = response.data;
-                console.log("Ads:",response.data);
+                console.log("Ads:", response.data);
             } catch (error) {
                 console.error("Error fetching ads:", error);
             }
@@ -18,10 +18,10 @@ export const useAdStore = defineStore('adStore', {
     },
     getters: {
         getAdsByUser: (state) => (userId) => {
-            if(!userId){
+            if (!userId) {
                 return [];
             }
-            return state.ads.filter(ad => ad.userId === userId);
+            return state.ads.filter(ad => Number(ad.userId) === Number(userId));
         }
     }
 });

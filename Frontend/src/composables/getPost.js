@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import {ref} from 'vue';
 import axios from 'axios';
 
 export function getPost(apiRoute) {
@@ -10,8 +10,8 @@ export function getPost(apiRoute) {
         loading.value = true;
         error.value = null;
         try {
-            const { data } = await axios.get(`/api${apiRoute}`,{withCredentials: true});
-            console.log('data from:', apiRoute );
+            const {data} = await axios.get(`/api${apiRoute}`, {withCredentials: true});
+            console.log('data from:', apiRoute);
             item.value = data;
         } catch (err) {
             error.value = err.message;
@@ -21,5 +21,5 @@ export function getPost(apiRoute) {
         }
     }
 
-    return { item, loading, error, fetchData };
+    return {item, loading, error, fetchData};
 }

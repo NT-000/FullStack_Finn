@@ -20,28 +20,28 @@ async function handleSubmit() {
   formData.append('file', file.value);
 
   try {
-    const res = await axios.post('/api/users/register', formData, { withCredentials: true });
-    console.log("response data reg user:",res.data);
-    router.push('/login');
+    const res = await axios.post('/api/users/register', formData, {withCredentials: true});
+    console.log("response data reg user:", res.data);
+    router.push('/');
   } catch (err) {
-    console.log("Registration failed",err);
+    console.log("Registration failed", err);
   }
 }
 
 </script>
 
 <template>
-<form @submit.prevent="handleSubmit" class="form">
-  <label for="name" class="form-label">Name</label>
-  <input type="text" placeholder="Your name..."  v-model="name" required/>
-  <label for="password" class="form-label">Password</label>
-  <input type="password" placeholder="Your password..." v-model="password" required />
-  <label for="email" class="form-label">Email</label>
-  <input type="text" placeholder="Your email..." v-model="email" required />
-  <label>Images</label>
-  <input type="file" @change="handleFileChange" />
-  <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+  <form class="form" @submit.prevent="handleSubmit">
+    <label class="form-label" for="name">Name</label>
+    <input v-model="name" placeholder="Your name..." required type="text"/>
+    <label class="form-label" for="password">Password</label>
+    <input v-model="password" placeholder="Your password..." required type="password"/>
+    <label class="form-label" for="email">Email</label>
+    <input v-model="email" placeholder="Your email..." required type="text"/>
+    <label>Images</label>
+    <input type="file" @change="handleFileChange"/>
+    <button class="btn btn-primary" type="submit">Submit</button>
+  </form>
 </template>
 
 <style scoped>

@@ -5,24 +5,23 @@ export function useAd() {
     const error = ref(null)
     const loading = ref(false)
     const message = ref(null)
-    
+
     const createAd = async (adData) => {
-        try{
+        try {
             loading.value = true
             error.value = null
             message.value = null
 
-            const res = await axios.post('/api/ads', adData, {withCredentials: true
+            const res = await axios.post('/api/ads', adData, {
+                withCredentials: true
             })
             message.value = res.data
-        }
-        catch(err) {
+        } catch (err) {
             console.log('Could not create ad', err)
             error.value = err.response?.data
-        }
-        finally {
+        } finally {
             loading.value = false
         }
     }
-        return {createAd, error, loading, message}
+    return {createAd, error, loading, message}
 }

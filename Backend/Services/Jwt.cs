@@ -1,15 +1,14 @@
-namespace Finn_klone.Backend.Services;
-
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
+namespace Finn_klone.Backend.Services;
+
 public class Jwt
 {
     private readonly string _secureKey;
-    
+
     public Jwt(IConfiguration config)
     {
         _secureKey = config["JwtSettings:SecretKey"];
@@ -27,9 +26,9 @@ public class Jwt
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
-            issuer: "finn-klone",
-            audience: "finn-klone-users",
-            claims: claims,
+            "finn-klone",
+            "finn-klone-users",
+            claims,
             expires: DateTime.UtcNow.AddHours(1),
             signingCredentials: credentials
         );

@@ -1,16 +1,16 @@
 <script setup>
 import {computed, ref} from 'vue'
 import axios from 'axios'
-import {useStore} from "../composables/useStore.js"
+import { useUserStore } from '../stores/useUserStore.js';
 
-const store = useStore();
+const userStore = useUserStore();
 
 const title = ref('')
 const description = ref('')
 const category = ref('')
 const condition = ref('')
 const price = ref(0)
-const userId = computed(() => store.user.value?.id || null);
+const userId = computed(() => userStore.user.id || null);
 const files = ref([]) // filer brukeren laster opp
 
 async function handleSubmit(e) {
@@ -29,10 +29,10 @@ async function handleSubmit(e) {
   for (let i = 0; i < files.value.length; i++) {
     formData.append('Files', files.value[i])
   }
-  
+
   try {
     const res = await axios.post('/api/ads/create-with-files', formData, {
-withCredentials: true
+      withCredentials: true
     })
     console.log('Annonsen ble opprettet:', res.data)
   } catch (err) {
@@ -50,7 +50,7 @@ function handleFileChange(e) {
   <form @submit.prevent="handleSubmit">
     <div>
       <label>Title</label>
-      <input type="text" v-model="title" />
+      <input v-model="title" type="text"/>
     </div>
     <div>
       <label>Category</label>
@@ -65,7 +65,7 @@ function handleFileChange(e) {
     </div>
     <div>
       <label>Price</label>
-      <input type="number" v-model="price" />
+      <input v-model="price" type="number"/>
     </div>
     <div>
       <label>Description</label>
@@ -80,12 +80,12 @@ function handleFileChange(e) {
         <option>Well used</option>
       </select>
     </div>
-    <br>                                                                     
+    <br>
     <div>
       <label>Images</label>
-      <input type="file" multiple @change="handleFileChange" /> 
+      <input multiple type="file" @change="handleFileChange"/>
     </div>
-    <button class="btn waves-effect waves-light" type="submit" name="action">Create new ad
+    <button class="btn waves-effect waves-light" name="action" type="submit">Create new ad
     </button>
   </form>
 </template>

@@ -1,15 +1,15 @@
 <script setup>
-import {computed, onMounted, watchEffect} from 'vue'
-import { useLogout } from "../composables/useLogout";
-import {useStore} from "../composables/useStore";
+import {computed, watchEffect} from 'vue'
+import {useLogout} from "../composables/useLogout";
+import { useUserStore } from '../stores/useUserStore.js';
 
-const store = useStore();
-console.log(" Vue-component:", store.user.value);
-const { logOut } = useLogout();
+const userStore = useUserStore();
+console.log(" Vue-component:", userStore.user);
+const {logOut} = useLogout();
 
-const currentUser = computed(() => store.user.value)
+const currentUser = computed(() => userStore.user)
 
-watchEffect(()=>{
+watchEffect(() => {
   console.log("currentUser changed: ", currentUser.value)
 })
 
@@ -23,10 +23,18 @@ watchEffect(()=>{
     <p v-else></p>
     <button v-if="currentUser && currentUser.email" @click="logOut">Logg ut</button>
     <div v-if="currentUser  && currentUser.email">
-      <RouterLink to="/mainpage"><button>Main Page</button></RouterLink>
-      <RouterLink to="/ads"><button>Annonser</button></RouterLink>
-      <RouterLink to="/users/profile"><button>Profile</button></RouterLink>
-      <RouterLink to="/ads/create-with-files"><button>Create new ad</button></RouterLink>
+      <RouterLink to="/mainpage">
+        <button>Main Page</button>
+      </RouterLink>
+      <RouterLink to="/ads">
+        <button>Annonser</button>
+      </RouterLink>
+      <RouterLink to="/users/profile">
+        <button>Profile</button>
+      </RouterLink>
+      <RouterLink to="/ads/create-with-files">
+        <button>Create new ad</button>
+      </RouterLink>
     </div>
   </nav>
 </template>

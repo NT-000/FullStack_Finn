@@ -1,4 +1,4 @@
-import { ref, onMounted, onUnmounted } from 'vue';
+import {onMounted, onUnmounted, ref} from 'vue';
 import * as signalR from '@microsoft/signalr';
 
 export function useSignalR() {
@@ -28,5 +28,5 @@ export function useSignalR() {
         connection.stop();
     });
 
-    return { notifications };
+    return {notifications};
 }
