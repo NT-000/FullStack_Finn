@@ -12,13 +12,11 @@ export function useUser(){
             const url = userId ? `/api/users/${userId}` : `/api/users/profile`;
             console.log(`Fetching user profile from: ${url}`);
             const res = await axios.get(url,{ withCredentials: true })
-            setUser(res.data);
             }
         
         catch(err){
             console.log(error)
             error.value = 'Something went wrong when loading userprofile'
-            setUser(null);
         }
         finally{
             loading.value = false

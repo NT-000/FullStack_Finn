@@ -1,0 +1,33 @@
+<script setup>
+
+</script>
+
+<template>
+  <h2>{{ computedUser.name}}'s page</h2>
+  <div v-if="computedUser && computedUser.name">
+    <img :src="`${computedUser.profileImageUrl}`" alt="profilePic"/>
+    <p><strong>Name:</strong> {{ computedUser.name }}</p>
+    <p><strong>Email:</strong> {{ computedUser.email }}</p>
+    <p><strong>Rating:</strong> {{ computedUser.rating }}</p>
+    <div v-if="filteredAds.length > 0">
+      <div v-for="ad in filteredAds" :key="ad.id">
+
+        <div class="ad">
+          <RouterLink :to="{name: 'AdDetails', params:{id:ad.id}}"> {{ad.title}}</RouterLink>
+          <div v-if="ad.images.length > 0" class="image">
+            <div v-for="image in ad.images" :key="image.id">
+              <img :src="image.imageUrl" alt="x" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div v-else>
+    <p>Loading user...</p>
+  </div>
+</template>
+
+<style scoped>
+
+</style>

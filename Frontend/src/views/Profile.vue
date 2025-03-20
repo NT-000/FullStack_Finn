@@ -13,7 +13,7 @@ const { fetchUserProfile } = useUser();
 const computedUser = computed(() => store.user.value);
 
 onMounted(async () => {
-  await fetchUserProfile();
+  await fetchUserProfile(userId.value);
   await adStore.fetchAds();
   console.log("computed user",computedUser.value);
   console.log("computed user profileImage path",computedUser.value.profileImageUrl);
