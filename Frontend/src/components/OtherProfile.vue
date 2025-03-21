@@ -18,10 +18,8 @@ const props = defineProps({
         <div v-for="ad in ads" :key="ad.id">
           <div class="ad">
             <RouterLink :to="{name: 'AdDetails', params:{id:ad.id}}"> {{ ad.title }}</RouterLink>
-            <div v-if="ad.images.length > 0" class="image">
-              <div v-for="image in ad.images" :key="image.id">
-                <img :src="image.imageUrl" alt="x"/>
-              </div>
+            <div v-if="ad.images.length > 0">
+            <img :src="ad.images[0].imageUrl" alt="img"/>
             </div>
           </div>
         </div>

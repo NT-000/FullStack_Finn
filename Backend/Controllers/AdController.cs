@@ -127,22 +127,54 @@ VALUES (@Title, @Description, @Condition, @Price, @Category, @UserId, GETDATE())
 
     [Authorize]
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateAd(int id, [FromBody] Ad updatedAd)
+    public async Task<IActionResult> UpdateAd(int id, [FromBody] AdUpdateDto updatedAd)
     {
-        if (updatedAd == null) return BadRequest("No data provided.");
-        var query = @"
-UPDATE Ads SET Title =@Title, Category=@Category Description=@Description, Condition=@Condition, Price=@Price WHERE Id = @Id ";
-        
-        await _db.ExecuteAsync(query, new
+        if (updatedAd == null)
+            return BadRequest("No data provided.");
+
+        try
         {
-            updatedAd.Title,
-            updatedAd.Category,
-            updatedAd.Description,
-            updatedAd.Condition,
-            updatedAd.Price,
-            Id = id,
-        });
-        return Ok("Ad updated");
+            var userIdClaim = User.FindFirst("id");
+            if (userIdClaim == null) 
+                return Unauthorized("No user id found in token");
+
+            var userId = int.Parse(userIdClaim.Value);
+
+            var existingAd = await _db.QueryFirstOrDefaultAsync<Ad>(
+                "SELECT * FROM Ads WHERE Id = @Id", new { Id = id });
+
+            if (existingAd == null)
+                return NotFound("Ad not found.");
+
+            if (existingAd.UserId != userId)
+                return Unauthorized("Not authorized to update this ad.");
+
+            var query = @"
+        UPDATE Ads SET
+            Title = @Title,
+            Category = @Category,
+            Description = @Description,
+            Condition = @Condition,
+            Price = @Price
+        WHERE Id = @Id";
+
+            await _db.ExecuteAsync(query, new
+            {
+                Title = updatedAd.Title ?? existingAd.Title,
+                Category = updatedAd.Category ?? existingAd.Category,
+                Description = updatedAd.Description ?? existingAd.Description,
+                Condition = updatedAd.Condition ?? existingAd.Condition,
+                Price = updatedAd.Price ?? existingAd.Price,
+                Id = id
+            });
+
+            return Ok("Ad updated successfully.");
+        }
+        catch (Exception ex)
+        {
+            // Se hva som faktisk går galt
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
     }
     //delete
     [Authorize]

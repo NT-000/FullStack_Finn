@@ -18,11 +18,10 @@ onMounted(() => {
 <template>
 
   <div class="input-field">
-    <input id="search" v-model="search" type="search">
-    <label>Search</label>
+    <input id="search" v-model="search" placeholder="Search for people" type="search">
   </div>
 
-  <div v-if="filteredSearch.length > 0">
+  <div v-if="filteredSearch.length > 0 && search.length > 2" class="search-input">
     <div class="search">
       <div v-for="user in filteredSearch" :key="user.id">
         <RouterLink :to="{name: 'UserProfile', params: {id:user.id}}">{{ user.name }}</RouterLink>
