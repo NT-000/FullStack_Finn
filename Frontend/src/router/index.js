@@ -77,6 +77,7 @@ router.beforeEach(async (to, from, next) => {
 
     if (requiresAuth && !userStore.isLoggedIn) {
         next('/');
+        console.log("you need to log in")
     } else {
         next();
     }

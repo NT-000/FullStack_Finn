@@ -23,5 +23,11 @@ export function useAd() {
             loading.value = false
         }
     }
+    const deleteAd = async (adData) => {
+        
+    }
+    const updateAd = async (adData) => {
+        
+    }
     return {createAd, error, loading, message}
 }

@@ -12,8 +12,28 @@ export const useAdStore = defineStore('adStore', {
                 this.ads = response.data;
                 console.log("Ads:", response.data);
             } catch (error) {
-                console.error("Error fetching ads:", error);
+                console.error("error fetching ads:", error);
             }
+        },
+
+        async updateAd(adId, adData) {
+            try {
+                await axios.put(`/api/ads/${adId}`, adData, {withCredentials: true});
+                await this.fetchAds();
+            } catch (error) {
+                console.error("could not update ad:", error);
+            }
+        },
+        
+        async deleteAd(adId) {
+            try{
+                await axios.delete(`/api/ads/${adId}`, {withCredentials: true});
+                this.ads = this.ads.filter(ad => ad.id !== adId);
+            }
+                catch(error)
+                {
+                console.log("error deleting ad: ", error);
+                }
         }
     },
     getters: {

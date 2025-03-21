@@ -1,19 +1,42 @@
 <script setup>
-import {getPost} from "../composables/getPost.js";
-import {useRoute} from "vue-router";
-import {onMounted} from "vue";
+import { computed, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useUserStore } from "../stores/useUserStore.js";
+import { useAdStore } from "../stores/adStore.js";
+
 
 
 const route = useRoute();
+const router = useRouter();
+const adStore = useAdStore();
+const userStore = useUserStore();
 console.log('route id', route.params.id)
+const adId = route.params.id;
 
-const {item: ad, loading, error, fetchData} = getPost(`/ads/${route.params.id}`);
+const currentAd = computed(() => {
+  return adStore.ads.find(ad => ad.id == adId);
+});
+
+//sjekker om innlogget bruker
+const isOwner = computed(() => {
+  return userStore.user.id == currentAd.value?.userId;
+});
+
+const deleteAd = async () => {
+  if(confirm("Are you sure you want to delete this ad?")) {
+    await adStore.deleteAd(adId);
+    router.push("/ads");
+  }
+}
 
 onMounted(async () => {
-  if (route.params.id) {
-    await fetchData();
-  }
+  adStore.fetchAds();
 })
+
+function updateAd() {
+ 
+}
+
 </script>
 
 <template>
@@ -21,21 +44,26 @@ onMounted(async () => {
   <h1>Single ad</h1>
   <div class="container">
     <div class="header">
-      <h1 v-if="!loading">{{ ad.title }}</h1>
       <div class="info">
-        <div v-if="ad?.images && ad.images.length > 0">
-          <img :src="ad.images[0].imageUrl" alt=""/>
+        <div v-if="currentAd">
+      <h1>{{ currentAd.title }}</h1>
+          <input type="text">
+        <div v-if="currentAd?.images && currentAd.images.length > 0">
+          <img :src="currentAd.images[0].imageUrl" alt=""/>
         </div>
-        <div v-if="ad?.images && ad.images.length > 1">
+        <div v-if="currentAd?.images && currentAd.images.length > 1">
           <div v-for="image in ad.images.slice(1)" :key="image.id">
             <img :src="image.imageUrl" alt="Ad image"/>
           </div>
         </div>
-        <p v-if="!loading">Category: {{ ad.category }}</p>
-        <p v-if="!loading">Info: {{ ad.description }}</p>
-        <p v-if="!loading">Price: {{ ad.price }} kr</p>
-        <p v-if="loading">Loading ad...</p>
-        <p v-if="error">{{ error }}</p>
+        <p>Category: {{ currentAd.category }}</p>
+        <p>Info: {{ currentAd.description }}</p>
+        <p>Price: {{ currentAd.price }} kr</p>
+        </div>
+        <div v-if="isOwner">
+          
+          <button @click="deleteAd">Slett annonse</button>
+        </div>
 
       </div>
     </div>

@@ -1,6 +1,7 @@
 using System.Data;
 using Dapper;
 using Finn_klone;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 [Route("api/ads")]
@@ -122,5 +123,34 @@ VALUES (@Title, @Description, @Condition, @Price, @Category, @UserId, GETDATE())
             Console.WriteLine($",{ex.Message}");
             return StatusCode(500, ex.Message);
         }
+    }
+
+    [Authorize]
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateAd(int id, [FromBody] Ad updatedAd)
+    {
+        if (updatedAd == null) return BadRequest("No data provided.");
+        var query = @"
+UPDATE Ads SET Title =@Title, Category=@Category Description=@Description, Condition=@Condition, Price=@Price WHERE Id = @Id ";
+        
+        await _db.ExecuteAsync(query, new
+        {
+            updatedAd.Title,
+            updatedAd.Category,
+            updatedAd.Description,
+            updatedAd.Condition,
+            updatedAd.Price,
+            Id = id,
+        });
+        return Ok("Ad updated");
+    }
+    //delete
+    [Authorize]
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteAd(int id)
+    {
+        var query = "DELETE FROM Ads WHERE Id = @Id";
+        await _db.ExecuteAsync(query, new { Id = id });
+        return Ok("ad deleted");
     }
 }
