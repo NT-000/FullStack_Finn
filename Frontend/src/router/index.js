@@ -7,6 +7,7 @@ import Ads from "../views/Ads.vue";
 import AdDetails from "../views/AdDetails.vue";
 import Profile from "../views/Profile.vue";
 import CreateNewAd from "../views/CreateNewAd.vue";
+import Map from "../views/Map.vue";
 import {useUserStore} from '../stores/useUserStore.js'
 
 const router = createRouter({
@@ -36,7 +37,9 @@ const router = createRouter({
         {
             path: '/ads/:id',
             name: 'AdDetails',
-            component: AdDetails
+            component: AdDetails,
+            meta: {requiresAuth: true}
+
         },
         {
             path: '/ads',
@@ -54,6 +57,11 @@ const router = createRouter({
             name: 'MainPage',
             component: MainPage,
             meta: {requiresAuth: true}
+        },
+        {
+            path: '/map',
+            name: 'Map',
+            component: Map,
         },
         {
             path: '/:catchAll(.*)',

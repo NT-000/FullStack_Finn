@@ -1,7 +1,7 @@
 <script setup>
 import {computed, ref} from 'vue'
 import axios from 'axios'
-import { useUserStore } from '../stores/useUserStore.js';
+import {useUserStore} from '../stores/useUserStore.js';
 
 const userStore = useUserStore();
 

@@ -25,16 +25,14 @@ export const useAdStore = defineStore('adStore', {
                 console.error("could not update ad:", error);
             }
         },
-        
+
         async deleteAd(adId) {
-            try{
+            try {
                 await axios.delete(`/api/ads/${adId}`, {withCredentials: true});
                 this.ads = this.ads.filter(ad => ad.id !== adId);
-            }
-                catch(error)
-                {
+            } catch (error) {
                 console.log("error deleting ad: ", error);
-                }
+            }
         }
     },
     getters: {

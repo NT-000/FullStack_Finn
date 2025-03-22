@@ -27,7 +27,7 @@ export function useAd() {
         
     }
     const updateAd = async (adData) => {
-        
+
     }
     return {createAd, error, loading, message}
 }

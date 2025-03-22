@@ -1,7 +1,7 @@
 <script setup>
 import {computed, watchEffect} from 'vue'
 import {useLogout} from "../composables/useLogout";
-import { useUserStore } from '../stores/useUserStore.js';
+import {useUserStore} from '../stores/useUserStore.js';
 
 const userStore = useUserStore();
 console.log(" Vue-component:", userStore.user);
@@ -34,6 +34,9 @@ watchEffect(() => {
       </RouterLink>
       <RouterLink to="/ads/create-with-files">
         <button>Create new ad</button>
+      </RouterLink>
+      <RouterLink to="/map">
+        <button>Go to map</button>
       </RouterLink>
     </div>
   </nav>

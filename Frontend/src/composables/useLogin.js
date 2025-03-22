@@ -1,10 +1,10 @@
 import {ref} from 'vue'
 import axios from 'axios'
 import {useRouter} from 'vue-router'
-import { useUserStore } from '../stores/useUserStore.js';
+import {useUserStore} from '../stores/useUserStore.js';
 
 export function useLogin() {
-const userStore = useUserStore();
+    const userStore = useUserStore();
     const router = useRouter();
     const loading = ref(false)
     const error = ref(null)

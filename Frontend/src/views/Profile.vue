@@ -5,7 +5,7 @@ import {useRoute} from "vue-router";
 import {useAdStore} from "../stores/adStore.js";
 import MyProfile from "../components/MyProfile.vue";
 import OtherProfile from "../components/OtherProfile.vue";
-import { useUserStore } from '../stores/useUserStore.js';
+import {useUserStore} from '../stores/useUserStore.js';
 
 const userStore = useUserStore();
 const adStore = useAdStore();

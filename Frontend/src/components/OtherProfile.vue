@@ -19,7 +19,7 @@ const props = defineProps({
           <div class="ad">
             <RouterLink :to="{name: 'AdDetails', params:{id:ad.id}}"> {{ ad.title }}</RouterLink>
             <div v-if="ad.images.length > 0">
-            <img :src="ad.images[0].imageUrl" alt="img"/>
+              <img :src="ad.images[0].imageUrl" alt="img"/>
             </div>
           </div>
         </div>
@@ -34,7 +34,7 @@ const props = defineProps({
 <style scoped>
 img {
   width: 20%;
-  height: 20%;
+  height: 10%;
   border-radius: 5px;
   border: solid 1px white;
 }

@@ -6,8 +6,8 @@ const props = defineProps({
 </script>
 
 <template>
-  <div v-if="user && user.name">
-  <h2>{{ user.name }}'s page</h2>
+  <div v-if="user && user.name" class="container">
+    <h2>{{ user.name }}'s page</h2>
     <img :src="`${user.profileImageUrl}`" alt="profilePic"/>
     <p><strong>Name:</strong> {{ user.name }}</p>
     <p><strong>Email:</strong> {{ user.email }}</p>
@@ -16,8 +16,8 @@ const props = defineProps({
       <div v-for="ad in ads" :key="ad.id">
         <div class="ad">
           <RouterLink :to="{name: 'AdDetails', params:{id:ad.id}}"> {{ ad.title }}</RouterLink>
-          <div v-if="ad.images.length > 0"> 
-          <img :src="ad.images[0].imageUrl" alt="img"/>
+          <div v-if="ad.images.length > 0">
+            <img :src="ad.images[0].imageUrl" alt="img"/>
           </div>
         </div>
       </div>
@@ -29,9 +29,14 @@ const props = defineProps({
 </template>
 
 <style scoped>
+.container {
+  display: inline-block;
+
+}
+
 img {
-  width: 20%;
-  height: 20%;
+  width: 10%;
+  height: 30%;
   border-radius: 5px;
   border: solid 1px white;
 }

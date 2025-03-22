@@ -12,5 +12,10 @@ public class Ad
 
     public DateTime CreatedAt { get; set; }
 
+    public decimal? Latitude { get; set; }
+
+    public decimal? Longitude { get; set; }
+
+
     public List<AdImage> Images { get; set; } = new(); // bilder til annonsene
 }

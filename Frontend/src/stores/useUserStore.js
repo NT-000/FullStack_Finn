@@ -16,10 +16,9 @@ export const useUserStore = defineStore('user', {
                 console.log("user from backend:", res.data);
                 this.user = res.data;
             } catch (err) {
-                if(err.response && err.response.status === 401) {
-                console.error("user not logged in");
-                }
-                else{
+                if (err.response && err.response.status === 401) {
+                    console.error("user not logged in");
+                } else {
                     console.error("something went wrong", err);
                 }
                 this.user = null;

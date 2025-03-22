@@ -3,7 +3,7 @@ import {useRouter} from "vue-router";
 import {useUserStore} from "../stores/useUserStore.js";
 
 export function useLogout() {
-const userStore = useUserStore();
+    const userStore = useUserStore();
 
 
     const router = useRouter();

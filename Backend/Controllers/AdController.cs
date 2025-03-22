@@ -135,7 +135,7 @@ VALUES (@Title, @Description, @Condition, @Price, @Category, @UserId, GETDATE())
         try
         {
             var userIdClaim = User.FindFirst("id");
-            if (userIdClaim == null) 
+            if (userIdClaim == null)
                 return Unauthorized("No user id found in token");
 
             var userId = int.Parse(userIdClaim.Value);
@@ -176,6 +176,38 @@ VALUES (@Title, @Description, @Condition, @Price, @Category, @UserId, GETDATE())
             return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }
+
+    //oppdatere kordinater
+    [Authorize]
+    [HttpPut("{id}/location")]
+    public async Task<IActionResult> UpdateAdLocation(int id, [FromBody] LocationDto updatedLocation)
+    {
+        var existingAd = await _db.QueryFirstOrDefaultAsync<Ad>(
+            "SELECT * FROM Ads WHERE Id = @Id", new { Id = id }
+        );
+        if (existingAd == null)
+            return NotFound("Ad not found.");
+
+        // sjekk at brukeren eier annonsen
+        var userIdClaim = User.FindFirst("id");
+        if (userIdClaim == null)
+            return Unauthorized("No user id found in token");
+        var userId = int.Parse(userIdClaim.Value);
+        if (existingAd.UserId != userId)
+            return Unauthorized("Not authorized to update location of this ad.");
+
+        var query = "UPDATE Ads SET Latitude = @Lat, Longitude =@Lng WHERE Id = @Id";
+
+        var rowsAffected = await _db.ExecuteAsync(query, new
+        {
+            Lat = updatedLocation.Latitude,
+            Lng = updatedLocation.Longitude,
+            Id = id
+        });
+        if (rowsAffected > 0) return Ok("location updated successfully.");
+        return StatusCode(500, "Could not update location.");
+    }
+
     //delete
     [Authorize]
     [HttpDelete("{id}")]
