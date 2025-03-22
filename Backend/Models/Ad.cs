@@ -15,6 +15,8 @@ public class Ad
     public decimal? Latitude { get; set; }
 
     public decimal? Longitude { get; set; }
+    
+    public string? LocationName { get; set; }
 
 
     public List<AdImage> Images { get; set; } = new(); // bilder til annonsene

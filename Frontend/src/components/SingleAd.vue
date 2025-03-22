@@ -5,7 +5,7 @@ import {useUserStore} from "../stores/useUserStore.js";
 import {useAdStore} from "../stores/adStore.js";
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-
+import {getRoute} from "../composables/getRoute.js";
 import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png'
 import iconUrl from 'leaflet/dist/images/marker-icon.png'
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png'
@@ -19,7 +19,7 @@ L.Marker.prototype.options.icon = L.icon({
   iconSize: [25, 41],
   iconAnchor: [12, 41]
 })
-
+const users = getRoute('/users');
 const route = useRoute();
 const router = useRouter();
 const adStore = useAdStore();
@@ -55,6 +55,7 @@ const deleteAd = async () => {
 
 onMounted(async () => {
   await adStore.fetchAds();
+  await users.fetchData();
 
   map.value = L.map(mapContainer.value)
   map.value.on('click', onMapClick)
@@ -84,7 +85,7 @@ onUnmounted(() => {
   }
 })
 
-const onMapClick = (e) => {
+const onMapClick = async (e) => {
   if (!isOwner.value) {
     return
   }
@@ -96,20 +97,38 @@ const onMapClick = (e) => {
     }
     lat.value = e.latlng.lat
     lng.value = e.latlng.lng
+    
     marker.value = L.marker([lat.value, lng.value]).addTo(map.value)
-    updateCoordinates(adId, lat.value, lng.value)
+
+    const locationName = await reverseGeocode(lat.value, lng.value)
+    
+    updateCoordinates(adId, lat.value, lng.value, locationName)
   }
 }
 
+async function reverseGeocode(latValue, longValue) {
+  try {
+    const url = `https://nominatim.openstreetmap.org/reverse?lat=${latValue}&lon=${longValue}&format=json`
+    const res = await axios.get(url, {withCredentials: false})
+    const displayName = res.data?.display_name
+    console.log('reverse geocode result:', displayName)
+    return displayName
+  } catch (err) {
+    console.error('reverse geocoding failed:', err)
+    return null
+  }
+}
 
-const updateCoordinates = async (adId, lat, lng) => {
+const updateCoordinates = async (adId, lat, lng, location) => {
   error.value = null
   try {
     const res = await axios.put(`/api/ads/${adId}/location`, {
       latitude: lat,
-      longitude: lng
+      longitude: lng,
+      locationName: location
     }, {withCredentials: true})
     console.log("position updated", res.data)
+    await adStore.fetchAds();
   } catch (err) {
     console.log("error when updating position", err)
     error.value = 'Location could not be updated'
@@ -131,6 +150,10 @@ const updateAd = async () => {
   isUpdating.value = false;
 }
 
+const seller = computed(() =>{
+ return users.items.value.find(user => user.id === currentAd.value?.userId)
+})
+
 </script>
 
 <template>
@@ -142,6 +165,7 @@ const updateAd = async () => {
         <div v-if="currentAd && adId">
           <form v-if="currentAd" @submit.prevent="updateAd">
             <h1>{{ currentAd.title }}</h1>
+            <h3 v-if="seller">Seller:{{seller.name}}</h3>
             <input v-if="isUpdating" v-model="currentAd.title" placeholder="New title" type="text"/>
             <div v-if="currentAd?.images && currentAd.images.length > 0">
               <img :src="currentAd.images[0].imageUrl" alt=""/>
@@ -171,7 +195,9 @@ const updateAd = async () => {
               <option>Used</option>
               <option>Well used</option>
             </select>
-            <div ref="mapContainer" style="height: 400px; width: 100%;"></div>
+          <label>Location:{{currentAd.locationName}}</label>
+          
+            <div ref="mapContainer" style="height: 300px; width: 50%;"></div>
           </form>
         </div>
         <div v-if="isOwner">

@@ -22,7 +22,7 @@ onMounted(() => {
 
 </template>
 
-<style scoped>
+<style>
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -30,6 +30,11 @@ onMounted(() => {
   transition: filter 300ms;
 }
 
+button:hover {
+  transition: filter 300ms;
+  filter: drop-shadow(0 0 2em #646cffaa);
+
+}
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }

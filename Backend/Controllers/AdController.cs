@@ -196,12 +196,13 @@ VALUES (@Title, @Description, @Condition, @Price, @Category, @UserId, GETDATE())
         if (existingAd.UserId != userId)
             return Unauthorized("Not authorized to update location of this ad.");
 
-        var query = "UPDATE Ads SET Latitude = @Lat, Longitude =@Lng WHERE Id = @Id";
+        var query = "UPDATE Ads SET Latitude = @Lat, Longitude =@Lng, LocationName=@Loc  WHERE Id = @Id";
 
         var rowsAffected = await _db.ExecuteAsync(query, new
         {
             Lat = updatedLocation.Latitude,
             Lng = updatedLocation.Longitude,
+            Loc = updatedLocation.LocationName,
             Id = id
         });
         if (rowsAffected > 0) return Ok("location updated successfully.");
