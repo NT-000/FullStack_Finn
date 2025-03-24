@@ -4,6 +4,7 @@ import NavBar from "./components/NavBar.vue";
 import {RouterView} from 'vue-router'
 import {onMounted} from "vue";
 import {useUserStore} from "./stores/useUserStore.js";
+import '@fortawesome/fontawesome-free/css/all.css';
 
 const store = useUserStore();
 
@@ -33,7 +34,6 @@ onMounted(() => {
 button:hover {
   transition: filter 300ms;
   filter: drop-shadow(0 0 2em #646cffaa);
-
 }
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);

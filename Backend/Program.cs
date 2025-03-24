@@ -92,7 +92,7 @@ app.UseAuthorization();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
-    endpoints.MapHub<NotificationHub>("/notificationHub");
+    endpoints.MapHub<ChatHub>("/chatHub");
 });
 
 app.MapFallbackToFile("index.html");

@@ -5,7 +5,7 @@ import {useLogin} from "../../composables/useLogin.js";
 const email = ref('')
 const password = ref('')
 
-const {token, loading, error, logIn} = useLogin();
+const {loading, error, logIn} = useLogin();
 
 const checkIn = async () => {
   await logIn(email.value, password.value)
@@ -13,26 +13,55 @@ const checkIn = async () => {
 </script>
 
 <template>
+  <div class="loginCard">
   <form @submit.prevent="checkIn">
     <div class="form-group">
+      <label>Email</label>
       <input v-model="email" required type="email"/>
+      <label>Passord</label>
       <input v-model="password" required type="password"/>
     </div>
+  <div class="error">{{error}}</div>
     <button :disabled="loading" type="submit">
-      {{ loading ? "Logging in" : "Log in" }}
+      {{ loading ? "Logger inn" : "Logg inn" }}
     </button>
   </form>
+  </div>
 </template>
 
 <style scoped>
+.loginCard {
+  background: #fff;
+  height: 50vh;
+  align-content: center;
+  padding: 20px;
+  border-radius: 10px;
+  background: deepskyblue;
+}
+
 .form-group {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
-
+input {
+  border-radius: 10px;
+  height: 40px;
+  font-weight: bold;
+  padding-left: 10px;
+  align-items: center;
+  background: #fff;
+}
+input text {
+  font-weight: bold;
+}
+label {
+  font-weight: bold;
+  font-size: 1.5rem;
+}
 .error {
   color: red;
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: bold;
 }
 </style>

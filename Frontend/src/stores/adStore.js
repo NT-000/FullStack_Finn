@@ -18,8 +18,7 @@ export const useAdStore = defineStore('adStore', {
 
         async updateAd(adId, adData) {
             try {
-                const id = Number(adId);
-                await axios.put(`/api/ads/${id}`, adData, {withCredentials: true});
+                await axios.put(`/api/ads/${adId}`, adData, {withCredentials: true});
                 await this.fetchAds();
             } catch (error) {
                 console.error("could not update ad:", error);

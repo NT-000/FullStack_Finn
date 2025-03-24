@@ -13,9 +13,7 @@ const price = ref(0)
 const userId = computed(() => userStore.user.id || null);
 const files = ref([]) // filer brukeren laster opp
 
-async function handleSubmit(e) {
-  e.preventDefault()
-
+async function handleSubmit() {
   // lager formdata
   const formData = new FormData()
   formData.append('Title', title.value)
@@ -46,46 +44,53 @@ function handleFileChange(e) {
 </script>
 
 <template>
-  <h2>Create new ad(w files)</h2>
+  <h2>Lag en ny annonse</h2>
   <form @submit.prevent="handleSubmit">
     <div>
-      <label>Title</label>
+      <label>Tittel</label>
+      <br>
       <input v-model="title" type="text"/>
     </div>
     <div>
-      <label>Category</label>
+      <label>Kategori</label>
+      <br>
       <select v-model="category">
-        <option>Bikes</option>
-        <option>Electronics</option>
-        <option>Furniture</option>
-        <option>Clothing</option>
-        <option>Guns</option>
-        <option>Hand-weapons</option>
+        <option>Sykler</option>
+        <option>Electronikk</option>
+        <option>Møbler</option>
+        <option>Klær</option>
+        <option>Skytevåpen</option>
+        <option>Hånd-våpen</option>
       </select>
+      
     </div>
     <div>
-      <label>Price</label>
+      <label>Pris</label>
       <input v-model="price" type="number"/>
+      <br>
     </div>
     <div>
-      <label>Description</label>
+      <label>Beskrivelse</label>
+      <br>
       <textarea v-model="description"></textarea>
     </div>
     <div>
-      <label>Condition</label>
+      <label>Tilstand</label>
+      <br>
       <select v-model="condition">
-        <option>New</option>
-        <option>Like new</option>
-        <option>Used</option>
-        <option>Well used</option>
+        <option>Ny</option>
+        <option>Nesten ny</option>
+        <option>Brukt</option>
+        <option>Godt brukt</option>
       </select>
     </div>
     <br>
     <div>
       <label>Images</label>
+      <br>
       <input multiple type="file" @change="handleFileChange"/>
     </div>
-    <button class="btn waves-effect waves-light" name="action" type="submit">Create new ad
+    <button type="submit">Lag en ny annonse
     </button>
   </form>
 </template>

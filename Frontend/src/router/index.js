@@ -9,6 +9,7 @@ import Profile from "../views/Profile.vue";
 import CreateNewAd from "../views/CreateNewAd.vue";
 import Map from "../views/Map.vue";
 import {useUserStore} from '../stores/useUserStore.js'
+import Chat from "../views/Chat.vue";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -62,6 +63,14 @@ const router = createRouter({
             path: '/map',
             name: 'Map',
             component: Map,
+            meta: {requiresAuth: true}
+        },
+        {
+            path: '/chat/:id',
+            name: 'Chat',
+            component: Chat,
+            props: true,
+            meta: {requiresAuth: true}
         },
         {
             path: '/:catchAll(.*)',

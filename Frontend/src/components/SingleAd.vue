@@ -61,7 +61,7 @@ onMounted(async () => {
   map.value.on('click', onMapClick)
 
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
+    maxZoom: 10,
     attribution: '© OpenStreetMap'
   }).addTo(map.value)
 
@@ -100,7 +100,11 @@ const onMapClick = async (e) => {
     
     marker.value = L.marker([lat.value, lng.value]).addTo(map.value)
 
-    const locationName = await reverseGeocode(lat.value, lng.value)
+    const locationData = await reverseGeocode(lat.value, lng.value)
+
+    const locationName = locationData
+        ? `${locationData.city}, ${locationData.county}, ${locationData.country}`
+        : 'Ukjent sted'
     
     updateCoordinates(adId, lat.value, lng.value, locationName)
   }
@@ -110,9 +114,13 @@ async function reverseGeocode(latValue, longValue) {
   try {
     const url = `https://nominatim.openstreetmap.org/reverse?lat=${latValue}&lon=${longValue}&format=json`
     const res = await axios.get(url, {withCredentials: false})
-    const displayName = res.data?.display_name
-    console.log('reverse geocode result:', displayName)
-    return displayName
+    const {address} = res.data
+    console.log("res.data reverseCode", res.data)
+    const city = address.city || address.town || address.village || 'Ukjent by'
+    const county = address.county || 'Ukjent fylke'
+    const country = address.country ||'Ukjent land'
+    console.log('reverse geocode result:', "address city", address.city, "nation:", address.country)
+    return {city, county,country}
   } catch (err) {
     console.error('reverse geocoding failed:', err)
     return null
@@ -128,7 +136,7 @@ const updateCoordinates = async (adId, lat, lng, location) => {
       locationName: location
     }, {withCredentials: true})
     console.log("position updated", res.data)
-    await adStore.fetchAds();
+    
   } catch (err) {
     console.log("error when updating position", err)
     error.value = 'Location could not be updated'
@@ -160,44 +168,54 @@ const seller = computed(() =>{
   <br>
   <h1>Single ad</h1>
   <div class="container">
-    <div class="header">
-      <div class="info">
+    <div class="info">
         <div v-if="currentAd && adId">
-          <form v-if="currentAd" @submit.prevent="updateAd">
-            <h1>{{ currentAd.title }}</h1>
-            <h3 v-if="seller">Seller:{{seller.name}}</h3>
+                <form v-if="currentAd" @submit.prevent="updateAd">
+                  <div class="header">
+                    <h1>{{ currentAd.title }}</h1>
+                    <h3 v-if="seller">Selger:{{seller.name}}</h3>
+                  </div>
+                  <br>
             <input v-if="isUpdating" v-model="currentAd.title" placeholder="New title" type="text"/>
             <div v-if="currentAd?.images && currentAd.images.length > 0">
               <img :src="currentAd.images[0].imageUrl" alt=""/>
             </div>
-            <div v-if="currentAd?.images && currentAd.images.length > 1">
+            <div class="imagesReel" v-if="currentAd?.images && currentAd.images.length > 1">
               <div v-for="image in currentAd.images.slice(1)" :key="image.id">
                 <img :src="image.imageUrl" alt="Ad image"/>
               </div>
             </div>
-            <label>Category: {{ currentAd.category }}</label>
+                  <br>
+            <label>Kategori: {{ currentAd.category }}</label>
             <select v-if="isUpdating" v-model="currentAd.category">
-              <option>Bikes</option>
-              <option>Electronics</option>
-              <option>Furniture</option>
-              <option>Clothing</option>
-              <option>Guns</option>
-              <option>Hand-weapons</option>
+              <option>Sykler</option>
+              <option>Elektronikk</option>
+              <option>Møbler</option>
+              <option>Klær</option>
+              <option>Våpen</option>
+              <option>Hånd-våpen</option>
+              <option>Treningsutstyr</option>
             </select>
-            <label>Info: {{ currentAd.description }}</label>
+                  <br>
+            <label>Beskrivelse: {{ currentAd.description }}</label>
             <textarea v-if="isUpdating" v-model="currentAd.description" placeholder="New description"/>
-            <label>Price: {{ currentAd.price }} kr</label>
+                  <br>
+            <label>Pris: {{ currentAd.price }} kr</label>
             <input v-if="isUpdating" v-model="currentAd.price" placeholder="new price" type="number"/>
-            <label>Condition: {{ currentAd.condition }}</label>
+                  <br>
+            <label>Tilstand: {{ currentAd.condition }}</label>
+                  <br>
             <select v-if="isUpdating" v-model="currentAd.condition">
-              <option>New</option>
-              <option>Like new</option>
-              <option>Used</option>
-              <option>Well used</option>
+              <option>Ny</option>
+              <option>Nesten ny</option>
+              <option>Brukt</option>
+              <option>Godt brukt</option>
             </select>
-          <label>Location:{{currentAd.locationName}}</label>
-          
+          <label>Sted:{{currentAd.locationName}}</label>
+                  <br>
+          <div class="map">
             <div ref="mapContainer" style="height: 300px; width: 50%;"></div>
+          </div>
           </form>
         </div>
         <div v-if="isOwner">
@@ -211,13 +229,42 @@ const seller = computed(() =>{
         </div>
 
       </div>
-    </div>
   </div>
 </template>
 
 <style scoped>
-img {
-  height: 20%;
-  width: 20%;
+.container {
+  height: 600px;
+  width: 100%;
+  display: inline-block;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+.imagesReel{
+  background: #fff;
+  display: flex;
+  height: 100px;
+  width: 100%;
+  justify-content: center;
+}
+
+.imageReel img{
+  height: 100px;
+  width: 100px;
+}
+label{
+  position: page;
+  
+}
+img{
+  height: 100px;
+  width: 100px;
+  border: 2px solid black;
+  align-items: center;
+}
+.map{
+  background: deepskyblue;
+  top: 100px;
 }
 </style>

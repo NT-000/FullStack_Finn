@@ -36,7 +36,7 @@ const filteredSearch = computed(() => {
   <h1>Ads</h1>
 
   <input v-model="search" placeholder="Search" type="search"/>
-  <div v-if="search.length > 2" class="search">
+  <div v-if="search.length > 0" class="search">
     <h2>Search results</h2>
     <ul>
       <li v-for="item in filteredSearch" :key="item.id">

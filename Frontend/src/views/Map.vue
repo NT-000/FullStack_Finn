@@ -6,7 +6,6 @@ import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png'
 import iconUrl from 'leaflet/dist/images/marker-icon.png'
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png'
 import {useAdStore} from "../stores/adStore.js";
-import axios from "axios";
 
 L.Marker.prototype.options.icon = L.icon({
   iconRetinaUrl,

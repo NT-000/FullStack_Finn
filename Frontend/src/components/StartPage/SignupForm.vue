@@ -31,19 +31,60 @@ async function handleSubmit() {
 </script>
 
 <template>
+  <div class="container">
   <form class="form" @submit.prevent="handleSubmit">
-    <label class="form-label" for="name">Name</label>
-    <input v-model="name" placeholder="Your name..." required type="text"/>
-    <label class="form-label" for="password">Password</label>
-    <input v-model="password" placeholder="Your password..." required type="password"/>
+    <label class="form-label" for="name">Navn</label>
+    <input v-model="name" placeholder="Navn..." required type="text"/>
+    <label class="form-label" for="password">Passord</label>
+    <input v-model="password" placeholder="Passord..." required type="new-password"/>
     <label class="form-label" for="email">Email</label>
-    <input v-model="email" placeholder="Your email..." required type="text"/>
-    <label>Images</label>
+    <input v-model="email" placeholder="Email..." required type="text"/>
+    <label>Bilder</label>
     <input type="file" @change="handleFileChange"/>
-    <button class="btn btn-primary" type="submit">Submit</button>
+    <br>
+    <button class="btn btn-primary" type="submit">Registrer</button>
   </form>
+  </div>
+  
 </template>
 
 <style scoped>
-
+.form{
+  display: flex;
+  flex-direction: column;
+}
+input{
+  border: none;
+  background: ghostwhite;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  color: black;
+}
+input:focus{
+  outline: none;
+  border: none;
+}
+input:hover{
+  outline: none;
+  border: blue;
+}
+label {
+  color: black;
+  font-weight: bold;
+  font-size: 20px;
+}
+.container{
+  background: lightskyblue;
+  padding: 40px;
+  border-radius: 10px;
+}
+button{
+  border: none;
+}
+button:hover {
+  transition: filter 300ms;
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
 </style>
