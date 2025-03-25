@@ -4,7 +4,7 @@ const props = defineProps({
   ads: Array,
 })
 
-const snippet = ad.images
+
 </script>
 
 <template>
@@ -12,8 +12,10 @@ const snippet = ad.images
     <h2>{{ user.name }}'s page</h2>
     <div v-if="user && user.name">
       <img class="profilePic" :src="`${user.profileImageUrl}`" alt="profilePic"/>
+      
       <br>
-    <RouterLink :to="{name: 'Chat', params:{id:user.id}}"><button>Send melding</button></RouterLink>
+      <i class="fa-solid fa-message"><RouterLink :to="{name: 'Chat', params:{id:user.id}}"><button>Send melding</button></RouterLink></i>
+    
       <p><strong>Navn:</strong> {{ user.name }}</p>
       <p><strong>Email:</strong> {{ user.email }}</p>
       <p><strong>Rangering:</strong> {{ user.rating }}</p>
@@ -30,7 +32,7 @@ const snippet = ad.images
       </div>
     </div>
   <div v-else>
-    <p>Loading user...</p>
+    <i class="fa-solid fa-circle-notch fa-spin"></i>
   </div>
 </template>
 

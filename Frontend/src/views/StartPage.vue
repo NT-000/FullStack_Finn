@@ -7,27 +7,25 @@ const isUser = ref(true)
 </script>
 
 <template>
+  <h1>Finn</h1>
   <div class="container">
- <div v-if="isUser"> <h1>Finn</h1></div>
-    <div v-else>
-      <h1>Registrer ny bruker</h1>
-    </div>
   <div v-if="isUser">
-    <LoginForm/>
+    <LoginForm :isUser="isUser"/>
+    <button @click="isUser = !isUser">
+      <span v-if="!isUser">Back</span>
+      <span v-else>Register</span>
+    </button>
   </div>
+    
   <div v-else>
     <SignupForm/>
   </div>
-  <button @click="isUser = !isUser">
-    <span v-if="!isUser">Back</span>
-    <span v-else>Register</span>
-  </button>
   </div>
 </template>
 
 <style scoped>
 .container {
-  display: inline-block;
+  display: flex;
   justify-content: center;
   align-items: center;
   width: 400px;
@@ -40,6 +38,7 @@ h1 {
 }
 h1{
   font-size: 5.8rem;
+  background: deepskyblue;
 }
 button:hover {
   font-size: 1.2rem;

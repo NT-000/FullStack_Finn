@@ -10,6 +10,7 @@ import CreateNewAd from "../views/CreateNewAd.vue";
 import Map from "../views/Map.vue";
 import {useUserStore} from '../stores/useUserStore.js'
 import Chat from "../views/Chat.vue";
+import Inbox from "../views/Inbox.vue";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -69,6 +70,13 @@ const router = createRouter({
             path: '/chat/:id',
             name: 'Chat',
             component: Chat,
+            props: true,
+            meta: {requiresAuth: true}
+        }, 
+        {
+            path: '/inbox',
+            name: 'Inbox',
+            component: Inbox,
             props: true,
             meta: {requiresAuth: true}
         },

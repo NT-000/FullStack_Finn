@@ -2,6 +2,8 @@ import { defineStore } from 'pinia'
 import * as signalR from '@microsoft/signalr'
 import { useUserStore } from './useUserStore.js'
 import axios from "axios";
+import {computed} from "vue";
+import {getRoute} from "../composables/getRoute.js";
 
 export const useChatStore = defineStore('chatStore', {
     state: () => ({
@@ -19,10 +21,16 @@ export const useChatStore = defineStore('chatStore', {
                 .build()
 
             // 2) Lytt på “ReceiveMessage”
-            this.connection.on('ReceiveMessage', (senderId, receiverId, content) => {
+            this.connection.on('ReceiveMessage', async(senderId, receiverId, content) => {
+
+
+                const users = getRoute('/users');
+                await users.fetchData();
+                const senderName = users.items.value.find(user => user.id === senderId).name;
                 this.messages.push({
                     senderId,
                     receiverId,
+                    senderName,
                     content,
                     timestamp: new Date()
                 })
@@ -40,6 +48,13 @@ export const useChatStore = defineStore('chatStore', {
             // 1) Finn min userId
             const userStore = useUserStore()
             const myId = userStore.user.id
+
+            const users = getRoute('/users');
+            await users.fetchData();
+
+            const userList = users.items.value;
+            const findUserName = (id) => userList.find(user => user.id === id).name;
+            
             // 2) Hent meldinger fra backend
             try {
                 const res = await axios.get(`/api/messages/conversation?userId1=${myId}&userId2=${receiverId}`,
@@ -49,6 +64,7 @@ export const useChatStore = defineStore('chatStore', {
                 console.log("res.data laodConversation",res.data)
                 res.data.forEach(msg => {
                     this.messages.push({
+                        senderName: findUserName(msg.senderUserId),
                         senderId: msg.senderUserId,
                         receiverId: msg.receiverUserId,
                         content: msg.content,
@@ -65,7 +81,7 @@ export const useChatStore = defineStore('chatStore', {
             const userStore = useUserStore()
             const senderId = userStore.user?.id
             if (!senderId || !receiverId) {
-                console.warn('Missing sender or receiver for chat message')
+                console.error('Missing sender or receiver for chat message')
                 return
             }
             if (!content) return
@@ -88,5 +104,7 @@ export const useChatStore = defineStore('chatStore', {
                 (msg.senderId === receiverId && msg.receiverId === myId)
             )
         }
+    
+        
     }
 })

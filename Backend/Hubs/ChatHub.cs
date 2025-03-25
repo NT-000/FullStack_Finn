@@ -18,8 +18,8 @@ public class ChatHub : Hub
         var query = "INSERT INTO Messages (SenderUserId, ReceiverUserId, Content, Timestamp) VALUES (@sId, @rId, @txt, GETDATE())";
         await _db.ExecuteAsync(query, new { sId = senderUserId, rId = receiverUserId, txt = message });
         
-        // sende via SignalR til spesifikk mottaker
-        await Clients.Group(receiverUserId.ToString()).SendAsync("ReceiveMessage", senderUserId, receiverUserId, message);
+        // sende via SignalR til både avsender og mottaker
+        await Clients.Groups(senderUserId.ToString(), receiverUserId.ToString()).SendAsync("ReceiveMessage", senderUserId, receiverUserId, message);
     }
 
     public override async Task OnConnectedAsync()

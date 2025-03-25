@@ -10,15 +10,16 @@ const {loading, error, logIn} = useLogin();
 const checkIn = async () => {
   await logIn(email.value, password.value)
 }
+
 </script>
 
 <template>
   <div class="loginCard">
   <form @submit.prevent="checkIn">
     <div class="form-group">
-      <label>Email</label>
+      <label><i class="fa-solid fa-at"></i></label>
       <input v-model="email" required type="email"/>
-      <label>Passord</label>
+      <label><i class="fa-solid fa-lock"></i></label>
       <input v-model="password" required type="password"/>
     </div>
   <div class="error">{{error}}</div>
@@ -33,6 +34,7 @@ const checkIn = async () => {
 .loginCard {
   background: #fff;
   height: 50vh;
+  width: 50vw;
   align-content: center;
   padding: 20px;
   border-radius: 10px;
@@ -42,6 +44,8 @@ const checkIn = async () => {
 .form-group {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: 10px;
 }
 input {

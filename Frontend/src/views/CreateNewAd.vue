@@ -56,6 +56,7 @@ function handleFileChange(e) {
       <br>
       <select v-model="category">
         <option>Sykler</option>
+        <option>Leker</option>
         <option>Electronikk</option>
         <option>Møbler</option>
         <option>Klær</option>
