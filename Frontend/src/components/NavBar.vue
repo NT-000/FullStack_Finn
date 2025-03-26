@@ -17,56 +17,39 @@ watchEffect(() => {
 
     <div>
       <div v-if="currentUser && currentUser.name" class="user-display">
-        <i class="fa-solid fa-lock-open"></i>
+        <i class="fa-solid fa-lock-open" title="Innlogget bruker"></i>
         {{ currentUser.name }}
       </div>
       <p v-else></p>
     </div>
     
     <div class="nav-bar" v-if="currentUser && currentUser.email">
-      <button v-if="currentUser && currentUser.email" @click="logOut">
-        <i class="fa-solid fa-arrow-right-from-bracket"></i>
-      </button>
+      <div v-if="currentUser && currentUser.email" @click="logOut">
+        <i class="fa-solid fa-arrow-right-from-bracket" title="Logg ut"></i>
+      </div>
 
       <RouterLink to="/mainpage">
-        <button><i class="fa-solid fa-house"></i></button>
+        <i class="fa-solid fa-house" title="Hovedside"></i>
       </RouterLink>
 
       <RouterLink to="/ads">
-        <button>
-          <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="20px"
-               viewBox="0 0 20 20" width="20px" fill="#e8eaed">
-            <g>
-              <rect fill="none" height="20" width="20" x="0"/>
-            </g>
-            <g>
-              <g/>
-              <g>
-                <path d="M14,15H5V6h6V5H5C4.45,5,4,5.45,4,6V15c0,0.55,0.45,1,1,1H14c0.55,0,1-0.45,1-1V9h-1V15z"/>
-                <polygon points="7,8 7,9 11,9 12,9 12,8"/>
-                <rect height="1" width="5" x="7" y="10"/>
-                <rect height="1" width="5" x="7" y="12"/>
-                <polygon points="15,3 14,3 14,5 14,5 12,5 12,6 14,6 14,8 15,8 15,6 15,6 17,6 17,5 15,5"/>
-              </g>
-            </g>
-          </svg>
-        </button>
+        <i class="fa-solid fa-rectangle-ad" title="Annonser"></i>
       </RouterLink>
 
       <RouterLink to="/users/profile">
-        <button><i class="fa-solid fa-circle-user"></i></button>
+        <i class="fa-solid fa-circle-user" title="Min profil"></i>
       </RouterLink>
 
       <RouterLink to="/ads/create-with-files">
-        <button><i class="fa-solid fa-file-circle-plus"></i></button>
+        <i class="fa-solid fa-file-circle-plus" title="Lag ny annonse"></i>
       </RouterLink>
 
       <RouterLink to="/inbox">
-        <button><i class="fa-solid fa-inbox"></i></button>
+        <i class="fa-solid fa-inbox" title="Innboks"></i>
       </RouterLink>
 
       <RouterLink to="/map">
-        <button><i class="fa-solid fa-map-location-dot"></i></button>
+        <i class="fa-solid fa-map-location-dot" title="Kart"></i>
       </RouterLink>
     </div>
   </nav>
@@ -79,9 +62,8 @@ nav {
   justify-content: space-between;
   align-items: center;
   border-radius: 5px;
-  background-color: #e6f2fa; 
   padding: 20px 20px;
-  border-bottom: 2px solid #b3d4e0; 
+  border-bottom: 2px solid #b3d4e0;
 }
 
 .user-display {
@@ -96,12 +78,15 @@ nav {
 .nav-bar {
   display: flex;
   gap: 15px;
-  background-color: #ffffff; 
   padding: 10px;
   border-radius: 8px; 
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
 }
 
+i {
+  color: black;
+  font-size: 4rem;
+}
 
 button {
   background-color: #98cbe8;
@@ -130,21 +115,8 @@ nav a {
 nav a.Router-link-exact-active button {
   background-color: blue;
 }
-
-@media (max-width: 600px) {
-  nav {
-    flex-direction: column;
-  }
-
-  .nav-bar {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-  }
-
-  button {
-    font-size: 0.9rem;
-    padding: 5px 8px;
-  }
+i:title{
+  transform:scale(1.2);
 }
+
 </style>

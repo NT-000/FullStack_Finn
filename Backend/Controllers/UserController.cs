@@ -55,7 +55,7 @@ public class UserController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetUsers()
     {
-        var query = "SELECT Id, Name, Email, Rating FROM Users";
+        var query = "SELECT * FROM Users";
         var users = await _db.QueryAsync<User>(query);
         return Ok(users);
     }

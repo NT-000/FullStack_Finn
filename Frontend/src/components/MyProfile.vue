@@ -1,8 +1,18 @@
 <script setup>
+import {computed} from "vue";
+import {useStarRating} from "../composables/useStarRating.js";
+
 const props = defineProps({
   user: Object,
   ads: Array,
 })
+
+const userStars = computed(() =>{
+  if (!props.user) {
+    return;
+  }
+  return useStarRating(props.user.rating).value;
+});
 </script>
 
 <template>
@@ -11,16 +21,17 @@ const props = defineProps({
     <img class="profilePic" :src="user.profileImageUrl" alt="profilePic"/>
     <p><strong>Navn:</strong> {{ user.name }}</p>
     <p><strong>Email:</strong> {{ user.email }}</p>
-    <p><strong>Rangering:</strong> {{ user.rating }}</p>
+    <p><strong>Vurdering:</strong> <span v-html="userStars"></span></p>
   </div>
   <div v-else>
     <i class="fa-solid fa-circle-notch fa-spin"></i>
   </div>
+    <h2>Aktive annonser</h2>
   <div class="adImages" v-if="ads && ads.length > 0">
     <div v-for="ad in ads" :key="ad.id" class="adContainer">
       <RouterLink :to="{name: 'AdDetails', params:{id: ad.id}}">
         <div class="ad">
-          <h3>{{ ad.title }}</h3>
+          <h6>{{ ad.title }}</h6>
           <div v-if="ad.images && ad.images.length > 0">
             <img :src="ad.images[0].imageUrl" alt="img"/>
           </div>
@@ -32,10 +43,10 @@ const props = defineProps({
 
 <style scoped>
 .container {
-  background-color: #ffffff; 
+  background-color: #6cb4da; 
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 1, 0.1);
   max-width: 600px;
   margin: 20px auto;
   text-align: center;
@@ -64,10 +75,11 @@ const props = defineProps({
 
 .adImages {
   display: flex;
-  flex-wrap: wrap;
   gap: 20px;
-  justify-content: center;
+  max-width: 200px;
+  align-items: center;
   margin-top: 20px;
+  max-lines: 15;
 }
 
 
@@ -78,7 +90,8 @@ const props = defineProps({
   border-radius: 8px;
   padding: 15px;
   width: 200px;
-  text-align: center;
+  max-width: 175px;
+  max-height: 250px;
   transition: transform 0.3s, background-color 0.3s, color 0.3s;
 }
 
@@ -90,8 +103,10 @@ const props = defineProps({
 }
 
 .ad img {
-  width: 100%;
-  height: auto;
+  width: 100px;
+  height: 100px;
+  max-width: 150px;
+  max-height: 150px;
   border-radius: 5px;
   border: 1px solid #e6f2fa;
   margin-bottom: 10px;

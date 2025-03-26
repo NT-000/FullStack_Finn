@@ -38,8 +38,8 @@ const sendMessage = () => {
   <div v-if="receiverUser">
     <h2>Chat with user {{ receiverUser.name }}</h2>
     <div v-for="msg in chatStore.messages" :key="msg.id">
-      <strong>{{ msg.senderName }}:</strong> {{ msg.content}}
-      <p>{{msg.timestamp.toLocaleString()}}</p>
+      <strong>{{ msg.senderName }}, <small>{{msg.timestamp.toLocaleString()}}</small>:</strong> {{ msg.content}}
+      
     </div>
     <input v-model="newMessage" @keyup.enter="sendMessage" placeholder="Enter message"/>
     

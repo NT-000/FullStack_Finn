@@ -1,6 +1,6 @@
 <script setup>
 import {computed, onMounted, onUnmounted, ref} from 'vue';
-import {useRoute, useRouter} from 'vue-router';
+import {RouterLink, useRoute, useRouter} from 'vue-router';
 import {useUserStore} from "../stores/useUserStore.js";
 import {useAdStore} from "../stores/adStore.js";
 import L from 'leaflet'
@@ -28,7 +28,7 @@ const userStore = useUserStore();
 const isUpdating = ref(false)
 
 console.log('route id', route.params.id)
-const adId = route.params.id;
+const adId = Number(route.params.id);
 const map = ref(null)
 const mapContainer = ref(null)
 const marker = ref(null)
@@ -38,16 +38,16 @@ const lng = ref(null)
 const error = ref(null)
 
 const currentAd = computed(() => {
-  return adStore.ads.find(ad => ad.id == adId);
+  return adStore.ads.find(ad => ad.id === adId);
 });
 
 //sjekker om innlogget bruker
 const isOwner = computed(() => {
-  return userStore.user.id == currentAd.value?.userId;
+  return userStore.user.id === currentAd.value?.userId;
 });
 
 const deleteAd = async () => {
-  if (confirm("Are you sure you want to delete this ad?")) {
+  if (confirm("Slette annonsen?")) {
     await adStore.deleteAd(adId);
     router.push("/ads");
   }
@@ -61,7 +61,7 @@ onMounted(async () => {
   map.value.on('click', onMapClick)
 
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 10,
+    maxZoom: 19,
     attribution: '© OpenStreetMap'
   }).addTo(map.value)
 
@@ -152,12 +152,11 @@ const updateAd = async () => {
     Category: currentAd.value.category,
     Description: currentAd.value.description,
     Condition: currentAd.value.condition,
-    Price: Number(currentAd.value.price)
+    Price: currentAd.value.price
   };
   await adStore.updateAd(adId, adData);
   isUpdating.value = false;
 }
-
 const seller = computed(() =>{
  return users.items.value.find(user => user.id === currentAd.value?.userId)
 })
@@ -174,6 +173,9 @@ const seller = computed(() =>{
                   <div class="header">
                     <h1>{{ currentAd.title }}</h1>
                     <h3 v-if="seller">Selger:{{seller.name}}</h3>
+                    <div v-if="seller && userStore.$state.user.id !== seller.id">
+                      <RouterLink :to="{name:'Chat', params:{id:seller.id}}"><i class="fa-solid fa-envelope"></i> </RouterLink>
+                    </div>
                   </div>
                   <br>
             <input v-if="isUpdating" v-model="currentAd.title" placeholder="New title" type="text"/>
@@ -197,7 +199,8 @@ const seller = computed(() =>{
               <option>Treningsutstyr</option>
             </select>
                   <br>
-            <label>Beskrivelse: {{ currentAd.description }}</label>
+            <label>Beskrivelse:</label>
+                  <div>{{ currentAd.description }}</div>
             <textarea v-if="isUpdating" v-model="currentAd.description" placeholder="New description"/>
                   <br>
             <label>Pris: {{ currentAd.price }} kr</label>
@@ -216,18 +219,16 @@ const seller = computed(() =>{
           <div class="map">
             <div ref="mapContainer" style="height: 300px; width: 50%;"></div>
           </div>
+
           </form>
         </div>
         <div v-if="isOwner">
-
           <button @click="deleteAd">Slett annonse</button>
-
           <button @click="isUpdating = !isUpdating">
             <span v-if="!isUpdating"> Endre annonse </span>
             <span v-if="isUpdating" @click="updateAd"> Lagre annonse </span>
           </button>
         </div>
-
       </div>
   </div>
 </template>
@@ -240,6 +241,8 @@ const seller = computed(() =>{
   justify-content: center;
   align-items: center;
   padding: 20px;
+  background-color: deepskyblue;
+  border-radius: 15px;
 }
 .imagesReel{
   background: #fff;
@@ -265,6 +268,6 @@ img{
 }
 .map{
   background: deepskyblue;
-  top: 100px;
+  top: 10px;
 }
 </style>
