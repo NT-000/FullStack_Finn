@@ -26,7 +26,7 @@ const adStore = useAdStore();
 const userStore = useUserStore();
 
 const isUpdating = ref(false)
-
+const selectedBuyer = ref('')
 console.log('route id', route.params.id)
 const adId = Number(route.params.id);
 const map = ref(null)
@@ -54,12 +54,18 @@ const deleteAd = async () => {
   }
 }
 const markAdAsSold = async () => {
-  await adStore.markAsSold(ad.value.id, selectedBuyerId.value.id);
+  if (!selectedBuyer.value) {
+    error.value = "Velg en kjøper først"
+    return;
+  }
+  await adStore.markAsSold(currentAd.value.id, selectedBuyer.value);
+  error.value = "Annonsen markert som solgt!"
 };
 
 onMounted(async () => {
   await adStore.fetchAds();
   await users.fetchData();
+  await adStore.getInterestedUsers(adId);
 
   map.value = L.map(mapContainer.value)
   map.value.on('click', onMapClick)
@@ -223,8 +229,17 @@ const seller = computed(() =>{
           <div class="map">
             <div ref="mapContainer" style="height: 300px; width: 50%;"></div>
           </div>
-
           </form>
+          <div class="info" v-if="isOwner && adStore.interestedUsers.length > 0">
+            <h3>...</h3>
+            <select v-model="selectedBuyer">
+              <option disabled value="">Velg kjøper</option>
+              <option v-for="user in adStore.interestedUsers" :key="user.id">
+                {{ user.Name }}
+              </option>
+            </select>
+            <button @click="markAdAsSold">Selg til {{selectedBuyer}}</button>
+          </div>
         </div>
         <div v-if="isOwner">
           <button @click="deleteAd">Slett annonse</button>
