@@ -53,14 +53,33 @@ watchEffect(async ()=>{
 <template>
   <div class="container">
   <h1>Alle annonser</h1>
-<div ref="mapContainer" style="width:150%; height:600px;">
+    <h3><Button>Sykler</Button>
+    <Button>Elektronikk</Button>
+    <Button>Møbler</Button>
+    <Button>Klær</Button>
+    <Button>Våpen</Button>
+    <Button>Hånd-våpen</Button>
+    <Button>Treningsutstyr</Button></h3>
+<div ref="mapContainer" style="width:45vw; border-radius: 10px; height:45vh;">
 </div>
   </div>
 </template>
 
 <style scoped>
-.map{
-  width: 100%;
-  height: 400px;
+button{
+display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin: 0.3rem;
+}
+button:hover{
+  transform: scale(1.1);
+  transition-duration: 0.2s;
+  
+}
+h1{
+  font-family: "Comic Sans MS", cursive;
+  font-size: 6rem;
 }
 </style>

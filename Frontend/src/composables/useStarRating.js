@@ -1,6 +1,5 @@
 import {computed} from "vue";
 
-
 export function useStarRating(rating) {
 return computed(() => {
     const stars = rating;

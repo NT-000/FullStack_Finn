@@ -82,7 +82,7 @@ const filteredAds = computed(() => {
     </div>
     
     <div class="ads" v-if="filteredAds.length > 0">
-      <h3>Annonser</h3>
+      <h3>Annonser<i class="fa-solid fa-rectangle-ad" title="Annonser"></i></h3>
       
         <div class="ad" v-for="ad in filteredAds" :key="ad.id">
           <RouterLink :to="{ name: 'AdDetails', params: { id: ad.id } }">

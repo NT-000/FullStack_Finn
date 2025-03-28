@@ -23,7 +23,6 @@ const userStars = computed(() =>{
       <img class="profilePic" :src="user.profileImageUrl" alt="profilePic"/>
       <br>
       <RouterLink :to="{name: 'Chat', params:{id:user.id}}"><button><i class="fa-solid fa-message">Send melding</i></button></RouterLink>
-    
       <p><strong>Navn:</strong> {{ user.name }}</p>
       <p><strong>Rangering:</strong> <span v-html="userStars"></span></p>
       <p><strong>Email:</strong> {{ user.email }}</p>

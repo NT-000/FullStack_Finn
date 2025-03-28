@@ -12,15 +12,15 @@ export const useChatStore = defineStore('chatStore', {
     }),
     actions: {
         async startChat() {
-            // Hvis tilkobling allerede finnes, ikke lag en ny:
+            
             if (this.connection) return
 
-            // 1) Bygg tilkobling
+            // bygg tilkobling
             this.connection = new signalR.HubConnectionBuilder()
                 .withUrl('/chatHub', { withCredentials: true })
                 .build()
 
-            // 2) Lytt på “ReceiveMessage”
+            // lytt på “ReceiveMessage”
             this.connection.on('ReceiveMessage', async(senderId, receiverId, content) => {
 
 
@@ -36,7 +36,7 @@ export const useChatStore = defineStore('chatStore', {
                 })
             })
 
-            // 3) Start
+            // start
             try {
                 await this.connection.start()
                 console.log('SignalR chat connection started')
@@ -45,7 +45,7 @@ export const useChatStore = defineStore('chatStore', {
             }
         },
         async loadConversation(receiverId) {
-            // 1) Finn min userId
+            
             const userStore = useUserStore()
             const myId = userStore.user.id
 
@@ -55,11 +55,11 @@ export const useChatStore = defineStore('chatStore', {
             const userList = users.items.value;
             const findUserName = (id) => userList.find(user => user.id === id).name;
             
-            // 2) Hent meldinger fra backend
+            // hente meldinger fra backend
             try {
                 const res = await axios.get(`/api/messages/conversation?userId1=${myId}&userId2=${receiverId}`,
                     { withCredentials: true })
-                // 3) Tøm meldinger
+                // tøm meldinger
                 this.messages = []
                 console.log("res.data laodConversation",res.data)
                 res.data.forEach(msg => {
@@ -77,7 +77,7 @@ export const useChatStore = defineStore('chatStore', {
             }
         },
 
-        async sendMessage(receiverId, content) {
+        async sendMessage(receiverId, content, adId = null) {
             const userStore = useUserStore()
             const senderId = userStore.user?.id
             if (!senderId || !receiverId) {
@@ -85,10 +85,8 @@ export const useChatStore = defineStore('chatStore', {
                 return
             }
             if (!content) return
-
             try {
-                await this.connection.invoke('SendMessage', senderId, receiverId, content)
-                // melding vil ankomme “ReceiveMessage” og lagres i messages
+                await this.connection.invoke('SendMessage', senderId, receiverId, content, adId)
             } catch (err) {
                 console.error('Could not send message:', err)
             }

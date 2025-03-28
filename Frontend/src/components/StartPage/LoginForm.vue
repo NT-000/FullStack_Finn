@@ -17,9 +17,9 @@ const checkIn = async () => {
   <div class="loginCard">
   <form @submit.prevent="checkIn">
     <div class="form-group">
-      <label><i class="fa-solid fa-at"></i></label>
+      <label><i class="fa-solid fa-at">Email</i></label>
       <input v-model="email" required type="email"/>
-      <label><i class="fa-solid fa-lock"></i></label>
+      <label><i class="fa-solid fa-lock">Passord</i></label>
       <input v-model="password" required type="password"/>
     </div>
   <div class="error">{{error}}</div>
@@ -32,7 +32,6 @@ const checkIn = async () => {
 
 <style scoped>
 .loginCard {
-  background: #fff;
   height: 50vh;
   width: 50vw;
   align-content: center;
@@ -46,6 +45,7 @@ const checkIn = async () => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  
   gap: 10px;
 }
 input {

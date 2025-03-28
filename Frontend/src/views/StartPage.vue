@@ -7,9 +7,8 @@ const isUser = ref(true)
 </script>
 
 <template>
-  <h1>Finn</h1>
   <div class="container">
-  <div v-if="isUser">
+  <div class="loginForm" v-if="isUser">
     <LoginForm :isUser="isUser"/>
     <button @click="isUser = !isUser">
       <span v-if="!isUser">Back</span>

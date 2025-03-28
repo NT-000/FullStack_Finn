@@ -44,14 +44,15 @@ function handleFileChange(e) {
 </script>
 
 <template>
+  <div class="container">
   <h2>Lag en ny annonse</h2>
   <form @submit.prevent="handleSubmit">
-    <div>
+    <div class="title">
       <label>Tittel</label>
       <br>
       <input v-model="title" type="text"/>
     </div>
-    <div>
+    <div class="category">
       <label>Kategori</label>
       <br>
       <select v-model="category">
@@ -91,7 +92,47 @@ function handleFileChange(e) {
       <br>
       <input multiple type="file" @change="handleFileChange"/>
     </div>
-    <button type="submit">Lag en ny annonse
-    </button>
+    <button type="submit">Lag en ny annonse</button>
   </form>
+  </div>
 </template>
+
+<style scoped>
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: lightblue;
+  width: 60vw;
+  height: 80vh;
+  padding: 30px;
+  margin-top: 1vh;
+  border-radius: 10px;
+}
+input {
+  border: none;
+  border-radius: 5px;
+  
+}
+textarea {
+  border: none;
+  border-radius: 5px;
+  max-width: 250px;
+  max-height: 250px;
+  width: 250px;
+  height: 250px;
+}
+select {
+  border: none;
+  border-radius: 5px;
+  width: 20vw;
+  
+}
+label{
+font-size: 1.2rem;
+  font-weight: bold;
+}
+
+</style>

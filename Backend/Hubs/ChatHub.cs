@@ -13,13 +13,28 @@ public class ChatHub : Hub
         _db = db;
     }
 
-    public async Task SendMessage(int senderUserId, int receiverUserId, string message)
+    public async Task SendMessage(int senderUserId, int receiverUserId, string message, int? adId)
     {
-        var query = "INSERT INTO Messages (SenderUserId, ReceiverUserId, Content, Timestamp) VALUES (@sId, @rId, @txt, GETDATE())";
-        await _db.ExecuteAsync(query, new { sId = senderUserId, rId = receiverUserId, txt = message });
-        
+        try{
+        var query = @"
+    INSERT INTO Messages (SenderUserId, ReceiverUserId, Content, Timestamp, AdId) 
+    VALUES (@SenderUserId, @ReceiverUserId, @Content, GETDATE(), @AdId)";
+
+        await _db.ExecuteAsync(query, new
+        {
+            SenderUserId = senderUserId,
+            ReceiverUserId = receiverUserId,
+            Content = message,
+            AdId = adId
+        });
         // sende via SignalR til både avsender og mottaker
-        await Clients.Groups(senderUserId.ToString(), receiverUserId.ToString()).SendAsync("ReceiveMessage", senderUserId, receiverUserId, message);
+        await Clients.Groups(senderUserId.ToString(), receiverUserId.ToString())
+            .SendAsync("ReceiveMessage", senderUserId, receiverUserId, message, adId);  
+        }catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            throw;  // Denne gjør at du kan se nøyaktig feil på frontend
+        }
     }
 
     public override async Task OnConnectedAsync()

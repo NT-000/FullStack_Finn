@@ -29,7 +29,7 @@ public class Jwt
             "finn-klone",
             "finn-klone-users",
             claims,
-            expires: DateTime.UtcNow.AddHours(1),
+            expires: DateTime.UtcNow.AddHours(100),
             signingCredentials: credentials
         );
 

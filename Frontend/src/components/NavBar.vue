@@ -63,7 +63,8 @@ nav {
   align-items: center;
   border-radius: 5px;
   padding: 20px 20px;
-  border-bottom: 2px solid #b3d4e0;
+  border-bottom: 6px solid #b3d4e0;
+  width:50vw;
 }
 
 .user-display {
@@ -77,10 +78,11 @@ nav {
 
 .nav-bar {
   display: flex;
-  gap: 15px;
+  margin-left: 1vw;
+  gap: 3vw;
   padding: 10px;
-  border-radius: 8px; 
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  border-radius: 8px;
+  width: 50vw;
 }
 
 i {
@@ -115,7 +117,7 @@ nav a {
 nav a.Router-link-exact-active button {
   background-color: blue;
 }
-i:title{
+i:hover{
   transform:scale(1.2);
 }
 

@@ -33,7 +33,8 @@ const router = createRouter({
             path: "/users/:id",
             name: 'UserProfile',
             component: Profile,
-            props: true
+            props: true,
+            meta: {requiresAuth: true}
         },
 
         {
@@ -46,7 +47,8 @@ const router = createRouter({
         {
             path: '/ads',
             name: 'Ads',
-            component: Ads
+            component: Ads,
+            meta: {requiresAuth: true}
         },
         {
             path: '/ads/create-with-files',
@@ -72,7 +74,7 @@ const router = createRouter({
             component: Chat,
             props: true,
             meta: {requiresAuth: true}
-        }, 
+        },
         {
             path: '/inbox',
             name: 'Inbox',

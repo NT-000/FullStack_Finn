@@ -1,5 +1,6 @@
 using System.Data;
 using Dapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Finn_klone.Controllers;
@@ -27,5 +28,30 @@ public class MessageController : ControllerBase
         var messages = await _db.QueryAsync<Message>(query, new { userId1, userId2 });
         return Ok(messages);
     }
+    
+    [HttpGet("interested-users/{adId}")]
+    public async Task<IActionResult> GetInterestedUsers(int adId)
+    {
+        var query = @"
+    SELECT DISTINCT u.Id, u.Name
+    FROM Messages m
+    JOIN Users u ON u.Id = m.SenderUserId
+    WHERE m.AdId = @AdId";
+
+        var interestedUsers = await _db.QueryAsync(query, new { AdId = adId });
+        return Ok(interestedUsers);
+    }
+    
+   [Authorize]
+[HttpGet("inbox")]
+public async Task<IActionResult> GetInbox()
+{
+
+    var query = @"
+ ";
+
+    return Ok();
+}
+
 
 }
