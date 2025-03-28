@@ -41,6 +41,7 @@ const currentAd = computed(() => {
   return adStore.ads.find(ad => ad.id === adId);
 });
 
+
 //sjekker om innlogget bruker
 const isOwner = computed(() => {
   return userStore.user.id === currentAd.value?.userId;
@@ -52,6 +53,9 @@ const deleteAd = async () => {
     router.push("/ads");
   }
 }
+const markAdAsSold = async () => {
+  await adStore.markAsSold(ad.value.id, selectedBuyerId.value.id);
+};
 
 onMounted(async () => {
   await adStore.fetchAds();
@@ -116,9 +120,9 @@ async function reverseGeocode(latValue, longValue) {
     const res = await axios.get(url, {withCredentials: false})
     const {address} = res.data
     console.log("res.data reverseCode", res.data)
-    const city = address.city || address.town || address.village || 'Ukjent by'
-    const county = address.county || 'Ukjent fylke'
-    const country = address.country ||'Ukjent land'
+    const city = address.city || address.town || address.village || ''
+    const county = address.county || ''
+    const country = address.country ||''
     console.log('reverse geocode result:', "address city", address.city, "nation:", address.country)
     return {city, county,country}
   } catch (err) {
@@ -174,7 +178,7 @@ const seller = computed(() =>{
                     <h1>{{ currentAd.title }}</h1>
                     <h3 v-if="seller">Selger:{{seller.name}}</h3>
                     <div v-if="seller && userStore.$state.user.id !== seller.id">
-                      <RouterLink :to="{name:'Chat', params:{id:seller.id}}"><i class="fa-solid fa-envelope"></i> </RouterLink>
+                      <RouterLink :to="{name:'Chat', params:{id:seller.id}, query:{adId:currentAd.id}}"><i class="fa-solid fa-envelope"></i> </RouterLink>
                     </div>
                   </div>
                   <br>
