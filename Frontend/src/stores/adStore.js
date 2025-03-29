@@ -4,6 +4,7 @@ import axios from 'axios';
 export const useAdStore = defineStore('adStore', {
     state: () => ({
         ads: [],
+        interestedUsers: [],
     }),
     actions: {
         async fetchAds() {
@@ -24,6 +25,37 @@ export const useAdStore = defineStore('adStore', {
                 console.error("could not update ad:", error);
             }
         },
+        
+        async markAsSold(adId,buyerId) {
+            if(!buyerId) {
+                console.error("no user selected for ad:", adId);
+                return
+            }
+            try{
+                await axios.put(`/api/ads/${adId}/sold`,  buyerId, 
+                    {
+                    withCredentials: true,
+                });
+                await this.fetchAds();
+            }
+            catch(error) {
+                console.error("could not mark as sold, ad:", error);
+            }
+        },
+
+        async getInterestedUsers(adId) {
+            try {
+                const response = await axios.get(`/api/messages/interested-users/${adId}`, {
+                    withCredentials: true
+                });
+                this.interestedUsers = response.data;
+                console.log("interested Users:", this.interestedUsers);
+            } catch (error) {
+                console.error("could not fetch interested users:", error);
+            }
+        },
+
+
 
         async deleteAd(adId) {
             try {

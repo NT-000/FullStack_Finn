@@ -238,6 +238,7 @@ const seller = computed(() =>{
                 {{ user.Name }}
               </option>
             </select>
+      <div>{{error}}</div>
             <button @click="markAdAsSold">Selg til {{selectedBuyer}}</button>
           </div>
         </div>

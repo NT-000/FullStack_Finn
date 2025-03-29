@@ -21,7 +21,7 @@ export const useChatStore = defineStore('chatStore', {
                 .build()
 
             // lytt på “ReceiveMessage”
-            this.connection.on('ReceiveMessage', async(senderId, receiverId, content) => {
+            this.connection.on('ReceiveMessage', async(senderId, receiverId, content,adId) => {
 
 
                 const users = getRoute('/users');
@@ -32,6 +32,7 @@ export const useChatStore = defineStore('chatStore', {
                     receiverId,
                     senderName,
                     content,
+                    adId,
                     timestamp: new Date()
                 })
             })
@@ -68,6 +69,7 @@ export const useChatStore = defineStore('chatStore', {
                         senderId: msg.senderUserId,
                         receiverId: msg.receiverUserId,
                         content: msg.content,
+                        adId: msg.adId,
                         timestamp: new Date(msg.timestamp),
                     })
                     console.log("message forEach loadConversation:",msg)
@@ -94,12 +96,12 @@ export const useChatStore = defineStore('chatStore', {
     },
     getters: {
         // filtrerer meldinger for en bestemt samtale
-        conversation: (state) => (receiverId) => {
+        conversation: (state) => (receiverId, adId) => {
             const userStore = useUserStore()
             const myId = userStore.user?.id
             return state.messages.filter(msg =>
-                (msg.senderId === myId && msg.receiverId === receiverId) ||
-                (msg.senderId === receiverId && msg.receiverId === myId)
+                (msg.senderId === myId && msg.receiverId === receiverId && msg.adId == adId) ||
+                (msg.senderId === receiverId && msg.receiverId === myId && msg.adId == adId)
             )
         }
     

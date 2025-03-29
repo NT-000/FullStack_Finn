@@ -3,7 +3,6 @@ import {useRoute} from "vue-router";
 import {useChatStore} from "../stores/chatStore.js";
 import {ref, onMounted,computed} from "vue";
 import {getRoute} from "../composables/getRoute.js";
-import UserChat from "../components/UserChat.vue";
 import AdChat from "../components/AdChat.vue";
 
 
@@ -31,7 +30,7 @@ onMounted(async() => {
 </script>
 
 <template>
-<UserChat v-if="receiverUser && !adId" :receiverUser="receiverUser" />
+
   <AdChat v-if="adId" :receiverUser="receiverUser" :adId="adId" />
 </template>
 

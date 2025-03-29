@@ -14,7 +14,8 @@ public class AdController : ControllerBase
     {
         _db = db;
     }
-
+    
+    //Get
     // Henter alle annonser med brukerinfo // Sjekke ut dictionary, minske antall kall
     [HttpGet]
     public async Task<IActionResult> GetAds()
@@ -51,6 +52,8 @@ public class AdController : ControllerBase
         return Ok(ad);
     }
 
+    
+    //Post
     // Oppretter ny annonse
     [HttpPost]
     public async Task<IActionResult> CreateAd([FromBody] Ad ad)
@@ -125,6 +128,8 @@ VALUES (@Title, @Description, @Condition, @Price, @Category, @UserId, GETDATE())
         }
     }
 
+    //Update
+    
     [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateAd(int id, [FromBody] AdUpdateDto updatedAd)
@@ -172,9 +177,40 @@ VALUES (@Title, @Description, @Condition, @Price, @Category, @UserId, GETDATE())
         }
         catch (Exception ex)
         {
-            // Se hva som faktisk går galt
+            // full error melding
             return StatusCode(500, $"Internal server error: {ex.Message}");
         }
+    }
+    // markere som solgt
+    [Authorize]
+    [HttpPut("{id}/sold")]
+    public async Task<IActionResult> MarkAsSold(int id,int buyerId)
+    {
+        var userIdClaim = User.FindFirst("id");
+        if (userIdClaim == null)
+        {
+            return Unauthorized("user not found in token");
+        }
+        var sellerId = int.Parse(userIdClaim.Value);
+
+        var ad = await _db.QueryFirstOrDefaultAsync<Ad>(
+            "SELECT * FROM Ads WHERE Id = @Id", new { Id = id });
+        if (ad.UserId != sellerId)
+        {
+            return Unauthorized("not authorized to update this ad.");
+        }
+        var query = @"
+UPDATE Ads SET
+isSold = 1,
+BuyerId = @BuyerId
+           WHERE Id = @Id";
+        
+        var rowsAffected = await _db.ExecuteAsync(query, new {BuyerId = buyerId, Id = id });
+        if (rowsAffected > 0)
+        {
+            return Ok("Ad marked as sold");
+        }
+        return StatusCode(500, "ad not updated.");
     }
 
     //oppdatere kordinater
@@ -205,11 +241,10 @@ VALUES (@Title, @Description, @Condition, @Price, @Category, @UserId, GETDATE())
             Loc = updatedLocation.LocationName,
             Id = id
         });
-        if (rowsAffected > 0) return Ok("location updated successfully.");
-        return StatusCode(500, "Could not update location.");
+        return rowsAffected > 0 ? Ok("location updated successfully.") : StatusCode(500, "Could not update location.");
     }
 
-    //delete
+    //Delete
     [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAd(int id)

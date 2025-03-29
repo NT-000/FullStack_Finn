@@ -76,7 +76,7 @@ const filteredAds = computed(() => {
           <img v-if="user.profileImageUrl" :src="user.profileImageUrl" alt="img">
             {{ user.name }}
           </RouterLink>
-          - <RouterLink :to="{name:'Chat', params:{id:user.id}}">Send Melding <i class="fa-solid fa-envelope fa-bounce"></i></RouterLink>
+<!--          - <RouterLink :to="{name:'Chat', params:{id:user.id}}">Send Melding <i class="fa-solid fa-envelope fa-bounce"></i></RouterLink>-->
         </div>
       
     </div>
