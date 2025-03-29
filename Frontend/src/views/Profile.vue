@@ -27,7 +27,6 @@ onMounted(async () => {
 
 const filteredAds = computed(() => {
   const routeId = userId.value;
-  console.log("Decoded user ID:", computedUser.value?.id, "user email:", computedUser.value?.email);
   return adStore.getAdsByUser(routeId || computedUser.value?.id);
 });
 

@@ -10,6 +10,7 @@ import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png'
 import iconUrl from 'leaflet/dist/images/marker-icon.png'
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png'
 import axios from "axios";
+import CreateReview from "./CreateReview.vue";
 
 
 L.Marker.prototype.options.icon = L.icon({
@@ -19,23 +20,27 @@ L.Marker.prototype.options.icon = L.icon({
   iconSize: [25, 41],
   iconAnchor: [12, 41]
 })
-const users = getRoute('/users');
 const route = useRoute();
+const adId = Number(route.params.id);
+const users = getRoute('/users');
+const reviews = getRoute(`/reviews/ad/${adId}`);
 const router = useRouter();
 const adStore = useAdStore();
 const userStore = useUserStore();
 
 const isUpdating = ref(false)
-const selectedBuyer = ref('')
+const selectedBuyerId = ref (null)
 console.log('route id', route.params.id)
-const adId = Number(route.params.id);
+
+
 const map = ref(null)
 const mapContainer = ref(null)
 const marker = ref(null)
-
 const lat = ref(null)
 const lng = ref(null)
 const error = ref(null)
+
+
 
 const currentAd = computed(() => {
   return adStore.ads.find(ad => ad.id === adId);
@@ -47,6 +52,15 @@ const isOwner = computed(() => {
   return userStore.user.id === currentAd.value?.userId;
 });
 
+const buyer = computed(() => {
+ return users.items.value.find(user => user.id === selectedBuyerId)
+})
+
+const isCommented = computed(() => {
+  return reviews.items.value.find(review => review.adId === currentAd.value.id)
+})
+
+console.log('iscommented:', isCommented)
 const deleteAd = async () => {
   if (confirm("Slette annonsen?")) {
     await adStore.deleteAd(adId);
@@ -54,16 +68,20 @@ const deleteAd = async () => {
   }
 }
 const markAdAsSold = async () => {
-  if (!selectedBuyer.value) {
+  if (!selectedBuyerId.value) {
     error.value = "Velg en kjøper først"
     return;
   }
-  await adStore.markAsSold(currentAd.value.id, selectedBuyer.value);
+  await adStore.markAsSold(currentAd.value.id, selectedBuyerId.value);
   error.value = "Annonsen markert som solgt!"
 };
 
 onMounted(async () => {
   await adStore.fetchAds();
+  await reviews.fetchData();
+  console.log("All reviews:", reviews.items.value);
+  console.log("Current ad id:", currentAd.value?.id);
+  console.log("Current user id:", userStore.user.id);
   await users.fetchData();
   await adStore.getInterestedUsers(adId);
 
@@ -179,10 +197,12 @@ const seller = computed(() =>{
   <div class="container">
     <div class="info">
         <div v-if="currentAd && adId">
-                <form v-if="currentAd" @submit.prevent="updateAd">
+                <form v-if="currentAd && seller" @submit.prevent="updateAd">
                   <div class="header">
                     <h1>{{ currentAd.title }}</h1>
-                    <h3 v-if="seller">Selger:{{seller.name}}</h3>
+                   <img :src="seller.profileImageUrl" alt="pImg"> <h2>Selger</h2>
+                 <div> <RouterLink v-if="seller && userStore.$state.user.id !== seller.id" :to="{name: 'UserProfile', params:{id:seller.id}}"> <h3 v-if="seller">Selger:{{seller.name}}</h3></RouterLink></div>
+                    <div> <RouterLink v-if="seller && userStore.$state.user.id === seller.id" :to="{name: 'Profile'}"> <h3 v-if="seller">{{seller.name}}</h3></RouterLink></div>
                     <div v-if="seller && userStore.$state.user.id !== seller.id">
                       <RouterLink :to="{name:'Chat', params:{id:seller.id}, query:{adId:currentAd.id}}"><i class="fa-solid fa-envelope"></i> </RouterLink>
                     </div>
@@ -231,25 +251,32 @@ const seller = computed(() =>{
           </div>
           </form>
           <div class="info" v-if="isOwner && adStore.interestedUsers.length > 0">
-            <h3>...</h3>
-            <select v-model="selectedBuyer">
+            <h3>Kjøper</h3>
+            <select v-if="currentAd.isSold === false" v-model="selectedBuyerId">
               <option disabled value="">Velg kjøper</option>
-              <option v-for="user in adStore.interestedUsers" :key="user.id">
+              <option v-for="user in adStore.interestedUsers" :key="user.Id" :value="user.Id">
                 {{ user.Name }}
               </option>
             </select>
-      <div>{{error}}</div>
-            <button @click="markAdAsSold">Selg til {{selectedBuyer}}</button>
+      <div v-if="buyer">{{error}} Kjøper - {{buyer}}</div>
+            <button v-if="currentAd.isSold === false" @click="markAdAsSold">Selg til {{buyer}}</button>
           </div>
         </div>
-        <div v-if="isOwner">
+        <div v-if="isOwner && currentAd.isSold === false">
           <button @click="deleteAd">Slett annonse</button>
           <button @click="isUpdating = !isUpdating">
             <span v-if="!isUpdating"> Endre annonse </span>
             <span v-if="isUpdating" @click="updateAd"> Lagre annonse </span>
           </button>
         </div>
+      <div v-if="currentAd && currentAd.isSold">
+        <h1>SOLGT</h1>
       </div>
+    her  {{isCommented}}
+      </div>
+    <div>
+    <CreateReview v-if="currentAd && currentAd.isSold && userStore.$state.user.id === currentAd.buyerId && !isCommented" :currentAd="currentAd"/>
+    </div>
   </div>
 </template>
 

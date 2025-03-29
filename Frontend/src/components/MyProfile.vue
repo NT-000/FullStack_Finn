@@ -50,8 +50,15 @@ onMounted(async()=>{
   <div class="myBoughtAds" v-if="ads && ads.length > 0">
 <!--    gjøre ferdig-->
     <h2>Mine kjøpte annonser</h2>
-    <div v-if="adStore.adsBought.length > 0" v-for="ad in adStore.adsBought" :key="ad.id" class="adContainer">
-      {{ad.title}}
+    <div class="adImages" v-if="adStore.adsBought.length > 0" v-for="ad in adStore.adsBought" :key="ad.id">
+      <RouterLink :to="{name: 'AdDetails', params:{id: ad.id}}">
+      <div class="ad">
+        <h6>{{ ad.title }}</h6>
+        <div v-if="ad.images && ad.images.length > 0">
+          <img :src="ad.images[0].imageUrl" alt="img"/>
+        </div>
+      </div>
+      </RouterLink>
     </div>
     <div v-else>
       Ingen annonser

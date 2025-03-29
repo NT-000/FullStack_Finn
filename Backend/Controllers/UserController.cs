@@ -116,7 +116,7 @@ public class UserController : ControllerBase
             HttpOnly = true, // forhindrer JavaScript-tilgang
             Secure = true, // sendes kun over HTTPS
             SameSite = SameSiteMode.Strict,
-            Expires = DateTimeOffset.UtcNow.AddHours(1)
+            Expires = DateTimeOffset.UtcNow.AddHours(100)
         });
         return Ok(new { token });
     }

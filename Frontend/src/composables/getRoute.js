@@ -12,8 +12,8 @@ export function getRoute(apiRoute) {
         loading.value = true
         error.value = ref(null)
         try {
-            const {data} = await axios.get(`/api${apiRoute}`, {withCredentials: true})
-            items.value = data;
+            const res = await axios.get(`/api${apiRoute}`, {withCredentials: true})
+            items.value = res.data;
             console.log('items array', items.value)
         } catch (err) {
             error.value = err.message
