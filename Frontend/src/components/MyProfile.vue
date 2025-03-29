@@ -1,18 +1,26 @@
 <script setup>
-import {computed} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {useStarRating} from "../composables/useStarRating.js";
+import {useAdStore} from "../stores/adStore.js";
+
+const adStore = useAdStore();
 
 const props = defineProps({
   user: Object,
   ads: Array,
 })
 
+const userId = ref(props.user.id)
 const userStars = computed(() =>{
   if (!props.user) {
     return;
   }
   return useStarRating(props.user.rating).value;
 });
+
+onMounted(async()=>{
+  await adStore.fetchBoughtAds()
+})
 </script>
 
 <template>
@@ -37,6 +45,16 @@ const userStars = computed(() =>{
           </div>
         </div>
       </RouterLink>
+    </div>
+  </div>
+  <div class="myBoughtAds" v-if="ads && ads.length > 0">
+<!--    gjøre ferdig-->
+    <h2>Mine kjøpte annonser</h2>
+    <div v-if="adStore.adsBought.length > 0" v-for="ad in adStore.adsBought" :key="ad.id" class="adContainer">
+      {{ad.title}}
+    </div>
+    <div v-else>
+      Ingen annonser
     </div>
   </div>
 </template>

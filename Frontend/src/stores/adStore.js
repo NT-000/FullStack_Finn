@@ -4,6 +4,7 @@ import axios from 'axios';
 export const useAdStore = defineStore('adStore', {
     state: () => ({
         ads: [],
+        adsBought: [],
         interestedUsers: [],
     }),
     actions: {
@@ -14,6 +15,15 @@ export const useAdStore = defineStore('adStore', {
                 console.log("Ads:", response.data);
             } catch (error) {
                 console.error("error fetching ads:", error);
+            }
+        },
+        async fetchBoughtAds() {
+            try {
+                const response = await axios.get('/api/ads/bought', {withCredentials: true});
+                this.adsBought = response.data;
+                console.log("Ads bought by user:", response.data);
+            } catch (error) {
+                console.error("error fetching bought ads:", error);
             }
         },
 
@@ -32,9 +42,9 @@ export const useAdStore = defineStore('adStore', {
                 return
             }
             try{
-                await axios.put(`/api/ads/${adId}/sold`,  buyerId, 
-                    {
-                    withCredentials: true,
+                await axios.put(`/api/ads/${adId}/sold`, {buyerId}, 
+                    {headers: { 'Content-Type': 'application/json' }, 
+                        withCredentials: true,
                 });
                 await this.fetchAds();
             }
@@ -71,7 +81,7 @@ export const useAdStore = defineStore('adStore', {
             if (!userId) {
                 return [];
             }
-            return state.ads.filter(ad => Number(ad.userId) === Number(userId));
-        }
+            return state.ads.filter(ad => Number(ad.userId) === Number(userId) && ad.isSold === false);
+        },
     }
 });
