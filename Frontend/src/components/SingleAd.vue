@@ -3,6 +3,7 @@ import {computed, onMounted, onUnmounted, ref} from 'vue';
 import {RouterLink, useRoute, useRouter} from 'vue-router';
 import {useUserStore} from "../stores/useUserStore.js";
 import {useAdStore} from "../stores/adStore.js";
+import {useDateFormat} from "../composables/useFormatDate.js";
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import {getRoute} from "../composables/getRoute.js";
@@ -25,6 +26,7 @@ const adId = Number(route.params.id);
 const users = getRoute('/users');
 const reviews = getRoute(`/reviews/ad/${adId}`);
 const router = useRouter();
+const dateFormat = useDateFormat();
 const adStore = useAdStore();
 const userStore = useUserStore();
 
@@ -272,7 +274,12 @@ const seller = computed(() =>{
       <div v-if="currentAd && currentAd.isSold">
         <h1>SOLGT</h1>
       </div>
+      <div v-if="isCommented">
     her  {{isCommented}}
+      <div>{{isCommented.comment}}</div>
+      <div>{{isCommented.rating}}</div>
+      <div>{{dateFormat.formatDate(isCommented.date)}}</div>
+      </div>
       </div>
     <div>
     <CreateReview v-if="currentAd && currentAd.isSold && userStore.$state.user.id === currentAd.buyerId && !isCommented" :currentAd="currentAd"/>
