@@ -5,8 +5,6 @@ import {useAdStore} from "../stores/adStore.js";
 import {getRoute} from "../composables/getRoute.js";
 import {useDateFormat} from "../composables/useFormatDate.js";
 
-
-
 const props = defineProps({
   user: Object,
   ads: Array,
@@ -21,10 +19,27 @@ const isActiveReviews = ref(true)
 const isActiveAds = ref(false);
 const isActiveBoughtAds = ref(false);
 
+
+
+
 const getReviewer = (fromUserId) => {
   
   return users.items.value.find(user => user.id === fromUserId)
 }
+
+const calculateAverageRating = computed(() => {
+  const reviews = reviewsForUser.items.value;
+  if(reviews.length === 0) {
+    return 0;
+  }
+  let total = 0;
+  for(let i=0; i < reviews.length; i++){
+    total += reviews[i].rating;
+  }
+  return total/reviews.length;
+})
+
+
 
 onMounted(async()=>{
   await adStore.fetchBoughtAds()
@@ -39,7 +54,7 @@ onMounted(async()=>{
     <img class="profilePic" :src="user.profileImageUrl" alt="profilePic"/>
     <p><strong>Navn:</strong> {{ user.name }}</p>
     <p><strong>Email:</strong> {{ user.email }}</p>
-    <p><strong>Vurdering:</strong> <span v-html="getStars(user.rating)"></span></p>
+    <p><strong>Vurdering:</strong> <span v-html="getStars(calculateAverageRating)"></span></p>
   </div>
   <div v-else>
     <i class="fa-solid fa-circle-notch fa-spin"></i>
@@ -67,7 +82,6 @@ onMounted(async()=>{
   <div class="myBoughtAds" v-if="ads && ads.length > 0 && isActiveBoughtAds" >
 <!--    gjøre ferdig-->
     <div class="adImages" v-if="adStore.adsBought.length > 0" v-for="ad in adStore.adsBought" :key="ad.id">
-      {{ console.log(ad) }}
       <RouterLink :to="{name: 'AdDetails', params:{id: ad.id}}">
       <div class="ad">
         <h6>{{ ad.title }}</h6>
@@ -81,15 +95,18 @@ onMounted(async()=>{
       Ingen annonser
     </div>
   </div>
-  <h2 @click="isActiveReviews = !isActiveReviews" title="Trykk for å åpne">Anmeldelser av {{user.name}}<i class="fa-solid fa-gavel" style="padding:5px"></i></h2>
+  <h2 @click="isActiveReviews = !isActiveReviews" title="Trykk for å åpne">Anmeldelser av {{user.name}}<i class="fa-solid fa-file-pen" style="padding: 5px"></i></h2>
   <div v-if="reviewsForUser.items.value.length > 0 && isActiveReviews" class="adReview">
     <div v-for="review in reviewsForUser.items.value" :key="review.id">
    <div class="innerReview">
+     <RouterLink v-if="getReviewer(review.fromUserId)" :to="{name: 'UserProfile', params:{id: getReviewer(review.fromUserId).id}}">
+    <div v-if="getReviewer(review.fromUserId)" class="review"><img :src="getReviewer(review.fromUserId).profileImageUrl" alt="img"/>{{getReviewer(review.fromUserId).name}}</div>
+     </RouterLink>
      
-    <div v-if="getReviewer(review.fromUserId)">{{getReviewer(review.fromUserId).name}}</div>
-    <div>{{review.comment}}</div>
+    <small>{{review.comment}}</small>
+     <br>
     <div ><span v-html="getStars(review.rating)"></span></div>
-    <div>{{dateFormat.formatDate(review.date)}}</div>
+    <small>{{dateFormat.formatDate(review.date)}}</small>
    </div>
     </div>
   </div>
@@ -102,11 +119,13 @@ onMounted(async()=>{
   background-color: #6cb4da; 
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 1, 0.1);
+  box-shadow: 0 2px 4px rgba(2, 3, 2, 0.1);
   max-width: 600px;
   margin: 20px auto;
   text-align: center;
-  color: #00263b; 
+  color: #00263b;
+  border: 5px solid #00263b;
+  
 }
 
 
@@ -114,18 +133,28 @@ onMounted(async()=>{
   height: 150px;
   width: 150px;
   border-radius: 50%;
-  border: 3px solid #98cbe8; 
+  border: 5px solid #98cbe8; 
   object-fit: cover;
   margin-bottom: 20px;
+}
+
+.profilePic img:hover {
+  transform: scale(1.2);
 }
 
 
 .container h2 {
   margin-bottom: 10px;
+  padding: 5px;
+}
+
+h2{
+  cursor: pointer;
 }
 
 .container p {
   margin: 5px 0;
+  padding: 5px;
 }
 
 
@@ -182,8 +211,28 @@ onMounted(async()=>{
 }
 
 .innerReview{
-  border: 3px solid #98cbe8;
+  border: 5px solid #98cbe8;
   display: inline-block;
+  font-family: "Comic Sans MS", cursive;
+  padding: 10px;
+  border-radius: 10px;
+}
+.review{
+  font-weight: bolder;
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 3px solid #e6f2fa;
+}
+.innerReview:hover{}
+
+.innerReview img{
+  height: 50px;
+  width: 50px;
+  border-radius: 25px;
+  border: 3px solid #98cbe8;
+  margin: 10px;
 }
 
 .myBoughtAds {
