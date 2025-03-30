@@ -32,7 +32,7 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-<form @submit.prevent="handleSubmit">
+<form @submit.prevent="handleSubmit" class="formComment">
   <div>
     <label for="comment">Legg igjen en kommentar</label>
     <br>
@@ -40,17 +40,17 @@ const handleSubmit = async () => {
     <br>
     <label for="rating">Legg igjen en vurdering</label>
     <br>
-    
       <div class="star-rating">
         <i
             v-for="star in 5"
             :key="star"
-            class="fa-star"
-            :class="rating >= star ? 'fa-solid' : 'fa-regular'"
+            class="fa-star "
+            :class="rating >= star ? 'fa-solid fa-beat' : 'fa-regular'"
             @click="rating = star"
             style="color: #FFD43B; cursor: pointer;"
         ></i>
       </div>
+        <br>
     <button class="submit" type="submit">Send inn tilbakemelding</button>
   </div>
   
@@ -58,8 +58,29 @@ const handleSubmit = async () => {
 </template>
 
 <style scoped>
+
+.formComment {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  border: 5px solid blue;
+  background-color: lightskyblue;
+}
+
 .star-rating i {
   font-size: 2rem;
   margin-right: 0.25rem;
+  transition: transform 0.2s, color 0.2s;
+}
+.fa-star:hover{
+  transform:scale(1.2);
+}
+button:hover{
+  transform:scale(1.2);
+}
+button{
+  padding: 1rem;
 }
 </style>

@@ -1,5 +1,5 @@
 <script setup>
-import {computed, onMounted, onUnmounted, ref} from 'vue';
+import {computed, nextTick, onMounted, onUnmounted, ref} from 'vue';
 import {RouterLink, useRoute, useRouter} from 'vue-router';
 import {useUserStore} from "../stores/useUserStore.js";
 import {useAdStore} from "../stores/adStore.js";
@@ -54,15 +54,15 @@ const isOwner = computed(() => {
   return userStore.user.id === currentAd.value?.userId;
 });
 
-const buyer = computed(() => {
- return users.items.value.find(user => user.id === selectedBuyerId)
-})
-
-const isCommented = computed(() => {
+const adReview = computed(() => {
   return reviews.items.value.find(review => review.adId === currentAd.value.id)
 })
+const reviewer = computed(() => {
+ return users.items.value.find(user => user.id === adReview.value?.fromUserId)
+})
 
-console.log('iscommented:', isCommented)
+
+console.log('adReview:', adReview)
 const deleteAd = async () => {
   if (confirm("Slette annonsen?")) {
     await adStore.deleteAd(adId);
@@ -86,7 +86,8 @@ onMounted(async () => {
   console.log("Current user id:", userStore.user.id);
   await users.fetchData();
   await adStore.getInterestedUsers(adId);
-
+  console.log("buyer:", reviewer)
+  
   map.value = L.map(mapContainer.value)
   map.value.on('click', onMapClick)
 
@@ -100,9 +101,8 @@ onMounted(async () => {
     marker.value = L.marker([currentAd.value.latitude, currentAd.value.longitude])
         .addTo(map.value)
         .bindPopup(`
-    <h3>${currentAd.value.title ?? ''}</h3>
-    ${currentAd.value?.images?.length ? `<img src="${currentAd.value.images[0].imageUrl}" alt="Ad image" style="max-width:50px; max" />` : ''}`)
-        .openPopup()
+    <h3>${currentAd.value.title ?? ''}</h3>`)
+        
   } else {
     map.value.setView([59.91, 10.74], 6) // fallback-posisjon
   }
@@ -194,21 +194,27 @@ const seller = computed(() =>{
 </script>
 
 <template>
-  <br>
-  <h1>Single ad</h1>
+  <div class="outerContainer">
   <div class="container">
     <div class="info">
         <div v-if="currentAd && adId">
                 <form v-if="currentAd && seller" @submit.prevent="updateAd">
                   <div class="header">
                     <h1>{{ currentAd.title }}</h1>
-                   <img :src="seller.profileImageUrl" alt="pImg"> <h2>Selger</h2>
-                 <div> <RouterLink v-if="seller && userStore.$state.user.id !== seller.id" :to="{name: 'UserProfile', params:{id:seller.id}}"> <h3 v-if="seller">Selger:{{seller.name}}</h3></RouterLink></div>
+                    <div v-if="currentAd && currentAd.isSold">
+                      <div class="sold">SOLGT</div>
+                    </div>
+                 <div> <RouterLink v-if="seller && userStore.$state.user.id !== seller.id" :to="{name: 'UserProfile', params:{id:seller.id}}"> <h3 v-if="seller">{{seller.name}} <img :src="seller.profileImageUrl"></h3></RouterLink></div>
                     <div> <RouterLink v-if="seller && userStore.$state.user.id === seller.id" :to="{name: 'Profile'}"> <h3 v-if="seller">{{seller.name}}</h3></RouterLink></div>
-                    <div v-if="seller && userStore.$state.user.id !== seller.id">
-                      <RouterLink :to="{name:'Chat', params:{id:seller.id}, query:{adId:currentAd.id}}"><i class="fa-solid fa-envelope"></i> </RouterLink>
+                    <div v-if="seller && userStore.$state.user.id !== seller.id && !currentAd.isSold">
+                      <RouterLink :to="{name:'Chat', params:{id:seller.id}, query:{adId:currentAd.id}}" class="messageRL"><i class="fa-solid fa-envelope fa-bounce">Send melding</i> </RouterLink>
                     </div>
                   </div>
+                  <div class="map">
+                    <div ref="mapContainer" style="height: 200px; width: 200px; border-radius: 10px;" ></div>
+                  </div>
+                  <label>Sted:</label>
+                  <div>{{currentAd.locationName}}</div>
                   <br>
             <input v-if="isUpdating" v-model="currentAd.title" placeholder="New title" type="text"/>
             <div v-if="currentAd?.images && currentAd.images.length > 0">
@@ -220,6 +226,7 @@ const seller = computed(() =>{
               </div>
             </div>
                   <br>
+                  <div class="category">
             <label>Kategori: {{ currentAd.category }}</label>
             <select v-if="isUpdating" v-model="currentAd.category">
               <option>Sykler</option>
@@ -230,14 +237,12 @@ const seller = computed(() =>{
               <option>Hånd-våpen</option>
               <option>Treningsutstyr</option>
             </select>
-                  <br>
-            <label>Beskrivelse:</label>
-                  <div>{{ currentAd.description }}</div>
-            <textarea v-if="isUpdating" v-model="currentAd.description" placeholder="New description"/>
-                  <br>
+                  </div>
+                  <div class="price">
             <label>Pris: {{ currentAd.price }} kr</label>
             <input v-if="isUpdating" v-model="currentAd.price" placeholder="new price" type="number"/>
-                  <br>
+                    </div>
+                  <div class="condition">
             <label>Tilstand: {{ currentAd.condition }}</label>
                   <br>
             <select v-if="isUpdating" v-model="currentAd.condition">
@@ -246,11 +251,12 @@ const seller = computed(() =>{
               <option>Brukt</option>
               <option>Godt brukt</option>
             </select>
-          <label>Sted:{{currentAd.locationName}}</label>
+                  </div>
+            <label>Beskrivelse:</label>
+                  <div>{{ currentAd.description }}</div>
+            <textarea v-if="isUpdating" v-model="currentAd.description" placeholder="New description"/>
                   <br>
-          <div class="map">
-            <div ref="mapContainer" style="height: 300px; width: 50%;"></div>
-          </div>
+
           </form>
           <div class="info" v-if="isOwner && adStore.interestedUsers.length > 0">
             <h3>Kjøper</h3>
@@ -271,23 +277,25 @@ const seller = computed(() =>{
             <span v-if="isUpdating" @click="updateAd"> Lagre annonse </span>
           </button>
         </div>
-      <div v-if="currentAd && currentAd.isSold">
-        <h1>SOLGT</h1>
-      </div>
-      <div v-if="isCommented">
-    her  {{isCommented}}
-      <div>{{isCommented.comment}}</div>
-      <div>{{isCommented.rating}}</div>
-      <div>{{dateFormat.formatDate(isCommented.date)}}</div>
+      <div v-if="adReview" class="adReview">
+        <div v-if="reviewer">{{reviewer.name}}</div>
+      <div>{{adReview.comment}}</div>
+      <div>{{adReview.rating}}</div>
+      <div>{{dateFormat.formatDate(adReview.date)}}</div>
       </div>
       </div>
     <div>
-    <CreateReview v-if="currentAd && currentAd.isSold && userStore.$state.user.id === currentAd.buyerId && !isCommented" :currentAd="currentAd"/>
+    <CreateReview v-if="currentAd && currentAd.isSold && userStore.$state.user.id === currentAd.buyerId && !adReview" :currentAd="currentAd"/>
     </div>
+  </div>
   </div>
 </template>
 
 <style scoped>
+.outerContainer{
+
+}
+
 .container {
   height: 600px;
   width: 100%;
@@ -295,14 +303,15 @@ const seller = computed(() =>{
   justify-content: center;
   align-items: center;
   padding: 20px;
-  background-color: deepskyblue;
   border-radius: 15px;
 }
+h1{
+  font-family: "Comic Sans MS", cursive;
+}
 .imagesReel{
-  background: #fff;
   display: flex;
-  height: 100px;
-  width: 100%;
+  gap: 10px;
+  flex-wrap: wrap;
   justify-content: center;
 }
 
@@ -310,18 +319,74 @@ const seller = computed(() =>{
   height: 100px;
   width: 100px;
 }
-label{
-  position: page;
-  
+img:hover{
+  transform: scale(1.2);
 }
-img{
+label{
+  font-weight: bold;
+  font-size: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.category{
+  font-weight: bold;
+  font-size: 2rem;
+  display: flex;
+  justify-content: center;
+}
+.price{
+  font-weight: bold;
+  font-size: 2rem;
+  display: flex;
+  justify-content: center;
+}
+img {
   height: 100px;
   width: 100px;
   border: 2px solid black;
   align-items: center;
+  transition: transform 0.3s ease;
+}
+h3 img{
+  width: 50px;
+  height: 50px;
+  border-radius: 30px;
+  border: 1px solid blue;
+}
+.sold{
+  max-width: 100%;
+  text-align: center;
+  font-size: 2rem;
+  padding: 10px;
+  background-color: black;
+  color: yellow;
+  border-radius: 10px;
 }
 .map{
+  font-weight: bold;
+  font-size: 2rem;
+  display: flex;
+  justify-content: center;
+}
+.messageRL{
+color:white;
+}
+.messageRL:hover{
+  color:white;
+}
+body {
   background: deepskyblue;
-  top: 10px;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+i{
+  padding: 10px;
+}
+button:hover {
+  background-color: #004080;
+  color: white;
+  transition: all 0.3s ease;
 }
 </style>

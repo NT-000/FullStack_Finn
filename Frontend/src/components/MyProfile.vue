@@ -2,24 +2,34 @@
 import {computed, onMounted, ref} from "vue";
 import {useStarRating} from "../composables/useStarRating.js";
 import {useAdStore} from "../stores/adStore.js";
+import {getRoute} from "../composables/getRoute.js";
+import {useDateFormat} from "../composables/useFormatDate.js";
 
-const adStore = useAdStore();
+
 
 const props = defineProps({
   user: Object,
   ads: Array,
 })
 
-const userId = ref(props.user.id)
-const userStars = computed(() =>{
-  if (!props.user) {
-    return;
-  }
-  return useStarRating(props.user.rating).value;
-});
+const adStore = useAdStore();
+const { getStars } = useStarRating();
+const reviewsForUser = getRoute(`/reviews/${props.user.id}`);
+const users = getRoute(`/users`);
+const dateFormat = useDateFormat();
+const isActiveReviews = ref(true)
+const isActiveAds = ref(false);
+const isActiveBoughtAds = ref(false);
+
+const getReviewer = (fromUserId) => {
+  
+  return users.items.value.find(user => user.id === fromUserId)
+}
 
 onMounted(async()=>{
   await adStore.fetchBoughtAds()
+  await reviewsForUser.fetchData()
+  await users.fetchData()
 })
 </script>
 
@@ -29,13 +39,16 @@ onMounted(async()=>{
     <img class="profilePic" :src="user.profileImageUrl" alt="profilePic"/>
     <p><strong>Navn:</strong> {{ user.name }}</p>
     <p><strong>Email:</strong> {{ user.email }}</p>
-    <p><strong>Vurdering:</strong> <span v-html="userStars"></span></p>
+    <p><strong>Vurdering:</strong> <span v-html="getStars(user.rating)"></span></p>
   </div>
   <div v-else>
     <i class="fa-solid fa-circle-notch fa-spin"></i>
   </div>
-    <h2>Aktive annonser</h2>
-  <div class="adImages" v-if="ads && ads.length > 0">
+    <h2 @click="isActiveAds=!isActiveAds">
+      <span v-if="!isActiveAds" title="Trykk for å åpne">Aktive annonser<i class="fa-solid fa-bars" style="padding: 10px"></i></span>
+      <span v-else>Aktive annonser</span>
+    </h2>
+  <div class="adImages" v-if="ads && ads.length && isActiveAds> 0">
     <div v-for="ad in ads" :key="ad.id" class="adContainer">
       <RouterLink :to="{name: 'AdDetails', params:{id: ad.id}}">
         <div class="ad">
@@ -47,10 +60,14 @@ onMounted(async()=>{
       </RouterLink>
     </div>
   </div>
-  <div class="myBoughtAds" v-if="ads && ads.length > 0">
+  <h2 @click="isActiveBoughtAds=!isActiveBoughtAds">
+    <span v-if="!isActiveBoughtAds" title="Trykk for å åpne">Mine Kjøp<i class="fa-solid fa-bars" style="padding: 10px"></i></span>
+    <span v-else>Mine Kjøp</span>
+  </h2>
+  <div class="myBoughtAds" v-if="ads && ads.length > 0 && isActiveBoughtAds" >
 <!--    gjøre ferdig-->
-    <h2>Mine kjøpte annonser</h2>
     <div class="adImages" v-if="adStore.adsBought.length > 0" v-for="ad in adStore.adsBought" :key="ad.id">
+      {{ console.log(ad) }}
       <RouterLink :to="{name: 'AdDetails', params:{id: ad.id}}">
       <div class="ad">
         <h6>{{ ad.title }}</h6>
@@ -64,6 +81,20 @@ onMounted(async()=>{
       Ingen annonser
     </div>
   </div>
+  <h2 @click="isActiveReviews = !isActiveReviews" title="Trykk for å åpne">Anmeldelser av {{user.name}}<i class="fa-solid fa-gavel" style="padding:5px"></i></h2>
+  <div v-if="reviewsForUser.items.value.length > 0 && isActiveReviews" class="adReview">
+    <div v-for="review in reviewsForUser.items.value" :key="review.id">
+   <div class="innerReview">
+     
+    <div v-if="getReviewer(review.fromUserId)">{{getReviewer(review.fromUserId).name}}</div>
+    <div>{{review.comment}}</div>
+    <div ><span v-html="getStars(review.rating)"></span></div>
+    <div>{{dateFormat.formatDate(review.date)}}</div>
+   </div>
+    </div>
+  </div>
+  
+  
 </template>
 
 <style scoped>
@@ -100,11 +131,9 @@ onMounted(async()=>{
 
 .adImages {
   display: flex;
-  gap: 20px;
-  max-width: 200px;
+  justify-content: center;
   align-items: center;
-  margin-top: 20px;
-  max-lines: 15;
+  gap: 20px;
 }
 
 
@@ -135,5 +164,36 @@ onMounted(async()=>{
   border-radius: 5px;
   border: 1px solid #e6f2fa;
   margin-bottom: 10px;
+}
+
+.myActiveAds {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.adReview{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  
+}
+
+.innerReview{
+  border: 3px solid #98cbe8;
+  display: inline-block;
+}
+
+.myBoughtAds {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+h2:hover {
+  background-color: #98cbe8;
+  border-radius: 5px;
 }
 </style>
