@@ -41,7 +41,7 @@ public class UserController : ControllerBase
     [HttpGet("profile/{id}")]
     public async Task<IActionResult> GetUser(int id)
     {
-        var query = "SELECT Id, Name, Rating, ProfileImageUrl FROM Users WHERE Id = @Id";
+        var query = "SELECT * FROM Users WHERE Id = @Id";
         var user = await _db.QueryFirstOrDefaultAsync<User>(query, new { Id = id });
 
         if (user == null)
@@ -58,6 +58,17 @@ public class UserController : ControllerBase
         var query = "SELECT * FROM Users";
         var users = await _db.QueryAsync<User>(query);
         return Ok(users);
+    }
+
+    [Authorize]
+    [HttpPut("profile")]
+    public async Task<IActionResult> UpdateRating()
+    {
+        var userId = User.FindFirst("id")?.Value;
+        if (userId == null) return Unauthorized("Restricted access to page");
+        var query = "UPDATE Users SET Rating = @Rating WHERE Id = @Id";
+        var user = await _db.QueryFirstOrDefaultAsync<User>(query, new { Id = userId });
+        return Ok(user);
     }
 
 

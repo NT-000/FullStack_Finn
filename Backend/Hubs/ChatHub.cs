@@ -28,16 +28,13 @@ public class ChatHub : Hub
         });
         // sende via SignalR til både avsender og mottaker
         await Clients.Groups(senderUserId.ToString(), receiverUserId.ToString())
-            .SendAsync("ReceiveMessage", senderUserId, receiverUserId, message, adId);  
+            .SendAsync("ReceiveMessage", senderUserId, receiverUserId, message, adId);
     }
 
     public override async Task OnConnectedAsync()
     {
         var userIdClaim = Context.User.FindFirst("id").Value;
-        if (userIdClaim != null)
-        {
-            await Groups.AddToGroupAsync(Context.ConnectionId, userIdClaim);
-        }
+        if (userIdClaim != null) await Groups.AddToGroupAsync(Context.ConnectionId, userIdClaim);
         await base.OnConnectedAsync();
     }
 }

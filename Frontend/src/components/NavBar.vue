@@ -22,8 +22,8 @@ watchEffect(() => {
       </div>
       <p v-else></p>
     </div>
-    
-    <div class="nav-bar" v-if="currentUser && currentUser.email">
+
+    <div v-if="currentUser && currentUser.email" class="nav-bar">
       <div v-if="currentUser && currentUser.email" @click="logOut">
         <i class="fa-solid fa-arrow-right-from-bracket" title="Logg ut"></i>
       </div>
@@ -64,13 +64,13 @@ nav {
   border-radius: 5px;
   padding: 20px 20px;
   border-bottom: 6px solid #b3d4e0;
-  width:50vw;
+  width: 50vw;
 }
 
 .user-display {
   font-size: 1.2rem;
   font-weight: 500;
-  color: #00263b; 
+  color: #00263b;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -117,8 +117,9 @@ nav a {
 nav a.Router-link-exact-active button {
   background-color: blue;
 }
-i:hover{
-  transform:scale(1.2);
+
+i:hover {
+  transform: scale(1.2);
 }
 
 </style>

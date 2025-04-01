@@ -1,7 +1,7 @@
 <script setup>
 import {useRoute} from "vue-router";
 import {useChatStore} from "../stores/chatStore.js";
-import {ref, onMounted,computed} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {getRoute} from "../composables/getRoute.js";
 import AdChat from "../components/AdChat.vue";
 
@@ -9,7 +9,7 @@ import AdChat from "../components/AdChat.vue";
 const users = getRoute('/users');
 const route = useRoute();
 const chatStore = useChatStore();
-const receiverId =ref(Number(route.params.id));
+const receiverId = ref(Number(route.params.id));
 console.log("ReceiverId from route:", route.params.id)
 const adId = ref(Number(route.query.adId));
 const receiverUser = computed(() => {
@@ -18,9 +18,9 @@ const receiverUser = computed(() => {
   }
   return users.items.value.find(user => user.id === receiverId.value)
 })
-console.log("receiverUSer",receiverUser.value)
+console.log("receiverUSer", receiverUser.value)
 
-onMounted(async() => {
+onMounted(async () => {
   await chatStore.startChat()
   await chatStore.loadConversation(receiverId.value)
   await users.fetchData()
@@ -31,7 +31,7 @@ onMounted(async() => {
 
 <template>
 
-  <AdChat v-if="adId" :receiverUser="receiverUser" :adId="adId" />
+  <AdChat v-if="adId" :adId="adId" :receiverUser="receiverUser"/>
 </template>
 
 <style scoped>

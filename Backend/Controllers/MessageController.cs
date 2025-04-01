@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Finn_klone.Controllers;
 
-    [Route("api/messages")]
-    [ApiController]
+[Route("api/messages")]
+[ApiController]
 public class MessageController : ControllerBase
 {
     private readonly IDbConnection _db;
@@ -28,7 +28,7 @@ public class MessageController : ControllerBase
         var messages = await _db.QueryAsync<Message>(query, new { userId1, userId2 });
         return Ok(messages);
     }
-    
+
     [HttpGet("interested-users/{adId}")]
     public async Task<IActionResult> GetInterestedUsers(int adId)
     {
@@ -41,17 +41,14 @@ public class MessageController : ControllerBase
         var interestedUsers = await _db.QueryAsync(query, new { AdId = adId });
         return Ok(interestedUsers);
     }
-    
-   [Authorize]
-[HttpGet("inbox")]
-public async Task<IActionResult> GetInbox()
-{
 
-    var query = @"
+    [Authorize]
+    [HttpGet("inbox")]
+    public async Task<IActionResult> GetInbox()
+    {
+        var query = @"
  ";
 
-    return Ok();
-}
-
-
+        return Ok();
+    }
 }

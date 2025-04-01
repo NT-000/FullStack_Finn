@@ -1,8 +1,7 @@
-import { defineStore } from 'pinia'
+import {defineStore} from 'pinia'
 import * as signalR from '@microsoft/signalr'
-import { useUserStore } from './useUserStore.js'
+import {useUserStore} from './useUserStore.js'
 import axios from "axios";
-import {computed} from "vue";
 import {getRoute} from "../composables/getRoute.js";
 
 export const useChatStore = defineStore('chatStore', {
@@ -12,16 +11,16 @@ export const useChatStore = defineStore('chatStore', {
     }),
     actions: {
         async startChat() {
-            
+
             if (this.connection) return
 
             // bygg tilkobling
             this.connection = new signalR.HubConnectionBuilder()
-                .withUrl('/chatHub', { withCredentials: true })
+                .withUrl('/chatHub', {withCredentials: true})
                 .build()
 
             // lytt på “ReceiveMessage”
-            this.connection.on('ReceiveMessage', async(senderId, receiverId, content,adId) => {
+            this.connection.on('ReceiveMessage', async (senderId, receiverId, content, adId) => {
 
 
                 const users = getRoute('/users');
@@ -46,7 +45,7 @@ export const useChatStore = defineStore('chatStore', {
             }
         },
         async loadConversation(receiverId) {
-            
+
             const userStore = useUserStore()
             const myId = userStore.user.id
 
@@ -55,14 +54,14 @@ export const useChatStore = defineStore('chatStore', {
 
             const userList = users.items.value;
             const findUserName = (id) => userList.find(user => user.id === id).name;
-            
+
             // hente meldinger fra backend
             try {
                 const res = await axios.get(`/api/messages/conversation?userId1=${myId}&userId2=${receiverId}`,
-                    { withCredentials: true })
+                    {withCredentials: true})
                 // tøm meldinger
                 this.messages = []
-                console.log("res.data laodConversation",res.data)
+                console.log("res.data laodConversation", res.data)
                 res.data.forEach(msg => {
                     this.messages.push({
                         senderName: findUserName(msg.senderUserId),
@@ -72,7 +71,7 @@ export const useChatStore = defineStore('chatStore', {
                         adId: msg.adId,
                         timestamp: new Date(msg.timestamp),
                     })
-                    console.log("message forEach loadConversation:",msg)
+                    console.log("message forEach loadConversation:", msg)
                 })
             } catch (err) {
                 console.error('Could not load conversation:', err)
@@ -104,7 +103,7 @@ export const useChatStore = defineStore('chatStore', {
                 (msg.senderId === receiverId && msg.receiverId === myId && msg.adId == adId)
             )
         }
-    
-        
+
+
     }
 })

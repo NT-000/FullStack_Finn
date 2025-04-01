@@ -5,7 +5,7 @@ import {useRouter} from "vue-router";
 
 const props = defineProps({
   currentAd: Object,
-  
+
 })
 
 const router = useRouter();
@@ -22,39 +22,39 @@ const handleSubmit = async () => {
     rating: rating.value,
     comment: reviewComment.value,
   }
-  try{
+  try {
     await axios.post("/api/reviews", review, {headers: {"Content-Type": "application/json"}, withCredentials: true});
     router.push(`/ads/${adId.value}`);
-  }catch(err){
-    console.log("couldn't submit review",err.message)
+  } catch (err) {
+    console.log("couldn't submit review", err.message)
   }
 }
 </script>
 
 <template>
-<form @submit.prevent="handleSubmit" class="formComment">
-  <div>
-    <label for="comment">Legg igjen en kommentar</label>
-    <br>
-    <textarea id="comment" v-model="reviewComment" placeholder="" required />
-    <br>
-    <label for="rating">Legg igjen en vurdering</label>
-    <br>
+  <form class="formComment" @submit.prevent="handleSubmit">
+    <div>
+      <label for="comment">Legg igjen en kommentar</label>
+      <br>
+      <textarea id="comment" v-model="reviewComment" placeholder="" required/>
+      <br>
+      <label for="rating">Legg igjen en vurdering</label>
+      <br>
       <div class="star-rating">
         <i
             v-for="star in 5"
             :key="star"
-            class="fa-star "
             :class="rating >= star ? 'fa-solid fa-beat' : 'fa-regular'"
-            @click="rating = star"
+            class="fa-star "
             style="color: #FFD43B; cursor: pointer;"
+            @click="rating = star"
         ></i>
       </div>
-        <br>
-    <button class="submit" type="submit">Send inn tilbakemelding</button>
-  </div>
-  
-</form>
+      <br>
+      <button class="submit" type="submit">Send inn tilbakemelding</button>
+    </div>
+
+  </form>
 </template>
 
 <style scoped>
@@ -74,13 +74,16 @@ const handleSubmit = async () => {
   margin-right: 0.25rem;
   transition: transform 0.2s, color 0.2s;
 }
-.fa-star:hover{
-  transform:scale(1.2);
+
+.fa-star:hover {
+  transform: scale(1.2);
 }
-button:hover{
-  transform:scale(1.2);
+
+button:hover {
+  transform: scale(1.2);
 }
-button{
+
+button {
   padding: 1rem;
 }
 </style>

@@ -32,28 +32,29 @@ async function handleSubmit() {
 
 <template>
   <div class="container">
-  <form class="form" @submit.prevent="handleSubmit">
-    <label class="form-label" for="name">Navn</label>
-    <input v-model="name" placeholder="Navn..." required type="text"/>
-    <label class="form-label" for="password">Passord</label>
-    <input v-model="password" placeholder="Passord..." required type="new-password"/>
-    <label class="form-label" for="email">Email</label>
-    <input v-model="email" placeholder="Email..." required type="text"/>
-    <label>Bilder</label>
-    <input type="file" @change="handleFileChange"/>
-    <br>
-    <button class="btn btn-primary" type="submit">Registrer</button>
-  </form>
+    <form class="form" @submit.prevent="handleSubmit">
+      <label class="form-label" for="name">Navn</label>
+      <input v-model="name" placeholder="Navn..." required type="text"/>
+      <label class="form-label" for="password">Passord</label>
+      <input v-model="password" placeholder="Passord..." required type="new-password"/>
+      <label class="form-label" for="email">Email</label>
+      <input v-model="email" placeholder="Email..." required type="text"/>
+      <label>Bilder</label>
+      <input type="file" @change="handleFileChange"/>
+      <br>
+      <button class="btn btn-primary" type="submit">Registrer</button>
+    </form>
   </div>
-  
+
 </template>
 
 <style scoped>
-.form{
+.form {
   display: flex;
   flex-direction: column;
 }
-input{
+
+input {
   border: none;
   background: ghostwhite;
   border-radius: 5px;
@@ -62,27 +63,33 @@ input{
   font-weight: bold;
   color: black;
 }
-input:focus{
+
+input:focus {
   outline: none;
   border: none;
 }
-input:hover{
+
+input:hover {
   outline: none;
   border: blue;
 }
+
 label {
   color: black;
   font-weight: bold;
   font-size: 20px;
 }
-.container{
+
+.container {
   background: lightskyblue;
   padding: 40px;
   border-radius: 10px;
 }
-button{
+
+button {
   border: none;
 }
+
 button:hover {
   transition: filter 300ms;
   filter: drop-shadow(0 0 2em #646cffaa);

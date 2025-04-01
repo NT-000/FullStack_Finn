@@ -15,18 +15,18 @@ const checkIn = async () => {
 
 <template>
   <div class="loginCard">
-  <form @submit.prevent="checkIn">
-    <div class="form-group">
-      <label><i class="fa-solid fa-at">Email</i></label>
-      <input v-model="email" required type="email"/>
-      <label><i class="fa-solid fa-lock">Passord</i></label>
-      <input v-model="password" required type="password"/>
-    </div>
-  <div class="error">{{error}}</div>
-    <button :disabled="loading" type="submit">
-      {{ loading ? "Logger inn" : "Logg inn" }}
-    </button>
-  </form>
+    <form @submit.prevent="checkIn">
+      <div class="form-group">
+        <label><i class="fa-solid fa-at">Email</i></label>
+        <input v-model="email" required type="email"/>
+        <label><i class="fa-solid fa-lock">Passord</i></label>
+        <input v-model="password" required type="password"/>
+      </div>
+      <div class="error">{{ error }}</div>
+      <button :disabled="loading" type="submit">
+        {{ loading ? "Logger inn" : "Logg inn" }}
+      </button>
+    </form>
   </div>
 </template>
 
@@ -48,6 +48,7 @@ const checkIn = async () => {
   
   gap: 10px;
 }
+
 input {
   border-radius: 10px;
   height: 40px;
@@ -56,13 +57,16 @@ input {
   align-items: center;
   background: #fff;
 }
+
 input text {
   font-weight: bold;
 }
+
 label {
   font-weight: bold;
   font-size: 1.5rem;
 }
+
 .error {
   color: red;
   font-size: 16px;

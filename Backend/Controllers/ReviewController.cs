@@ -7,7 +7,6 @@ namespace Finn_klone.Controllers;
 
 [Route("api/reviews")]
 [ApiController]
-
 public class ReviewController : ControllerBase
 {
     private readonly IDbConnection _db;
@@ -16,9 +15,9 @@ public class ReviewController : ControllerBase
     {
         _db = db;
     }
-    
+
     //Get
-    
+
     [HttpGet("{userId}")]
     public async Task<IActionResult> GetReviewsForUser(int userId)
     {
@@ -34,37 +33,30 @@ public class ReviewController : ControllerBase
         var reviews = await _db.QueryAsync<Review>(query, new { AdId = adId });
         return Ok(reviews);
     }
-    
+
     //Post
-    
+
     [Authorize]
     [HttpPost]
     public async Task<IActionResult> CreateReview([FromBody] ReviewDto reviewDto)
     {
         var fromUserId = int.Parse(User.FindFirst("id").Value);
-        if (fromUserId == reviewDto.ToUserId)
-        {
-            return BadRequest("du kan ikke vurdere deg selv");
-        }
+        if (fromUserId == reviewDto.ToUserId) return BadRequest("du kan ikke vurdere deg selv");
 
         var query = @"
 INSERT INTO Reviews (FromUserId, ToUserId, AdId, Rating, Comment, CreatedAt)
 VALUES (@FromUserId, @ToUserId, @AdId, @Rating, @Comment, GETDATE())";
-        
+
         var rowsAffected = await _db.ExecuteAsync(query, new
         {
             FromUserId = fromUserId,
-            ToUserId = reviewDto.ToUserId,
-            AdId = reviewDto.AdId,
-            Rating = reviewDto.Rating,
-            Comment = reviewDto.Comment
+            reviewDto.ToUserId,
+            reviewDto.AdId,
+            reviewDto.Rating,
+            reviewDto.Comment
         });
-        
-        if (rowsAffected > 0)
-        {
-            return Ok();
-        }
+
+        if (rowsAffected > 0) return Ok();
         return StatusCode(500, "kunne ikke lage vurdering.");
     }
-
 }

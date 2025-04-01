@@ -8,17 +8,17 @@ const isUser = ref(true)
 
 <template>
   <div class="container">
-  <div class="loginForm" v-if="isUser">
-    <LoginForm :isUser="isUser"/>
-    <button @click="isUser = !isUser">
-      <span v-if="!isUser">Back</span>
-      <span v-else>Register</span>
-    </button>
-  </div>
-    
-  <div v-else>
-    <SignupForm/>
-  </div>
+    <div v-if="isUser" class="loginForm">
+      <LoginForm :isUser="isUser"/>
+      <button @click="isUser = !isUser">
+        <span v-if="!isUser">Back</span>
+        <span v-else>Register</span>
+      </button>
+    </div>
+
+    <div v-else>
+      <SignupForm/>
+    </div>
   </div>
 </template>
 
@@ -29,16 +29,19 @@ const isUser = ref(true)
   align-items: center;
   width: 400px;
 }
+
 h1 {
   font-size: 4rem;
   text-align: center;
   color: white;
   border: blue solid 2px;
 }
-h1{
+
+h1 {
   font-size: 5.8rem;
   background: deepskyblue;
 }
+
 button:hover {
   font-size: 1.2rem;
 }

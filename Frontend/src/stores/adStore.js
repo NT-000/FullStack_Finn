@@ -35,20 +35,20 @@ export const useAdStore = defineStore('adStore', {
                 console.error("could not update ad:", error);
             }
         },
-        
-        async markAsSold(adId,buyerId) {
-            if(!buyerId) {
+
+        async markAsSold(adId, buyerId) {
+            if (!buyerId) {
                 console.error("no user selected for ad:", adId);
                 return
             }
-            try{
-                await axios.put(`/api/ads/${adId}/sold`, {buyerId}, 
-                    {headers: { 'Content-Type': 'application/json' }, 
+            try {
+                await axios.put(`/api/ads/${adId}/sold`, {buyerId},
+                    {
+                        headers: {'Content-Type': 'application/json'},
                         withCredentials: true,
-                });
+                    });
                 await this.fetchAds();
-            }
-            catch(error) {
+            } catch (error) {
                 console.error("could not mark as sold, ad:", error);
             }
         },
@@ -64,7 +64,6 @@ export const useAdStore = defineStore('adStore', {
                 console.error("could not fetch interested users:", error);
             }
         },
-
 
 
         async deleteAd(adId) {
