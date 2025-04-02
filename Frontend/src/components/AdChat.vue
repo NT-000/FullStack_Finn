@@ -11,7 +11,7 @@ const props = defineProps({
 
 const conversation = computed(() => chatStore.conversation(props.receiverUser.id, props.adId))
 
-onMounted(()=>{
+onMounted(() => {
   console.log("adId:", props.adId);
 })
 const sendMessage = () => {
@@ -21,13 +21,13 @@ const sendMessage = () => {
 </script>
 
 <template>
-<h1>AdChat</h1>
+  <h1>AdChat</h1>
   <div v-if="receiverUser">
     <h2>Chat with user {{ receiverUser.name }}</h2>
     <div v-for="msg in conversation" :key="msg.id">
-      <strong>{{ msg.senderName }}, <small>{{msg.timestamp.toLocaleString()}}</small>:</strong> {{ msg.content}}
+      <strong>{{ msg.senderName }}, <small>{{ msg.timestamp.toLocaleString() }}</small>:</strong> {{ msg.content }}
     </div>
-    <input v-model="newMessage" @keyup.enter="sendMessage" placeholder="Enter message"/>
+    <input v-model="newMessage" placeholder="Enter message" @keyup.enter="sendMessage"/>
   </div>
 </template>
 

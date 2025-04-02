@@ -9,15 +9,11 @@ const isUser = ref(true)
 <template>
   <div class="container">
     <div v-if="isUser" class="loginForm">
-      <LoginForm :isUser="isUser"/>
-      <button @click="isUser = !isUser">
-        <span v-if="!isUser">Back</span>
-        <span v-else>Register</span>
-      </button>
+      <LoginForm v-model:isUser="isUser"/>
     </div>
 
     <div v-else>
-      <SignupForm/>
+      <SignupForm v-model:isUser="isUser"/>
     </div>
   </div>
 </template>

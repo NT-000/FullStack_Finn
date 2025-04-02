@@ -12,22 +12,22 @@ const adStore = useAdStore();
 const route = useRoute();
 const userId = ref(route.params.id || null);
 const {user, fetchUserProfile} = useUser();
-const computedUser = computed(() => userStore.user);
+const currentUser = computed(() => userStore.user);
 
 const isOwnProfile = computed(() => {
-  return !userId.value || Number(userId.value) === computedUser.value?.id;
+  return !userId.value || Number(userId.value) === currentUser.value?.id;
 });
 
 onMounted(async () => {
   await fetchUserProfile(userId.value);
   await adStore.fetchAds();
-  console.log("computed user", computedUser.value);
-  console.log("computed user profileImage path", computedUser.value.profileImageUrl);
+  console.log("computed user", currentUser.value);
+  console.log("computed user profileImage path", currentUser.value.profileImageUrl);
 });
 
 const filteredAds = computed(() => {
   const routeId = userId.value;
-  return adStore.getAdsByUser(routeId || computedUser.value?.id);
+  return adStore.getAdsByUser(routeId || currentUser.value?.id);
 });
 
 watchEffect(() => {
@@ -37,7 +37,7 @@ watchEffect(() => {
 
 <template>
   <div v-if="isOwnProfile">
-    <MyProfile :ads="filteredAds" :user="computedUser"/>
+    <MyProfile :ads="filteredAds" :user="currentUser"/>
   </div>
   <div v-else>
     <OtherProfile :ads="filteredAds" :user="user"/>

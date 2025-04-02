@@ -41,14 +41,4 @@ public class MessageController : ControllerBase
         var interestedUsers = await _db.QueryAsync(query, new { AdId = adId });
         return Ok(interestedUsers);
     }
-
-    [Authorize]
-    [HttpGet("inbox")]
-    public async Task<IActionResult> GetInbox()
-    {
-        var query = @"
- ";
-
-        return Ok();
-    }
 }

@@ -203,14 +203,14 @@ const seller = computed(() => {
         <div></div>
         <div v-if="currentAd && favStore">
           <div @click="favStore.toggleFav(currentAd.id)">
-            <i :class="favStore.isFavorite(currentAd.id) ? 'fa-solid fa-beat' : 'fa-regular'" class="fa-heart"
+            <i :class="favStore.isFavorite(currentAd.id) ? 'fa-solid fa-beat': 'fa-regular'" class="fa-heart"
                style="color: red; cursor: pointer;"></i>
           </div>
         </div>
         <div v-if="currentAd && adId">
           <form v-if="currentAd && seller" @submit.prevent="updateAd">
             <div class="header">
-              <h1>{{ currentAd.title }}</h1>
+              <div class="title"><h1>{{ currentAd.title }}</h1></div>
               <div v-if="currentAd && currentAd.isSold">
                 <div class="sold">SOLGT</div>
               </div>
@@ -223,13 +223,15 @@ const seller = computed(() => {
                 <RouterLink v-if="seller && userStore.$state.user.id === seller.id" :to="{name: 'Profile'}"><h3
                     v-if="seller">{{ seller.name }}</h3></RouterLink>
               </div>
-              <div v-if="seller && userStore.$state.user.id !== seller.id && !currentAd.isSold">
-                <RouterLink :to="{name:'Chat', params:{id:seller.id}, query:{adId:currentAd.id}}" class="messageRL"><i
-                    class="fa-solid fa-envelope fa-bounce">Send melding</i></RouterLink>
+              <div class="userMap">
+                <div v-if="seller && userStore.$state.user.id !== seller.id && !currentAd.isSold">
+                  <RouterLink :to="{name:'Chat', params:{id:seller.id}, query:{adId:currentAd.id}}" class="messageRL"><i
+                      class="fa-solid fa-envelope fa-bounce">Send melding</i></RouterLink>
+                </div>
               </div>
-            </div>
-            <div class="map">
-              <div ref="mapContainer" style="height: 200px; width: 200px; border-radius: 10px;"></div>
+              <div class="map">
+                <div ref="mapContainer" style="height: 200px; width: 200px; border-radius: 10px;"></div>
+              </div>
             </div>
             <label>Sted:</label>
             <div>{{ currentAd.locationName }}</div>
@@ -284,7 +286,7 @@ const seller = computed(() => {
                 {{ user.Name }}
               </option>
             </select>
-            <div v-if="buyer">{{ error }} Kjøper - {{ buyer }}</div>
+            <div v-if="reviewer">{{ error }} Kjøper - {{ reviewer.name }}</div>
             <button v-if="currentAd.isSold === false" @click="markAdAsSold">Selg til {{ buyer }}</button>
           </div>
         </div>
@@ -296,7 +298,9 @@ const seller = computed(() => {
           </button>
         </div>
         <div v-if="adReview" class="adReview">
-          <div v-if="reviewer">{{ reviewer.name }}</div>
+          <RouterLink :to="{name:'UserProfile', params:{id:reviewer.id}}">
+            <div v-if="reviewer">{{ reviewer.name }}</div>
+          </RouterLink>
           <div>{{ adReview.comment }}</div>
           <div>{{ adReview.rating }}</div>
           <div>{{ dateFormat.formatDate(adReview.createdAt) }}</div>
@@ -305,13 +309,14 @@ const seller = computed(() => {
       <div>
         <CreateReview
             v-if="currentAd && currentAd.isSold && userStore.$state.user.id === currentAd.buyerId && !adReview"
-            :currentAd="currentAd"/>
+            :currentAd="currentAd" class="innerReview"/>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
+
 .outerContainer {
 
 }
@@ -321,13 +326,36 @@ const seller = computed(() => {
   width: 100%;
   display: flex;
   justify-content: center;
-
   padding: 20px;
   border-radius: 15px;
 }
 
+.title {
+  background-color: blue;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 3);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+}
+
 h1 {
-  font-family: "Comic Sans MS", cursive;
+  font-family: "Shadows Into Light Two", cursive;
+  font-weight: bolder;
+  font-style: italic;
+  padding: 10px;
+}
+
+.fa-heart {
+  font-size: 100px;
+
+}
+
+.userMap {
+  display: inline-flex;
+  flex-direction: row;
+
+
 }
 
 .imagesReel {
@@ -422,6 +450,25 @@ button:hover {
   background-color: #004080;
   color: white;
   transition: all 0.3s ease;
+}
+
+.adReview {
+  font-weight: bolder;
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 3px solid #e6f2fa;
+
+}
+
+.review {
+  font-weight: bolder;
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 3px solid #e6f2fa;
 }
 
 </style>

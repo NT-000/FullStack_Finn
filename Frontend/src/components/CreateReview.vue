@@ -14,6 +14,7 @@ const adId = ref(props.currentAd.id);
 const userId = ref(props.currentAd.userId);
 const rating = ref(null)
 const reviewComment = ref(null)
+const message = ref(null)
 
 const handleSubmit = async () => {
   const review = {
@@ -25,6 +26,7 @@ const handleSubmit = async () => {
   try {
     await axios.post("/api/reviews", review, {headers: {"Content-Type": "application/json"}, withCredentials: true});
     router.push(`/ads/${adId.value}`);
+    message.value = "Anmeldelse sendt inn!";
   } catch (err) {
     console.log("couldn't submit review", err.message)
   }

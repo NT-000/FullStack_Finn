@@ -8,6 +8,11 @@ const email = ref('');
 const password = ref('');
 const file = ref(null);
 
+const props = defineProps({
+  isUser: Boolean
+})
+const emit = defineEmits(['update:isUser'])
+
 function handleFileChange(e) {
   file.value = e.target.files[0];
 }
@@ -28,6 +33,9 @@ async function handleSubmit() {
   }
 }
 
+const toggle = () => {
+  emit('update:isUser', true)
+}
 </script>
 
 <template>
@@ -40,28 +48,44 @@ async function handleSubmit() {
       <label class="form-label" for="email">Email</label>
       <input v-model="email" placeholder="Email..." required type="text"/>
       <label>Bilder</label>
-      <input type="file" @change="handleFileChange"/>
+      <button>
+        <input hidden="" type="file" @change="handleFileChange"/>
+        <span>Legg til <i class="fa-solid fa-image"></i></span>
+      </button>
       <br>
       <button class="btn btn-primary" type="submit">Registrer</button>
+      <button type="button" @click="toggle">Tilbake til innlogging</button>
     </form>
   </div>
 
 </template>
 
 <style scoped>
+.container {
+  background: lightskyblue;
+  padding: 40px;
+  border-radius: 10px;
+  margin-left: 40vw;
+  width: 100vw;
+  height: 50vh;
+}
+
 .form {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 input {
   border: none;
   background: ghostwhite;
   border-radius: 5px;
-  padding: 10px;
+  padding: 20px;
   font-size: 20px;
-  font-weight: bold;
+  font-weight: bolder;
   color: black;
+  width: 100%;
 }
 
 input:focus {
@@ -74,24 +98,26 @@ input:hover {
   border: blue;
 }
 
+
 label {
   color: black;
   font-weight: bold;
-  font-size: 20px;
-}
-
-.container {
-  background: lightskyblue;
-  padding: 40px;
-  border-radius: 10px;
+  font-size: 30px;
+  padding: 20px;
 }
 
 button {
   border: none;
+  margin-bottom: 5px;
+  font-size: 1.2rem;
 }
 
 button:hover {
   transition: filter 300ms;
   filter: drop-shadow(0 0 2em #646cffaa);
+}
+
+.buttonRegister:hover {
+  
 }
 </style>

@@ -7,8 +7,16 @@ const password = ref('')
 
 const {loading, error, logIn} = useLogin();
 
+const props = defineProps({
+  isUser: Boolean,
+})
+const emit = defineEmits(['update:isUser'])
 const checkIn = async () => {
   await logIn(email.value, password.value)
+}
+
+const toggle = () => {
+  emit('update:isUser', !props.isUser)
 }
 
 </script>
@@ -26,6 +34,9 @@ const checkIn = async () => {
       <button :disabled="loading" type="submit">
         {{ loading ? "Logger inn" : "Logg inn" }}
       </button>
+      <button @click="toggle">
+        <span>Register</span>
+      </button>
     </form>
   </div>
 </template>
@@ -35,17 +46,18 @@ const checkIn = async () => {
   height: 50vh;
   width: 50vw;
   align-content: center;
+  justify-content: center;
+  margin-left: 39vw;
   padding: 20px;
   border-radius: 10px;
-  background: deepskyblue;
+  background: blue;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+
   align-items: center;
-  
   gap: 10px;
 }
 

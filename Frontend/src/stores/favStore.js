@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia'
 import axios from 'axios'
-import {computed, ref} from "vue";
+import {ref} from "vue";
 
 export const useFavStore = defineStore('favStore', {
     state: () => ({

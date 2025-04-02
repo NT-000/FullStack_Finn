@@ -15,42 +15,42 @@ watchEffect(() => {
 <template>
   <nav>
 
-    <div>
+    <div class="nav-bar">
       <div v-if="currentUser && currentUser.name" class="user-display">
-        <i class="fa-solid fa-lock-open" title="Innlogget bruker"></i>
-        {{ currentUser.name }}
+        <img src="/public/frog.png"/>
       </div>
-      <p v-else></p>
-    </div>
+      <p v-else>Ingen bruker innlogget</p>
 
-    <div v-if="currentUser && currentUser.email" class="nav-bar">
-      <div v-if="currentUser && currentUser.email" @click="logOut">
-        <i class="fa-solid fa-arrow-right-from-bracket" title="Logg ut"></i>
+
+      <div v-if="currentUser && currentUser.email" class="nav-bar">
+        <div v-if="currentUser && currentUser.email" @click="logOut">
+          <i :title="currentUser.name" class="fa-solid fa-lock-open"></i>
+        </div>
+
+        <RouterLink to="/mainpage">
+          <i class="fa-solid fa-house" title="Hovedside"></i>
+        </RouterLink>
+
+        <RouterLink to="/ads">
+          <i class="fa-solid fa-rectangle-ad" title="Annonser"></i>
+        </RouterLink>
+
+        <RouterLink to="/users/profile">
+          <i class="fa-solid fa-circle-user" title="Min profil"></i>
+        </RouterLink>
+
+        <RouterLink to="/ads/create-with-files">
+          <i class="fa-solid fa-file-circle-plus" title="Lag ny annonse"></i>
+        </RouterLink>
+
+        <RouterLink to="/inbox">
+          <i class="fa-solid fa-inbox" title="Innboks"></i>
+        </RouterLink>
+
+        <RouterLink to="/map">
+          <i class="fa-solid fa-map-location-dot" title="Kart"></i>
+        </RouterLink>
       </div>
-
-      <RouterLink to="/mainpage">
-        <i class="fa-solid fa-house" title="Hovedside"></i>
-      </RouterLink>
-
-      <RouterLink to="/ads">
-        <i class="fa-solid fa-rectangle-ad" title="Annonser"></i>
-      </RouterLink>
-
-      <RouterLink to="/users/profile">
-        <i class="fa-solid fa-circle-user" title="Min profil"></i>
-      </RouterLink>
-
-      <RouterLink to="/ads/create-with-files">
-        <i class="fa-solid fa-file-circle-plus" title="Lag ny annonse"></i>
-      </RouterLink>
-
-      <RouterLink to="/inbox">
-        <i class="fa-solid fa-inbox" title="Innboks"></i>
-      </RouterLink>
-
-      <RouterLink to="/map">
-        <i class="fa-solid fa-map-location-dot" title="Kart"></i>
-      </RouterLink>
     </div>
   </nav>
 </template>
@@ -73,7 +73,15 @@ nav {
   color: #00263b;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
+}
+
+nav {
+  padding: 20px;
+  background-color: #98b3b2;
+  width: 50vw;
+  border-radius: 15px;
 }
 
 .nav-bar {
@@ -83,6 +91,12 @@ nav {
   padding: 10px;
   border-radius: 8px;
   width: 50vw;
+}
+
+.nav-bar img {
+  height: 7vh;
+  width: 5vw;
+  border-radius: 10px;
 }
 
 i {

@@ -50,7 +50,7 @@ onMounted(async () => {
 
 <template>
   <div v-if="user && user.name" class="container">
-    <h2>{{ user.name }}'s page</h2>
+    <h2>Min konto</h2>
     <img :src="user.profileImageUrl" alt="profilePic" class="profilePic"/>
     <p><strong>Navn:</strong> {{ user.name }}</p>
     <p><strong>Email:</strong> {{ user.email }}</p>
@@ -104,7 +104,6 @@ onMounted(async () => {
     <span v-else>Mine Kjøp</span>
   </h2>
   <div v-if="ads && ads.length > 0 && isActiveBoughtAds" class="myBoughtAds">
-    <!--    gjøre ferdig-->
     <div v-for="ad in adStore.adsBought" v-if="adStore.adsBought.length > 0" :key="ad.id" class="adImages">
       <RouterLink :to="{name: 'AdDetails', params:{id: ad.id}}">
         <div class="ad">
@@ -124,6 +123,7 @@ onMounted(async () => {
   <div v-if="reviewsForUser.items.value.length > 0 && isActiveReviews" class="adReview">
     <div v-for="review in reviewsForUser.items.value" :key="review.id">
       <div class="innerReview">
+
         <RouterLink v-if="getReviewer(review.fromUserId)"
                     :to="{name: 'UserProfile', params:{id: getReviewer(review.fromUserId).id}}">
           <div v-if="getReviewer(review.fromUserId)" class="review"><img
@@ -150,7 +150,9 @@ onMounted(async () => {
 }
 
 .favList {
-
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .container h2 {
@@ -220,7 +222,6 @@ h2 {
   justify-content: center;
   align-items: center;
   gap: 20px;
-
 }
 
 .innerReview {

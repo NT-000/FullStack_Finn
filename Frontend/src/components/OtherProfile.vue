@@ -69,7 +69,8 @@ const calculateAverageRating = computed(() => {
     </div>
   </div>
 
-  <h2 v-if="user" title="Trykk for å åpne" @click="isActiveReviews = !isActiveReviews">Anmeldelser av {{user.name}}</h2>
+  <h2 v-if="user" title="Trykk for å åpne" @click="isActiveReviews = !isActiveReviews">Anmeldelser av
+    {{ user.name }}</h2>
   <div v-if="isActiveReviews && reviewsForUser?.items?.value?.length > 0" class="adReview">
     <div v-for="review in reviewsForUser.items.value" :key="review.id">
       <div class="innerReview">
@@ -81,10 +82,10 @@ const calculateAverageRating = computed(() => {
         </RouterLink>
 
         <RouterLink :to="{name:'AdDetails', params:{id: review.adId}}" class="reviewLink">
-        <small>{{ review.comment }}</small>
-        <br>
-        <div><span v-html="getStars(review.rating)"></span></div>
-        <small>{{ dateFormat.formatDate(review.createdAt) }}</small>
+          <small>{{ review.comment }}</small>
+          <br>
+          <div><span v-html="getStars(review.rating)"></span></div>
+          <small>{{ dateFormat.formatDate(review.createdAt) }}</small>
         </RouterLink>
       </div>
     </div>
@@ -211,13 +212,15 @@ i {
   padding: 10px;
   margin-right: 10px;
 }
+
 .reviewLink:hover {
   color: black;
 
   border-radius: 5px;
 }
+
 .reviewLink {
-color: white;
+  color: white;
 }
 
 </style>
