@@ -201,20 +201,28 @@ const seller = computed(() => {
     <div class="container">
       <div class="info">
         <div></div>
-        <div v-if="currentAd && favStore">
-          <div @click="favStore.toggleFav(currentAd.id)">
-            <i :class="favStore.isFavorite(currentAd.id) ? 'fa-solid fa-beat': 'fa-regular'" class="fa-heart"
-               style="color: red; cursor: pointer;"></i>
-          </div>
+        <div v-if="currentAd && favStore" class="favorite">
+            <div @click="favStore.toggleFav(currentAd.id)">
+                <i :class="favStore.isFavorite(currentAd.id) ? 'fa-solid fa-beat': 'fa-regular'" class="fa-heart"
+                   style="color: red; cursor: pointer;"></i>
+            </div>
         </div>
+        
         <div v-if="currentAd && adId">
           <form v-if="currentAd && seller" @submit.prevent="updateAd">
             <div class="header">
-              <div class="title"><h1>{{ currentAd.title }}</h1></div>
+              <div class="title"><h3>{{ currentAd.title }}</h3></div>
               <div v-if="currentAd && currentAd.isSold">
                 <div class="sold">SOLGT</div>
               </div>
-              <div>
+              <div v-if="currentAd?.images && currentAd.images.length > 0">
+                <img :src="currentAd.images[0].imageUrl" alt="" class="mainImage"/>
+              </div>
+              <div v-if="currentAd?.images && currentAd.images.length > 1" class="imagesReel">
+                <div v-for="image in currentAd.images.slice(1)" :key="image.id">
+                  <img :src="image.imageUrl" alt="Ad image"/>
+                </div>
+              <div class="user-display">
                 <RouterLink v-if="seller && userStore.$state.user.id !== seller.id"
                             :to="{name: 'UserProfile', params:{id:seller.id}}"><h3 v-if="seller">{{ seller.name }} <img
                     :src="seller.profileImageUrl"></h3></RouterLink>
@@ -237,13 +245,7 @@ const seller = computed(() => {
             <div>{{ currentAd.locationName }}</div>
             <br>
             <input v-if="isUpdating" v-model="currentAd.title" placeholder="New title" type="text"/>
-            <div v-if="currentAd?.images && currentAd.images.length > 0">
-              <img :src="currentAd.images[0].imageUrl" alt=""/>
-            </div>
-            <div v-if="currentAd?.images && currentAd.images.length > 1" class="imagesReel">
-              <div v-for="image in currentAd.images.slice(1)" :key="image.id">
-                <img :src="image.imageUrl" alt="Ad image"/>
-              </div>
+
             </div>
             <br>
             <div class="category">
@@ -282,8 +284,8 @@ const seller = computed(() => {
             <h3>Kjøper</h3>
             <select v-if="currentAd.isSold === false" v-model="selectedBuyerId">
               <option disabled value="">Velg kjøper</option>
-              <option v-for="user in adStore.interestedUsers" :key="user.Id" :value="user.Id">
-                {{ user.Name }}
+              <option v-for="user in adStore.interestedUsers" :key="user.id" :value="user.id">
+                {{ user.name }}
               </option>
             </select>
             <div v-if="reviewer">{{ error }} Kjøper - {{ reviewer.name }}</div>
@@ -331,7 +333,7 @@ const seller = computed(() => {
 }
 
 .title {
-  background-color: blue;
+  background-color: gray;
   border-radius: 10px;
   padding: 10px;
   margin-bottom: 10px;
@@ -352,10 +354,15 @@ h1 {
 }
 
 .userMap {
-  display: inline-flex;
+  display: flex;
   flex-direction: row;
 
+}
 
+.mainImage{
+  height: 250px;
+  width:  auto;
+  background-color: white;
 }
 
 .imagesReel {
@@ -363,6 +370,7 @@ h1 {
   gap: 10px;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
 }
 
 .imageReel img {
