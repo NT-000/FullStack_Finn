@@ -15,11 +15,11 @@ public class Ad
     public decimal? Latitude { get; set; }
 
     public decimal? Longitude { get; set; }
-    
+
     public string? LocationName { get; set; }
-    
+
     public bool isSold { get; set; }
-    
+
     public int BuyerId { get; set; }
 
 

@@ -91,7 +91,8 @@ export const useChatStore = defineStore('chatStore', {
             } catch (err) {
                 console.error('Could not send message:', err)
             }
-        }
+        },
+
     },
     getters: {
         // filtrerer meldinger for en bestemt samtale
@@ -103,7 +104,6 @@ export const useChatStore = defineStore('chatStore', {
                 (msg.senderId === receiverId && msg.receiverId === myId && msg.adId == adId)
             )
         }
-
 
     }
 })

@@ -5,6 +5,7 @@ import {useAdStore} from "../stores/adStore.js";
 import {getRoute} from "../composables/getRoute.js";
 import {useDateFormat} from "../composables/useFormatDate.js";
 import {useFavStore} from "../stores/favStore.js"
+import AdDetails from "../views/AdDetails.vue";
 
 const props = defineProps({
   user: Object,
@@ -130,11 +131,13 @@ onMounted(async () => {
               :src="getReviewer(review.fromUserId).profileImageUrl" alt="img"/>{{ getReviewer(review.fromUserId).name }}
           </div>
         </RouterLink>
-
+	      
+	      <RouterLink :to="{name:'AdDetails', params:{id: review.adId}}">
         <small>{{ review.comment }}</small>
         <br>
         <div><span v-html="getStars(review.rating)"></span></div>
         <small>{{ dateFormat.formatDate(review.createdAt) }}</small>
+	      </RouterLink>
       </div>
     </div>
   </div>

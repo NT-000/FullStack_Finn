@@ -53,7 +53,9 @@ const toggle = () => {
         <span>Legg til <i class="fa-solid fa-image"></i></span>
       </button>
       <br>
-      <button class="btn btn-primary" type="submit">Registrer</button>
+      <button class="btn waves-effect waves-light" type="submit" name="action">Registrer
+        <i class="material-icons right"><i class="fa-solid fa-paper-plane"></i></i>
+      </button>
       <button type="button" @click="toggle">Tilbake til innlogging</button>
     </form>
   </div>

@@ -33,7 +33,7 @@ public class MessageController : ControllerBase
     public async Task<IActionResult> GetInterestedUsers(int adId)
     {
         var query = @"
-    SELECT DISTINCT u.Id, u.Name
+    SELECT DISTINCT u.Id AS id, u.Name AS name
     FROM Messages m
     JOIN Users u ON u.Id = m.SenderUserId
     WHERE m.AdId = @AdId";

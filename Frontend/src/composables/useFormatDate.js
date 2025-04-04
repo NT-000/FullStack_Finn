@@ -9,5 +9,5 @@ export function useDateFormat() {
         });
     };
 
-    return { formatDate };
+    return {formatDate};
 }

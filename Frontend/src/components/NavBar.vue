@@ -17,9 +17,9 @@ watchEffect(() => {
 
     <div class="nav-bar">
       <div v-if="currentUser && currentUser.name" class="user-display">
-        <img src="/public/frog.png"/>
+      <div class="logo-container">Innlogget bruker: {{currentUser.email}}</div>
       </div>
-      <p v-else>Ingen bruker innlogget</p>
+      <p v-else><i class="fa-solid fa-lock"></i></p>
 
 
       <div v-if="currentUser && currentUser.email" class="nav-bar">
@@ -63,8 +63,9 @@ nav {
   align-items: center;
   border-radius: 5px;
   padding: 20px 20px;
-  border-bottom: 6px solid #b3d4e0;
+  border-bottom: 6px solid saddlebrown;
   width: 50vw;
+ 
 }
 
 .user-display {
@@ -79,9 +80,12 @@ nav {
 
 nav {
   padding: 20px;
-  background-color: #98b3b2;
-  width: 50vw;
+  background-color: #a3bbb9;
+  width: 60vw;
   border-radius: 15px;
+}
+.logo-container {
+  background-color: transparent;
 }
 
 .nav-bar {
@@ -100,8 +104,9 @@ nav {
 }
 
 i {
-  color: black;
+  
   font-size: 4rem;
+  color:saddlebrown;
 }
 
 button {

@@ -5,6 +5,8 @@ import {RouterView} from 'vue-router'
 import {onMounted} from "vue";
 import {useUserStore} from "./stores/useUserStore.js";
 import '@fortawesome/fontawesome-free/css/all.css';
+import Header from "./components/Header.vue";
+import Footer from "./components/Footer.vue";
 
 const store = useUserStore();
 
@@ -17,32 +19,25 @@ onMounted(() => {
 
 <template>
   <div>
+<!--    <div class="headerNav">-->
+<!--    <Header/>-->
+<!--    </div>-->
     <NavBar/>
     <RouterView :key="$route.fullPath"/>
+    <Footer/>
   </div>
-
 </template>
 
+
 <style>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+.headerNav{
+  display: flex;
 }
 
-button:hover {
-  transition: filter 300ms;
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-body{
-  font-family: "Comic Sans MS", cursive;
+.body{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 </style>

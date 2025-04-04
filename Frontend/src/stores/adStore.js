@@ -59,8 +59,8 @@ export const useAdStore = defineStore('adStore', {
                     withCredentials: true
                 });
                 this.interestedUsers = response.data;
-                return this.interestedUsers;
                 console.log("interested Users:", this.interestedUsers);
+                return this.interestedUsers;
             } catch (error) {
                 console.error("could not fetch interested users:", error);
             }

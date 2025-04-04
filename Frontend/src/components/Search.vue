@@ -20,7 +20,7 @@ onMounted(() => {
 
   <div class="input-field">
     <input id="search" v-model="search" placeholder="Search for people" type="search">
-    
+
   </div>
 
   <div v-if="filteredSearch.length > 0 && search.length > 2" class="search-input">

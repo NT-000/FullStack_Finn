@@ -8,5 +8,4 @@ public class Message
     public int AdId { get; set; }
     public string Content { get; set; }
     public DateTime Timestamp { get; set; }
-
 }
