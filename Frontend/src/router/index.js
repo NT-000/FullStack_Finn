@@ -1,5 +1,4 @@
 import {createRouter, createWebHistory} from 'vue-router'
-
 import StartPage from "../views/StartPage.vue";
 import PageNotFound from "../views/PageNotFound.vue";
 import MainPage from "../views/MainPage.vue";
@@ -15,7 +14,6 @@ import Inbox from "../views/Inbox.vue";
 const router = createRouter({
     history: createWebHistory(),
     routes: [
-
 
         {
             path: '/',

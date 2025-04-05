@@ -22,6 +22,5 @@ public class Ad
 
     public int BuyerId { get; set; }
 
-
     public List<AdImage> Images { get; set; } = new(); // bilder til annonsene
 }

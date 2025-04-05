@@ -1,4 +1,5 @@
 using System.Data;
+using System.Globalization;
 using Dapper;
 using Finn_klone;
 using Microsoft.AspNetCore.Authorization;
@@ -75,24 +76,7 @@ public class AdController : ControllerBase
     }
 
     //Post
-    // Oppretter ny annonse
-    [HttpPost]
-    public async Task<IActionResult> CreateAd([FromBody] Ad ad)
-    {
-        if (ad == null)
-            return BadRequest("Fill in required fields.");
 
-        var query = @"
-        INSERT INTO Ads (Title, Description, Condition, Price, Category, UserId, CreatedAt)
-        VALUES (@Title, @Description, @Condition, @Price, @Category, @UserId, GETDATE())";
-
-        var rowsAffected = await _db.ExecuteAsync(query, ad);
-
-        if (rowsAffected > 0)
-            return Ok("Ad created!");
-
-        return StatusCode(500, "Could not create ad.");
-    }
 
     //Oppretter annonse med bilder
     [HttpPost("create-with-files")]
@@ -103,10 +87,22 @@ public class AdController : ControllerBase
             if (adDto == null) return BadRequest("No data provided.");
 
             //legger til annonsen i Ads-tabellen
+
             var adQuery = @"
-INSERT INTO Ads (Title, Description, Condition, Price, Category, UserId, CreatedAt)
+INSERT INTO Ads (Title, Description, Condition, Price, Category, UserId, Latitude, Longitude, LocationName, CreatedAt)
 OUTPUT INSERTED.Id
-VALUES (@Title, @Description, @Condition, @Price, @Category, @UserId, GETDATE())";
+VALUES (@Title, @Description, @Condition, @Price, @Category, @UserId, @Latitude, @Longitude, @LocationName, GETDATE())";
+
+
+            // må konvertere fra string som fåes fra frontend grunnet formData
+            var latitudeParsed = !string.IsNullOrWhiteSpace(adDto.Latitude)
+                ? double.Parse(adDto.Latitude, CultureInfo.InvariantCulture)
+                : (double?)null;
+
+            var longitudeParsed = !string.IsNullOrWhiteSpace(adDto.Longitude)
+                ? double.Parse(adDto.Longitude, CultureInfo.InvariantCulture)
+                : (double?)null;
+
             var adId = await _db.ExecuteScalarAsync<int>(adQuery, new
             {
                 adDto.Title,
@@ -114,9 +110,13 @@ VALUES (@Title, @Description, @Condition, @Price, @Category, @UserId, GETDATE())
                 adDto.Description,
                 adDto.Condition,
                 adDto.Price,
-                adDto.UserId
+                adDto.UserId,
+                Latitude = latitudeParsed,
+                Longitude = longitudeParsed,
+                adDto.LocationName
             });
-            if (adDto.Files.Count <= 0) return Ok(new { message = "Ad created with imgs", adId });
+            if (adDto.Files == null || adDto.Files.Count <= 0)
+                return Ok(new { message = "Ad created with imgs", adId });
             var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
             foreach (var file in adDto.Files)
             {
@@ -142,7 +142,6 @@ VALUES (@Title, @Description, @Condition, @Price, @Category, @UserId, GETDATE())
         }
         catch (Exception ex)
         {
-            Console.WriteLine($",{ex.Message}");
             return StatusCode(500, ex.Message);
         }
     }
@@ -193,7 +192,6 @@ VALUES (@Title, @Description, @Condition, @Price, @Category, @UserId, GETDATE())
         }
         catch (Exception ex)
         {
-            // full error melding
             return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }
@@ -223,7 +221,6 @@ BuyerId = @BuyerId
         if (rowsAffected > 0) return Ok("Ad marked as sold");
         return StatusCode(500, "ad not updated.");
     }
-
 
     //oppdatere kordinater
     [Authorize]
@@ -262,7 +259,14 @@ BuyerId = @BuyerId
     public async Task<IActionResult> DeleteAd(int id)
     {
         var query = "DELETE FROM Ads WHERE Id = @Id";
-        await _db.ExecuteAsync(query, new { Id = id });
-        return Ok("ad deleted");
+        try
+        {
+            await _db.ExecuteAsync(query, new { Id = id });
+            return Ok("ad deleted");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
     }
 }

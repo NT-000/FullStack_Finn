@@ -10,8 +10,8 @@ console.log("Current Route:", route.path);
 </script>
 
 <template>
-  <h1>Main Page</h1>
-  <Search/>
+	<h1>Main Page</h1>
+	<Search/>
 </template>
 
 <style scoped>

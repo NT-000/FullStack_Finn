@@ -1,6 +1,5 @@
 using System.Data;
 using Dapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Finn_klone.Controllers;

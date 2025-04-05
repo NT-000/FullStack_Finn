@@ -2,7 +2,7 @@
 import {useAdStore} from "../stores/adStore.js";
 import {useUserStore} from "../stores/useUserStore.js";
 import {computed, onMounted, ref} from "vue";
-import {RouterLink, useRouter} from "vue-router";
+import {useRouter} from "vue-router";
 
 
 const adStore = useAdStore();
@@ -11,56 +11,57 @@ const interestedPerAd = ref([]);
 const router = useRouter()
 
 const goToChat = (userId, adId) => {
-  router.push({ name: 'Chat', params: { id: userId }, query: { adId } })
+	router.push({name: 'Chat', params: {id: userId}, query: {adId}})
 }
 
-const findOwnedAds = computed(()=>{
-  return adStore.ads.filter(ad => ad.userId == userStore.user.id)
+const findOwnedAds = computed(() => {
+	return adStore.ads.filter(ad => ad.userId == userStore.user.id)
 })
 
-onMounted(async()=>{
- await adStore.fetchAds()
-console.log("find owned ads:",findOwnedAds.value)
+onMounted(async () => {
+	await adStore.fetchAds()
+	console.log("find owned ads:", findOwnedAds.value)
 
-console.log("interestedPerAd:",interestedPerAd.value);
-  
-  for (const ad of findOwnedAds.value) {
-    interestedPerAd.value[ad.id] = await adStore.getInterestedUsers(ad.id)
-  }
- 
+	console.log("interestedPerAd:", interestedPerAd.value);
+
+	for (const ad of findOwnedAds.value) {
+		interestedPerAd.value[ad.id] = await adStore.getInterestedUsers(ad.id)
+	}
+
 })
 </script>
 
 <template>
-  
-    <h1>Innboks</h1>
-    <div class="ad" v-if="findOwnedAds.length > 0">
-      <div v-for="ad in findOwnedAds" :key="ad.id" class="ownedAds">
-        <h2>{{ ad.title }}</h2>
-        <p>{{ad.description}}</p>
-       <div v-if="ad.id && ad.isSold">
-        <div  class="sold">Solgt</div>
-       </div>
-         <div>
-          <div>
-          <img :src="ad.images[0]" alt="" />
-        </div>
-        </div>
-        <select v-if="interestedPerAd && interestedPerAd.length > 0" @change="goToChat($event.target.value, ad.id)">
-          <option value="">Velg chat å åpne</option>
-          <option v-for="user in interestedPerAd[ad.id]" :key="user.id" :value="user.id">
-             {{ user.name }}
-          </option>
-        </select>
-        <p v-else>Ingen interesserte</p>
-      </div>
-    </div>
- 
+
+	<h1>Innboks</h1>
+	<div v-if="findOwnedAds.length > 0" class="ad">
+		<div v-for="ad in findOwnedAds" :key="ad.id" class="ownedAds">
+			<h2>{{ ad.title }}</h2>
+			<div v-if="ad.images[0]"><img :src="ad.images[0].imageUrl"></div>
+			<p>{{ ad.description }}</p>
+			<div v-if="ad.id && ad.isSold">
+				<div class="sold">Solgt</div>
+			</div>
+			<div>
+				<div>
+					<img :src="ad.images[0]" alt=""/>
+				</div>
+			</div>
+			<select v-if="interestedPerAd && interestedPerAd.length > 0" @change="goToChat($event.target.value, ad.id)">
+				<option value="">Velg chat å åpne</option>
+				<option v-for="user in interestedPerAd[ad.id]" :key="user.id" :value="user.id">
+					{{ user.name }}
+				</option>
+			</select>
+			<p v-else>Ingen interesserte</p>
+		</div>
+	</div>
+
 </template>
 
 <style scoped>
 
-h1{
+h1 {
 	border-bottom: 5px solid blue;
 }
 
@@ -144,12 +145,13 @@ select {
 }
 
 h2 {
-	background-color: #007bff;
+	background-color: deepskyblue;
 	color: white;
 	border-radius: 10px;
 	padding: 10px 15px;
 	font-size: 1.8rem;
 	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+	opacity: 111.2;
 }
 
 p {

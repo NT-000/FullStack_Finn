@@ -222,7 +222,7 @@ const handleClickImg = (arrow) => {
 			</div>
 			<div>
 				<RouterLink v-if="seller && userStore.$state.user.id === seller.id" :to="{name: 'Profile'}"><h3
-						v-if="seller">{{ seller.name }}</h3></RouterLink>
+						v-if="seller"><img :src="seller.profileImageUrl">{{ seller.name }}</h3></RouterLink>
 			</div>
 			<div class="userMap">
 				<div v-if="seller && userStore.$state.user.id !== seller.id && !currentAd.isSold">
@@ -233,7 +233,7 @@ const handleClickImg = (arrow) => {
 			</div>
 		</div>
 		<div class="container">
-			
+
 			<div class="info">
 
 				<div v-if="currentAd && adId">
@@ -251,8 +251,10 @@ const handleClickImg = (arrow) => {
 										   style="color: red; cursor: pointer;"></i>
 									</div>
 								</div>
-								<div v-if="currentAd.images.length > 1" class="arrow-left" @click="handleClickImg('left')"><i class="fa-solid fa-angles-left"></i></div>
-								<div v-if="currentAd.images.length > 1" class="arrow-right" @click="handleClickImg('right')"><i class="fa-solid fa-angles-right"></i></div>
+								<div v-if="currentAd.images.length > 1" class="arrow-left" @click="handleClickImg('left')"><i
+										class="fa-solid fa-angles-left"></i></div>
+								<div v-if="currentAd.images.length > 1" class="arrow-right" @click="handleClickImg('right')"><i
+										class="fa-solid fa-angles-right"></i></div>
 								<div v-if="currentAd?.images && currentAd.images.length > 1" class="imagesReel">
 									<div v-for="(image, index) in currentAd.images" :key="image.id" class="img">
 										<img :src="image.imageUrl" alt="Ad image" @click="currentImageIndex = index"/>
@@ -260,12 +262,12 @@ const handleClickImg = (arrow) => {
 									<div>
 									</div>
 									<br>
-									
-								   </div>
-								    </div>
-									 <div  class="map">
-									 <div ref="mapContainer" style="height: 250px; width: 400px; border-radius: 10px;"></div>
-							      </div>
+
+								</div>
+							</div>
+							<div class="map">
+								<div ref="mapContainer" style="height: 250px; width: 400px; border-radius: 10px;"></div>
+							</div>
 							<label>Sted:</label>
 							<div>{{ currentAd.locationName }}</div>
 							<br>
@@ -312,7 +314,7 @@ const handleClickImg = (arrow) => {
 
 					</form>
 					<div v-if="isOwner && adStore.interestedUsers.length > 0" class="info">
-						<h3>Kjøper:  {{ reviewer.name }}</h3>
+						<h3 v-if="reviewer">Kjøper: {{ reviewer.name }}</h3>
 						<select v-if="!currentAd.isSold" v-model="selectedBuyerId">
 							<option disabled value="">Velg kjøper</option>
 							<option v-for="user in adStore.interestedUsers" :key="user.id" :value="user.id">
@@ -334,7 +336,7 @@ const handleClickImg = (arrow) => {
 					<RouterLink :to="{name:'UserProfile', params:{id:reviewer.id}}">
 						<div v-if="reviewer"><img :src="reviewer.profileImageUrl">{{ reviewer.name }}</div>
 					</RouterLink>
-					<div >{{ adReview.comment }}</div>
+					<div>{{ adReview.comment }}</div>
 					<div v-html="starRating.getStars(adReview.rating)"></div>
 					<div>{{ dateFormat.formatDate(adReview.createdAt) }}</div>
 				</div>
@@ -367,6 +369,10 @@ const handleClickImg = (arrow) => {
 
 }
 
+a {
+	color: white;
+}
+
 .img :hover {
 	border: 5px solid #4a90e2;
 	opacity: 1.7;
@@ -377,19 +383,19 @@ const handleClickImg = (arrow) => {
 .arrow-left {
 	position: absolute;
 	top: 25vh;
-	left: 1vw;
+	left: -5vw;
+
 }
 
 .arrow-right {
 	position: absolute;
 	top: 25vh;
-	right: 1vw;
+	right: -5vw;
 }
 
 .image-box {
 	display: inline-block;
 	position: relative;
-	font-size: 20px;
 
 }
 
@@ -400,7 +406,7 @@ const handleClickImg = (arrow) => {
 }
 
 .title {
-	background-color: gray;
+	background-color: lightskyblue;
 	border-radius: 10px;
 	padding: 10px;
 	margin-bottom: 10px;
@@ -436,7 +442,7 @@ h1 {
 }
 
 .mainImage {
-	height: 55vh;
+	height: 35vh;
 	width: auto;
 	background-color: white;
 	border-radius: 10px;
@@ -449,7 +455,7 @@ h1 {
 	flex-wrap: wrap;
 	justify-content: center;
 	padding: 10px;
-	
+
 }
 
 .imageReel img {
@@ -539,14 +545,14 @@ body {
 
 i {
 	padding: 10px;
-	font-size: 30px;
+	font-size: 5rem;
 	color: black;
 }
 
 i:hover {
 	color: white;
 	transition: 0.3s;
-	transform: scale(1.2);
+	transform: scale(1.5);
 }
 
 button:hover {
@@ -577,8 +583,8 @@ textarea {
 	border-radius: 10px;
 }
 
-.adReview img{
-border-radius: 10rem;
+.adReview img {
+	border-radius: 10rem;
 	height: 2rem;
 	width: 2rem;
 }

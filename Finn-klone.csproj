@@ -20,7 +20,7 @@
 
     <ItemGroup>
         <Folder Include="Backend\Data\"/>
-        <Folder Include="wwwroot\adImages\" />
+        <Folder Include="wwwroot\adImages\"/>
     </ItemGroup>
 
 </Project>
