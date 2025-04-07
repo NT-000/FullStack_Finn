@@ -31,7 +31,7 @@ onMounted(async () => {
 
 <template>
 
-	<AdChat v-if="adId" :adId="adId" :receiverUser="receiverUser"/>
+	<AdChat v-if="adId && receiverUser" :adId="adId" :receiverUser="receiverUser"/>
 </template>
 
 <style scoped>

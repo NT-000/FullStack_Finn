@@ -1,6 +1,7 @@
 import {defineStore} from 'pinia';
 import axios from 'axios';
 
+const currentPath = window.location.pathname;
 
 export const useUserStore = defineStore('user', {
     state: () => ({
@@ -16,8 +17,11 @@ export const useUserStore = defineStore('user', {
                 console.log("user from backend:", res.data);
                 this.user = res.data;
             } catch (err) {
-                if (err.response && err.response.status === 401) {
-                    console.error("user not logged in");
+                if (err.response.status === 401) {
+                    if (currentPath !== '/') {
+                        console.log("bruker ikke logget inn");
+                    }
+
                 } else {
                     console.error("something went wrong", err);
                 }

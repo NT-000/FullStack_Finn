@@ -1,9 +1,11 @@
 using System.Data;
 using System.Globalization;
 using Dapper;
-using Finn_klone;
+using Finn_klone.Backend.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
+namespace Finn_klone.Backend.Controllers;
 
 [Route("api/ads")]
 [ApiController]
@@ -21,58 +23,79 @@ public class AdController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAds()
     {
-        var query = @"
+        try
+        {
+            var query = @"
         SELECT a.*, u.Name, u.Email, u.Rating
         FROM Ads a
         INNER JOIN Users u ON u.Id = a.UserId";
 
-        var ads = await _db.QueryAsync<Ad>(query);
-        foreach (var ad in ads)
-        {
-            var images = await _db.QueryAsync<AdImage>(
-                "SELECT * FROM AdImages WHERE AdId = @AdId", new { AdId = ad.Id });
-            ad.Images = images.ToList();
-        }
+            var ads = await _db.QueryAsync<Ad>(query);
+            foreach (var ad in ads)
+            {
+                var images = await _db.QueryAsync<AdImage>(
+                    "SELECT * FROM AdImages WHERE AdId = @AdId", new { AdId = ad.Id });
+                ad.Images = images.ToList();
+            }
 
-        return Ok(ads);
+            return Ok(ads);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     // Henter en annonse basert på ID
     [HttpGet("{id}")]
     public async Task<IActionResult> GetAd(int id)
     {
-        var query = "SELECT * FROM Ads WHERE Id = @Id";
-        var ad = await _db.QueryFirstOrDefaultAsync<Ad>(query, new { Id = id });
+        try
+        {
+            var query = "SELECT * FROM Ads WHERE Id = @Id";
+            var ad = await _db.QueryFirstOrDefaultAsync<Ad>(query, new { Id = id });
 
-        if (ad == null)
-            return NotFound("ad is null.");
+            if (ad == null)
+                return NotFound("ad is null.");
 
-        var queryImages = "SELECT * FROM AdImages WHERE AdId = @AdId";
-        var images = await _db.QueryAsync<AdImage>(queryImages, new { AdId = id });
-        ad.Images = images.ToList();
-        return Ok(ad);
+            var queryImages = "SELECT * FROM AdImages WHERE AdId = @AdId";
+            var images = await _db.QueryAsync<AdImage>(queryImages, new { AdId = id });
+            ad.Images = images.ToList();
+            return Ok(ad);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [Authorize]
     [HttpGet("bought")]
     public async Task<IActionResult> GetBoughtAds()
     {
-        var userIdClaim = User.FindFirst("id");
-        if (userIdClaim == null) return Unauthorized("User not found in token");
-
-        var buyerId = int.Parse(userIdClaim.Value);
-
-        var query = @"SELECT * FROM Ads WHERE BuyerId = @BuyerId AND isSold = 1";
-        var boughtAds = await _db.QueryAsync<Ad>(query, new { BuyerId = buyerId });
-
-        foreach (var ad in boughtAds)
+        try
         {
-            var images = await _db.QueryAsync<AdImage>(
-                "SELECT * FROM AdImages WHERE AdId = @AdId", new { AdId = ad.Id });
-            ad.Images = images.ToList();
-        }
+            var userIdClaim = User.FindFirst("id");
+            if (userIdClaim == null) return Unauthorized("User not found in token");
 
-        return Ok(boughtAds);
+            var buyerId = int.Parse(userIdClaim.Value);
+
+            var query = @"SELECT * FROM Ads WHERE BuyerId = @BuyerId AND isSold = 1";
+            var boughtAds = await _db.QueryAsync<Ad>(query, new { BuyerId = buyerId });
+
+            foreach (var ad in boughtAds)
+            {
+                var images = await _db.QueryAsync<AdImage>(
+                    "SELECT * FROM AdImages WHERE AdId = @AdId", new { AdId = ad.Id });
+                ad.Images = images.ToList();
+            }
+
+            return Ok(boughtAds);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     //Post
@@ -218,8 +241,7 @@ BuyerId = @BuyerId
            WHERE Id = @Id";
 
         var rowsAffected = await _db.ExecuteAsync(query, new { dto.BuyerId, Id = id });
-        if (rowsAffected > 0) return Ok("Ad marked as sold");
-        return StatusCode(500, "ad not updated.");
+        return rowsAffected > 0 ? Ok("Ad marked as sold") : StatusCode(500, "ad not updated.");
     }
 
     //oppdatere kordinater

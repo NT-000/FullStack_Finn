@@ -217,18 +217,20 @@ const handleClickImg = (arrow) => {
 			<div class="user">
 				<RouterLink v-if="seller && userStore.$state.user.id !== seller.id"
 				            :to="{name: 'UserProfile', params:{id:seller.id}}"><h3 v-if="seller">{{ seller.name }}
-					<img
-							:src="seller.profileImageUrl"></h3></RouterLink>
+					<img :src="seller.profileImageUrl"></h3>
+				</RouterLink>
 			</div>
 			<div>
 				<RouterLink v-if="seller && userStore.$state.user.id === seller.id" :to="{name: 'Profile'}"><h3
-						v-if="seller"><img :src="seller.profileImageUrl">{{ seller.name }}</h3></RouterLink>
+						v-if="seller"><img :src="seller.profileImageUrl">{{ seller.name }}</h3>
+				</RouterLink>
 			</div>
 			<div class="userMap">
 				<div v-if="seller && userStore.$state.user.id !== seller.id && !currentAd.isSold">
 					<RouterLink :to="{name:'Chat', params:{id:seller.id}, query:{adId:currentAd.id}}"
 					            class="messageRL"><i
-							class="fa-solid fa-envelope fa-bounce">Send melding</i></RouterLink>
+							class="fa-solid fa-envelope">Send melding</i>
+					</RouterLink>
 				</div>
 			</div>
 		</div>
@@ -245,7 +247,7 @@ const handleClickImg = (arrow) => {
 							</div>
 							<div v-if="currentAd?.images && currentAd.images.length > 0" class="image-box">
 								<img :src="currentAd.images[currentImageIndex].imageUrl" alt="" class="mainImage"/>
-								<div v-if="currentAd && favStore" class="favorite">
+								<div v-if="currentAd && favStore && !isOwner && !currentAd.isSold" class="favorite">
 									<div @click="favStore.toggleFav(currentAd.id)">
 										<i :class="favStore.isFavorite(currentAd.id) ? 'fa-solid fa-beat': 'fa-regular'" class="fa-heart"
 										   style="color: red; cursor: pointer;"></i>
@@ -280,13 +282,16 @@ const handleClickImg = (arrow) => {
 							<label>Kategori:</label>
 							<div v-if="!isUpdating">{{ currentAd.category }}</div>
 							<select v-if="isUpdating" v-model="currentAd.category">
-								<option>Sykler</option>
+								<option>Bøker</option>
 								<option>Elektronikk</option>
-								<option>Møbler</option>
-								<option>Klær</option>
+								<option>Annet</option>
+								<option>Klesplagg</option>
 								<option>Våpen</option>
-								<option>Hånd-våpen</option>
-								<option>Treningsutstyr</option>
+								<option>Leker</option>
+								<option>Instrumenter</option>
+								<option>Bolig</option>
+								<option>Verktøy</option>
+								<option>Næring</option>
 							</select>
 						</div>
 						<br>
@@ -315,9 +320,10 @@ const handleClickImg = (arrow) => {
 					</form>
 					<div v-if="isOwner && adStore.interestedUsers.length > 0" class="info">
 						<h3 v-if="reviewer">Kjøper: {{ reviewer.name }}</h3>
-						<select v-if="!currentAd.isSold" v-model="selectedBuyerId">
+						<select v-if="!currentAd.isSold && userStore.user.id" v-model="selectedBuyerId">
 							<option disabled value="">Velg kjøper</option>
-							<option v-for="user in adStore.interestedUsers" :key="user.id" :value="user.id">
+							<option v-for="user in adStore.interestedUsers.filter(u => u.id !== userStore.user.id)" :key="user.id"
+							        :value="user.id">
 								{{ user.name }}
 							</option>
 						</select>
@@ -341,7 +347,7 @@ const handleClickImg = (arrow) => {
 					<div>{{ dateFormat.formatDate(adReview.createdAt) }}</div>
 				</div>
 			</div>
-			<div>
+			<div class="createReview">
 				<CreateReview
 						v-if="currentAd && currentAd.isSold && userStore.$state.user.id === currentAd.buyerId && !adReview"
 						:currentAd="currentAd" class="innerReview"/>
@@ -530,6 +536,7 @@ h3 img {
 
 .messageRL {
 	color: white;
+	font-size: 0.5rem;
 }
 
 .messageRL:hover {
@@ -545,7 +552,7 @@ body {
 
 i {
 	padding: 10px;
-	font-size: 5rem;
+	font-size: 1rem;
 	color: black;
 }
 
@@ -589,4 +596,7 @@ textarea {
 	width: 2rem;
 }
 
+.createReview {
+	position: relative;
+}
 </style>

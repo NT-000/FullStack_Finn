@@ -1,17 +1,18 @@
 <script setup>
 import {ref} from 'vue';
 import axios from "axios";
-import router from "../../router/index.js";
+import {useRouter} from "vue-router";
 
 const name = ref('');
 const email = ref('');
 const password = ref('');
 const file = ref(null);
+const router = useRouter();
 
 const props = defineProps({
 	isUser: Boolean
-})
-const emit = defineEmits(['update:isUser'])
+});
+const emit = defineEmits(['update:isUser']);
 
 function handleFileChange(e) {
 	file.value = e.target.files[0];
@@ -27,99 +28,146 @@ async function handleSubmit() {
 	try {
 		const res = await axios.post('/api/users/register', formData, {withCredentials: true});
 		console.log("response data reg user:", res.data);
-		router.push('/');
+		router.push('/login');
 	} catch (err) {
 		console.log("Registration failed", err);
 	}
 }
 
 const toggle = () => {
-	emit('update:isUser', true)
-}
+	emit('update:isUser', true);
+};
 </script>
 
 <template>
-	<div class="container">
-		<form class="form" @submit.prevent="handleSubmit">
-			<label class="form-label" for="name">Navn</label>
-			<input v-model="name" placeholder="Navn..." required type="text"/>
-			<label class="form-label" for="password">Passord</label>
-			<input v-model="password" placeholder="Passord..." required type="new-password"/>
-			<label class="form-label" for="email">Email</label>
-			<input v-model="email" placeholder="Email..." required type="text"/>
-			<label>Bilder</label>
-			<button>
-				<input hidden="" type="file" @change="handleFileChange"/>
-				<span>Legg til <i class="fa-solid fa-image"></i></span>
+	<div class="signup-container">
+		<form class="signup-form" @submit.prevent="handleSubmit">
+			<h2>Lag ny bruker</h2>
+
+			<label for="name">Navn</label>
+			<input v-model="name" placeholder="Fornavn Etternavn" required type="text"/>
+
+			<label for="email">E-post</label>
+			<input v-model="email" placeholder="epost@domene.no" required type="email"/>
+
+			<label for="password">Passord</label>
+			<input v-model="password" placeholder="••••••••" required type="password"/>
+
+			<label for="file">Profilbilde</label>
+			<div class="file-upload">
+				<input id="fileInput" hidden type="file" @change="handleFileChange"/>
+				<label class="file-label" for="fileInput">
+					<i class="fa-solid fa-image"></i> Last opp bilde
+				</label>
+			</div>
+
+			<button class="submit-btn" type="submit">
+				Registrer <i class="fa-solid fa-paper-plane"></i>
 			</button>
-			<br>
-			<button class="btn waves-effect waves-light" name="action" type="submit">Registrer
-				<i class="material-icons right"><i class="fa-solid fa-paper-plane"></i></i>
-			</button>
-			<button type="button" @click="toggle">Tilbake til innlogging</button>
+			<button class="ghost-btn" type="button" @click="toggle">Tilbake til innlogging</button>
 		</form>
 	</div>
-
 </template>
 
 <style scoped>
-.container {
-	background: lightskyblue;
-	padding: 40px;
-	border-radius: 10px;
-	margin-left: 40vw;
-	width: 100vw;
-	height: 50vh;
+
+.signup-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 100vh;
 }
 
-.form {
+.signup-form {
+	background: rgba(255, 255, 255, 0.15);
+	backdrop-filter: blur(12px);
+	padding: 40px;
+	border-radius: 20px;
+	width: 20vw;
+	max-width: 30vw;
+	color: white;
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
-	align-items: center;
+	gap: 20px;
+}
+
+h2 {
+	text-align: center;
+	font-size: 1.8rem;
+	margin-bottom: 10px;
+}
+
+label {
+	font-weight: bold;
+	font-size: 1rem;
+	margin-top: 10px;
 }
 
 input {
+	padding: 12px;
 	border: none;
-	background: ghostwhite;
-	border-radius: 5px;
-	padding: 20px;
-	font-size: 20px;
-	font-weight: bolder;
-	color: black;
-	width: 100%;
+	border-radius: 10px;
+	background: rgba(255, 255, 255, 0.9);
+	color: #333;
+	font-size: 1rem;
+	transition: box-shadow 0.2s ease;
 }
 
 input:focus {
 	outline: none;
-	border: none;
+	box-shadow: 0 0 0 3px #00b4db;
 }
 
-input:hover {
-	outline: none;
-	border: blue;
+.file-upload {
+	display: flex;
+	justify-content: center;
 }
 
-
-label {
-	color: black;
+.file-label {
+	background-color: rgba(255, 255, 255, 0.9);
+	color: #333;
+	padding: 10px 20px;
+	border-radius: 8px;
+	cursor: pointer;
 	font-weight: bold;
-	font-size: 30px;
-	padding: 20px;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	transition: 0.3s;
 }
+
+.file-label:hover {
+	background-color: #e0f4ff;
+}
+
 
 button {
+	padding: 12px;
+	border-radius: 10px;
 	border: none;
-	margin-bottom: 5px;
-	font-size: 1.2rem;
+	cursor: pointer;
+	font-weight: bold;
+	font-size: 1rem;
+	transition: 0.3s ease;
 }
 
-button:hover {
-	transition: filter 300ms;
-	filter: drop-shadow(0 0 2em #646cffaa);
+.submit-btn {
+	background-color: #00b4db;
+	color: white;
 }
 
-.buttonRegister:hover {
+.submit-btn:hover {
+	background-color: #008bb5;
+}
 
+.ghost-btn {
+	background-color: transparent;
+	border: 2px solid white;
+	color: white;
+}
+
+.ghost-btn:hover {
+	background-color: rgba(255, 255, 255, 0.2);
 }
 </style>

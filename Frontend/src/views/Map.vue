@@ -6,8 +6,10 @@ import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png'
 import iconUrl from 'leaflet/dist/images/marker-icon.png'
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png'
 import {useAdStore} from "../stores/adStore.js";
+import {useRoute} from "vue-router";
+import router from "../router/index.js";
 
-L.Marker.prototype.options.icon = L.icon({
+const customIcon = L.icon({
 	iconRetinaUrl,
 	iconUrl,
 	shadowUrl,
@@ -22,13 +24,17 @@ const mapContainer = ref(null)
 const map = ref(null)
 const categoryMarkers = ref({});
 const activeCategories = ref([])
+const route = useRoute()
 
 
 onMounted(async () => {
 	// oppretter selve kartet
 	// start-koordinater er satt til Oslo.
 	await adStore.fetchAds();
-	map.value = L.map(mapContainer.value).setView([59.91, 10.74], 10)
+	map.value = L.map(mapContainer.value, {
+		zoomAnimation: false
+	}).setView([59.91, 10.74], 10)
+
 
 	// layoyt
 	L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -40,7 +46,7 @@ onMounted(async () => {
 
 const handleCat = (cat) => {
 	if (categoryMarkers.value[cat]) {
-		categoryMarkers.value[cat].forEach(marker => marker.remove());
+		categoryMarkers.value[cat].forEach(marker => marker.remove()); // kunne brukt L.layerGroup
 		delete categoryMarkers.value[cat];
 		activeCategories.value = activeCategories.value.filter(category => category !== cat);
 	} else {
@@ -49,14 +55,20 @@ const handleCat = (cat) => {
 			if (ad.latitude && ad.longitude && ad.category === cat) {
 				const marker = L.marker([ad.latitude, ad.longitude])
 						.addTo(map.value)
-						.bindPopup(`${ad.title} - ${ad.locationName}`);
+						.bindPopup(`<img src="${ad.images.length ? ad.images[0].imageUrl : ""}" style="width: 100px"> <div class="ad-title">${ad.title} - ${ad.locationName}</div>`)
+
 				markers.push(marker);
 			}
 		}
 		categoryMarkers.value[cat] = markers;
+		console.log("active cats", activeCategories.value);
 		activeCategories.value.push(cat);
 	}
 };
+
+const goToAd = (adId) => {
+	router.push({name: 'AdDetails', params: {id: adId}})
+}
 
 watchEffect(async () => {
 
@@ -66,60 +78,86 @@ watchEffect(async () => {
 
 <template>
 	<div class="container">
-		<h1>Alle annonser</h1>
-		<h3>
-			<button :class="{active: activeCategories.includes('Sykler')}" @click="handleCat('Sykler')">Sykler</button>
-			<button :class="{active: activeCategories.includes('Elektronikk')}" @click="handleCat('Elektronikk')">
-				Elektronikk
+		<h1>Kart over annonser</h1>
+
+		<div class="buttons">
+			<button
+					v-for="cat in ['Bøker', 'Elektronikk', 'Annet', 'Klesplagg', 'Våpen', 'Leker', 'Instrumenter','Bolig','Verktøy','Næring']"
+					:key="cat"
+					:class="{ active: activeCategories.includes(cat) }"
+					@click="handleCat(cat)"
+			>
+				{{ cat }}
 			</button>
-			<button :class="{active: activeCategories.includes('Møbler')}" @click="handleCat('Møbler')">Møbler</button>
-			<button :class="{active: activeCategories.includes('Klær')}" @click="handleCat('Klær')">Klær</button>
-			<button :class="{active: activeCategories.includes('Våpen')}" @click="handleCat('Våpen')">Våpen</button>
-			<button :class="{active: activeCategories.includes('Hånd-våpen')}" @click="handleCat('Hånd-våpen')">Hånd-våpen
-			</button>
-			<button :class="{active: activeCategories.includes('Treningsutstyr')}" @click="handleCat('Treningsutstyr')">
-				Treningsutstyr
-			</button>
-		</h3>
-		<div ref="mapContainer" style="width:45vw; border-radius: 10px; height:45vh;">
+
 		</div>
+
+		<div ref="mapContainer" class="mapbox"></div>
 	</div>
 </template>
 
+
 <style scoped>
-button {
-	display: inline-flex;
-	justify-content: center;
+.container {
+	display: flex;
+	flex-direction: column;
 	align-items: center;
-	gap: 1rem;
-	margin: 0.3rem;
-	padding: 0.5rem 1rem;
-	border: 2px solid transparent;
-	transition: transform 0.2s, border 0.2s, background-color 0.2s;
-	border-radius: 10px;
-}
-
-button:hover {
-	transform: scale(1.1);
-}
-
-button.active {
-	border: 2px solid #004080;
-	background-color: #4a90e2;
-	color: white;
+	padding: 30px;
 }
 
 h1 {
 	font-family: "Comic Sans MS", cursive;
-	font-size: 6rem;
+	font-size: 3rem;
+	margin-bottom: 20px;
+	text-align: center;
+	color: #00263b;
 }
 
-h3 {
-	background-color: lightskyblue;
-	padding: 20px;
-	text-align: center;
-	border-radius: 10px;
-	display: flex;
-	justify-content: space-evenly;
+.mapbox {
+	width: 90vw;
+	height: 60vh;
+	border-radius: 20px;
+	box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+	margin-top: 20px;
 }
+
+.buttons {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 10px;
+	margin-bottom: 20px;
+}
+
+button {
+	padding: 10px 20px;
+	font-size: 1rem;
+	font-weight: bold;
+	border-radius: 10px;
+	cursor: pointer;
+	border: none;
+	background-color: #d4e8f4;
+	transition: all 0.2s ease;
+}
+
+button:hover {
+	transform: scale(1.05);
+	background-color: #b6def5;
+}
+
+button.active {
+	background-color: #4a90e2;
+	color: white;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+
+button.clear {
+	background-color: crimson;
+	color: white;
+}
+
+.ad-title {
+	font-family: "Comic Sans MS", cursive;
+}
+
 </style>

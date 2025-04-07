@@ -21,7 +21,7 @@ onMounted(() => {
 		<!--    <div class="headerNav">-->
 		<!--    <Header/>-->
 		<!--    </div>-->
-		<NavBar/>
+		<NavBar v-if="store.isLoggedIn"/>
 		<RouterView :key="$route.fullPath"/>
 		<Footer/>
 	</div>

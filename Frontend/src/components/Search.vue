@@ -4,7 +4,6 @@ import {getRoute} from "../composables/getRoute.js";
 
 const search = ref('');
 const {items: users, loading, error, fetchData} = getRoute('/users');
-const isPerson = ref(false);
 
 const filteredSearch = computed(() => {
 	const searchTerm = search.value.toLowerCase();

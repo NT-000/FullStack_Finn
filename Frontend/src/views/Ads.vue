@@ -32,6 +32,8 @@ const filteredUsers = computed(() => {
 	if (isPerson.value && search.value.length > 0) {
 		return users.value.filter(user =>
 				user.name?.toLowerCase().includes(search.value.toLowerCase()))
+	} else {
+		return []
 	}
 
 });
@@ -58,13 +60,16 @@ const filteredAds = computed(() => {
 		<label><input v-model="isAd" type="checkbox"/> Annonser</label>
 		<select v-model="category">
 			<option></option>
-			<option>Sykler</option>
+			<option>Bøker</option>
 			<option>Leker</option>
 			<option>Electronikk</option>
-			<option>Møbler</option>
-			<option>Klær</option>
+			<option>Annet</option>
+			<option>Klesplagg</option>
 			<option>Skytevåpen</option>
-			<option>Hånd-våpen</option>
+			<option>Instrumenter</option>
+			<option>Bolig</option>
+			<option>Verktøy</option>
+			<option>Næring</option>
 		</select>
 	</div>
 
@@ -87,7 +92,7 @@ const filteredAds = computed(() => {
 
 			<div v-for="ad in filteredAds" :key="ad.id" class="ad">
 				<RouterLink :to="{ name: 'AdDetails', params: { id: ad.id } }">
-					{{ ad.title }} - {{ ad.category }}
+					<img :src="ad.images[0].imageUrl"> {{ ad.title }} - {{ ad.category }}
 				</RouterLink>
 			</div>
 		</div>

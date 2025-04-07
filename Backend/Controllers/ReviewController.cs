@@ -1,9 +1,10 @@
 using System.Data;
 using Dapper;
+using Finn_klone.Backend.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Finn_klone.Controllers;
+namespace Finn_klone.Backend.Controllers;
 
 [Route("api/reviews")]
 [ApiController]
@@ -21,18 +22,33 @@ public class ReviewController : ControllerBase
     [HttpGet("{userId}")]
     public async Task<IActionResult> GetReviewsForUser(int userId)
     {
-        var query = "SELECT * FROM Reviews WHERE ToUserId = @UserId ORDER BY CreatedAt DESC";
-        var reviews = await _db.QueryAsync<Review>(query, new { UserId = userId });
-        return Ok(reviews);
+        try
+        {
+            var query = "SELECT * FROM Reviews WHERE ToUserId = @UserId ORDER BY CreatedAt DESC";
+            var reviews = await _db.QueryAsync<Review>(query, new { UserId = userId });
+            return Ok(reviews);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpGet("ad/{adId}")]
     public async Task<IActionResult> GetReviewsForAd(int adId)
     {
-        var query = "SELECT * FROM Reviews WHERE AdId = @AdId";
-        var reviews = await _db.QueryAsync<Review>(query, new { AdId = adId });
-        return Ok(reviews);
+        try
+        {
+            var query = "SELECT * FROM Reviews WHERE AdId = @AdId";
+            var reviews = await _db.QueryAsync<Review>(query, new { AdId = adId });
+            return Ok(reviews);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
+
 
     //Post
 

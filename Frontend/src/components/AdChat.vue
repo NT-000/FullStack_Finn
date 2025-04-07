@@ -6,7 +6,7 @@ const chatStore = useChatStore();
 const newMessage = ref('');
 const props = defineProps({
 	receiverUser: Object,
-	adId: String,
+	adId: [String, Number],
 })
 
 const conversation = computed(() => chatStore.conversation(props.receiverUser.id, props.adId))

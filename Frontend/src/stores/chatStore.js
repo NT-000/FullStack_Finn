@@ -77,7 +77,7 @@ export const useChatStore = defineStore('chatStore', {
                 console.error('Could not load conversation:', err)
             }
         },
-
+        // sender til hub i backend
         async sendMessage(receiverId, content, adId = null) {
             const userStore = useUserStore()
             const senderId = userStore.user?.id

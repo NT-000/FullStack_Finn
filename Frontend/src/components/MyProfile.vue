@@ -4,13 +4,12 @@ import {useStarRating} from "../composables/useStarRating.js";
 import {useAdStore} from "../stores/adStore.js";
 import {getRoute} from "../composables/getRoute.js";
 import {useDateFormat} from "../composables/useFormatDate.js";
-import {useFavStore} from "../stores/favStore.js"
-import AdDetails from "../views/AdDetails.vue";
+import {useFavStore} from "../stores/favStore.js";
 
 const props = defineProps({
 	user: Object,
 	ads: Array,
-})
+});
 
 const favStore = useFavStore();
 const adStore = useAdStore();
@@ -18,16 +17,15 @@ const {getStars} = useStarRating();
 const reviewsForUser = getRoute(`/reviews/${props.user.id}`);
 const users = getRoute(`/users`);
 const dateFormat = useDateFormat();
-const isActiveReviews = ref(true)
+
+const isActiveReviews = ref(true);
 const isActiveAds = ref(false);
 const isActiveBoughtAds = ref(false);
 const isFavoriteAds = ref(false);
 
-
 const getReviewer = (fromUserId) => {
-
-	return users.items.value.find(user => user.id === fromUserId)
-}
+	return users.items.value.find((user) => user.id === fromUserId);
+};
 
 const calculateAverageRating = computed(() => {
 	const reviews = reviewsForUser.items.value;
@@ -42,292 +40,213 @@ const calculateAverageRating = computed(() => {
 })
 
 onMounted(async () => {
-	await adStore.fetchBoughtAds()
-	await reviewsForUser.fetchData()
-	await users.fetchData()
-	await favStore.fetchFavorites()
-})
+	await adStore.fetchBoughtAds();
+	await reviewsForUser.fetchData();
+	await users.fetchData();
+	await favStore.fetchFavorites();
+});
 </script>
 
-
 <template>
+	<section v-if="user" class="profile-container">
+		<div class="profile-card">
+			<img :src="user.profileImageUrl" alt="Profilbilde" class="profile-image"/>
+			<h2>{{ user.name }}</h2>
+			<p><strong>E-post:</strong> {{ user.email }}</p>
+			<p><strong>Vurdering:</strong> <span v-html="getStars(calculateAverageRating)"></span></p>
+		</div>
 
-	<div v-if="user && user.name" class="container">
-		<h2>Min konto</h2>
-		<img :src="user.profileImageUrl" alt="profilePic" class="profilePic"/>
-		<p><strong>Navn:</strong> {{ user.name }}</p>
-		<p><strong>Email:</strong> {{ user.email }}</p>
-		<p><strong>Vurdering:</strong> <span v-html="getStars(calculateAverageRating)"></span></p>
-	</div>
+
+		<h3 class="section-header" @click="isFavoriteAds = !isFavoriteAds">
+			<span>Mine favoritter</span>
+			<i class="fa-solid fa-heart fa-beat"></i>
+		</h3>
+		<transition name="fade-slide">
+			<div v-if="isFavoriteAds && favStore.favorites.length" class="ad-list">
+				<div v-for="fav in favStore.favorites" :key="fav.id" class="ad-card">
+					<RouterLink :to="{ name: 'AdDetails', params: { id: fav.id } }">
+						<img :src="fav.images[0]?.imageUrl" alt="img"/>
+						<h4>{{ fav.title }}</h4>
+					</RouterLink>
+				</div>
+			</div>
+		</transition>
+
+
+		<h3 class="section-header" @click="isActiveAds = !isActiveAds">
+			<span>Aktive annonser</span>
+			<i class="fa-solid fa-bars"></i>
+		</h3>
+		<transition name="fade-slide">
+			<div v-if="isActiveAds && ads.length" class="ad-list">
+				<div v-for="ad in ads" :key="ad.id" class="ad-card">
+					<RouterLink :to="{ name: 'AdDetails', params: { id: ad.id } }">
+						<img :src="ad.images[0]?.imageUrl" alt="img"/>
+						<h4>{{ ad.title }}</h4>
+					</RouterLink>
+				</div>
+			</div>
+		</transition>
+
+
+		<h3 class="section-header" @click="isActiveBoughtAds = !isActiveBoughtAds">
+			<span>Mine kjøp</span>
+			<i class="fa-solid fa-cart-shopping"></i>
+		</h3>
+		<transition name="fade-slide">
+			<div v-if="isActiveBoughtAds && adStore.adsBought.length" class="ad-list">
+				<div v-for="ad in adStore.adsBought" :key="ad.id" class="ad-card">
+					<RouterLink :to="{ name: 'AdDetails', params: { id: ad.id } }">
+						<img :src="ad.images[0].imageUrl" alt="img"/>
+						<h4>{{ ad.title }}</h4>
+					</RouterLink>
+				</div>
+			</div>
+		</transition>
+
+		<h3 class="section-header" @click="isActiveReviews = !isActiveReviews">
+			<span>Anmeldelser</span>
+			<i class="fa-solid fa-comment-dots"></i>
+		</h3>
+		<transition name="fade-slide">
+			<div v-if="isActiveReviews && reviewsForUser.items.value.length" class="review-list">
+				<div v-for="review in reviewsForUser.items.value" :key="review.id" class="review-card">
+					<div v-if="getReviewer(review.fromUserId)" class="review-author">
+						<img :src="getReviewer(review.fromUserId)?.profileImageUrl"/>
+						<RouterLink :to="{ name: 'UserProfile', params: { id: getReviewer(review.fromUserId).id } }">
+							{{ getReviewer(review.fromUserId).name }}
+						</RouterLink>
+					</div>
+					<div class="review-content">
+						<RouterLink :to="{ name: 'AdDetails', params: { id: review.adId } }">
+							<p>{{ review.comment }}</p>
+							<div><span v-html="getStars(review.rating)"></span></div>
+							<small>{{ dateFormat.formatDate(review.createdAt) }}</small>
+						</RouterLink>
+					</div>
+				</div>
+			</div>
+		</transition>
+	</section>
+
 	<div v-else>
-		<i class="fa-solid fa-circle-notch fa-spin"></i>
+		<i class="fa-solid fa-circle-notch fa-spin"></i> Laster profil...
 	</div>
-	<h2 v-if="favStore" @click="isFavoriteAds = !isFavoriteAds">
-		<span>Mine favoritter<i class="fa-solid fa-heart fa-beat"></i></span>
-	</h2>
-	<div class="favList">
-		<div v-if="favStore && favStore.favorites.length > 0 && isFavoriteAds">
-			<div v-for="fav in favStore.favorites" v-if="favStore && favStore.favorites.length > 0" :key="fav.id"
-			     class="adImages">
-				<RouterLink :to="{name: 'AdDetails', params:{id: fav.id}}">
-					<div class="ad">
-						<h6>{{ fav.title }}</h6>
-						<div v-if="fav.images && fav.images.length > 0">
-							<img :src="fav.images[0].imageUrl" alt="img"/>
-						</div>
-					</div>
-				</RouterLink>
-			</div>
-			<div v-else>
-				Ingen annonser
-			</div>
-
-		</div>
-	</div>
-	<h2 @click="isActiveAds=!isActiveAds">
-    <span v-if="!isActiveAds" title="Trykk for å åpne">Aktive annonser<i class="fa-solid fa-bars"
-                                                                         style="padding: 10px"></i></span>
-		<span v-else>Aktive annonser</span>
-	</h2>
-	<div v-if="ads && ads.length && isActiveAds> 0" class="adImages">
-		<div v-for="ad in ads" :key="ad.id" class="adContainer">
-			<RouterLink :to="{name: 'AdDetails', params:{id: ad.id}}">
-				<div class="ad">
-					<h6>{{ ad.title }}</h6>
-					<div v-if="ad.images && ad.images.length > 0">
-						<img :src="ad.images[0].imageUrl" alt="img"/>
-					</div>
-				</div>
-			</RouterLink>
-		</div>
-	</div>
-	<h2 @click="isActiveBoughtAds=!isActiveBoughtAds">
-    <span v-if="!isActiveBoughtAds" title="Trykk for å åpne">Mine Kjøp<i class="fa-solid fa-bars"
-                                                                         style="padding: 10px"></i></span>
-		<span v-else>Mine Kjøp</span>
-	</h2>
-	<div v-if="ads && ads.length > 0 && isActiveBoughtAds" class="myBoughtAds">
-		<div v-for="ad in adStore.adsBought" v-if="adStore.adsBought.length > 0" :key="ad.id" class="adImages">
-			<RouterLink :to="{name: 'AdDetails', params:{id: ad.id}}">
-				<div class="ad">
-					<h6>{{ ad.title }}</h6>
-					<div v-if="ad.images && ad.images.length > 0">
-						<img :src="ad.images[0].imageUrl" alt="img"/>
-					</div>
-				</div>
-			</RouterLink>
-		</div>
-		<div v-else>
-			Ingen annonser
-		</div>
-	</div>
-	<h2 title="Trykk for å åpne" @click="isActiveReviews = !isActiveReviews">Anmeldelser av {{ user.name }}<i
-			class="fa-solid fa-file-pen" style="padding: 5px"></i></h2>
-	<div v-if="reviewsForUser.items.value.length > 0 && isActiveReviews" class="adReview">
-		<div v-for="review in reviewsForUser.items.value" :key="review.id">
-			<div class="innerReview">
-
-				<RouterLink v-if="getReviewer(review.fromUserId)"
-				            :to="{name: 'UserProfile', params:{id: getReviewer(review.fromUserId).id}}">
-					<div v-if="getReviewer(review.fromUserId)" class="review"><img
-							:src="getReviewer(review.fromUserId).profileImageUrl" alt="img"/>{{ getReviewer(review.fromUserId).name }}
-					</div>
-				</RouterLink>
-
-				<RouterLink :to="{name:'AdDetails', params:{id: review.adId}}">
-					<small>{{ review.comment }}</small>
-					<br>
-					<div><span v-html="getStars(review.rating)"></span></div>
-					<small>{{ dateFormat.formatDate(review.createdAt) }}</small>
-				</RouterLink>
-			</div>
-		</div>
-	</div>
-
-
 </template>
 
 <style scoped>
 
-
-.profilePic img:hover {
-	transform: scale(1.2);
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+	transition: all 0.4s ease;
 }
 
-.favList {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
+.fade-slide-enter-from {
+	opacity: 0;
+	transform: translateY(-10px);
 }
 
-.container h2 {
-	margin-bottom: 10px;
-	padding: 5px;
+.fade-slide-leave-to {
+	opacity: 0;
+	transform: translateY(10px);
 }
 
-h2 {
-	cursor: pointer;
-	padding: 5px;
-	margin-left: 10px;
-}
-
-.container p {
-	margin: 5px 0;
-	padding: 5px;
-}
-
-
-.adImages {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	gap: 20px;
-	padding: 10px;
-}
-
-
-.ad {
-	background-color: #98cbe8;
-	color: #ffffff;
-	border: 2px solid blue;
-	border-radius: 8px;
-	padding: 15px;
-	width: 200px;
-	max-width: 175px;
-	max-height: 250px;
-	transition: transform 0.3s, background-color 0.3s, color 0.3s;
-}
-
-
-.ad:hover {
-	background-color: #ffffff;
+.profile-container {
+	max-width: 800px;
+	margin: 40px auto;
+	padding: 20px;
+	background: #e0f4ff;
+	border-radius: 16px;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 	color: #00263b;
+	font-family: 'Segoe UI', sans-serif;
+}
+
+.profile-card {
+	text-align: center;
+	margin-bottom: 30px;
+}
+
+.profile-image {
+	width: 120px;
+	height: 120px;
+	object-fit: cover;
+	border-radius: 50%;
+	border: 4px solid #98cbe8;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+	margin-bottom: 10px;
+}
+
+.section-header {
+	cursor: pointer;
+	font-size: 1.4rem;
+	background-color: #98cbe8;
+	color: white;
+	border-radius: 8px;
+	padding: 10px 15px;
+	margin: 20px 0 10px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.ad-list {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 16px;
+	margin-top: 10px;
+}
+
+.ad-card {
+	background: white;
+	border-radius: 10px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	width: 150px;
+	text-align: center;
+	padding: 10px;
+	transition: transform 0.2s ease;
+}
+
+.ad-card:hover {
 	transform: scale(1.05);
 }
 
-.ad img {
-	width: 100px;
+.ad-card img {
+	width: 100%;
 	height: 100px;
-	max-width: 150px;
-	max-height: 150px;
-	border-radius: 5px;
-	border: 1px solid #e6f2fa;
-	margin-bottom: 10px;
-}
-
-.myActiveAds {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	gap: 20px;
-}
-
-.adReview {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	gap: 20px;
-}
-
-.innerReview {
-	border: 5px solid #98cbe8;
-	display: inline-block;
-	font-family: "Comic Sans MS", cursive;
-	padding: 10px;
-	border-radius: 10px;
-}
-
-.review {
-	font-weight: bolder;
-	padding: 5px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	border-bottom: 3px solid #e6f2fa;
-}
-
-.innerReview:hover {
-}
-
-.innerReview img {
-	height: 50px;
-	width: 50px;
-	border-radius: 25px;
-	border: 3px solid #98cbe8;
-	margin: 10px;
-}
-
-.myBoughtAds {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	gap: 20px;
-}
-
-h2:hover {
-	background-color: #98cbe8;
-	border-radius: 5px;
-}
-
-.container {
-	background-color: #6cb4da;
-	padding: 20px;
-	border-radius: 8px;
-	box-shadow: 0 2px 4px rgba(2, 3, 2, 0.1);
-	max-width: 600px;
-	margin: 20px auto;
-	text-align: center;
-	color: #00263b;
-	border: 5px solid #00263b;
-
-}
-
-
-.profilePic {
-	height: 150px;
-	width: 150px;
-	border-radius: 50%;
-	border: 5px solid #98cbe8;
 	object-fit: cover;
-	margin-bottom: 20px;
+	border-radius: 8px;
 }
 
-.container h2 {
-	margin-bottom: 10px;
-	padding: 5px;
+.review-list {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
 }
 
-h2 {
-	cursor: pointer;
+.review-card {
+	background-color: #ffffff;
+	border-left: 5px solid #98cbe8;
+	padding: 12px;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.container p {
-	margin: 5px 0;
-	padding: 5px;
+.review-author {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 6px;
+	font-weight: bold;
 }
 
-
-.ad img {
-	width: 100px;
-	height: 100px;
-	max-width: 150px;
-	max-height: 150px;
-	border-radius: 5px;
-	border: 1px solid #e6f2fa;
-	margin-bottom: 10px;
+.review-author img {
+	width: 40px;
+	height: 40px;
+	object-fit: cover;
+	border-radius: 50%;
+	border: 2px solid #98cbe8;
 }
-
-.innerReview img {
-	height: 50px;
-	width: 50px;
-	border-radius: 25px;
-	border: 3px solid #98cbe8;
-	margin: 10px;
-}
-
-h2:hover {
-	background-color: #98cbe8;
-	border-radius: 5px;
-}
-
 </style>

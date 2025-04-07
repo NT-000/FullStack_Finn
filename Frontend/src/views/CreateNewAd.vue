@@ -1,26 +1,28 @@
 <script setup>
-import {computed, onMounted, ref} from 'vue'
-import axios from 'axios'
+import {computed, onMounted, ref} from 'vue';
+import axios from 'axios';
 import {useUserStore} from '../stores/useUserStore.js';
-import {useRouter} from "vue-router";
+import {useRouter} from 'vue-router';
 
 const userStore = useUserStore();
+const router = useRouter();
 
-const title = ref('')
-const description = ref('')
-const category = ref('')
-const condition = ref('')
-const price = ref(0)
-const userId = computed(() => userStore.user.id || null);
-const files = ref([]) // filer brukeren laster opp
-const message = ref('')
-const error = ref('')
+const title = ref('');
+const description = ref('');
+const category = ref('');
+const condition = ref('');
+const price = ref(0);
+const files = ref([]);
+const previewImages = ref([]);
+const message = ref('');
+const error = ref('');
+
 const latitude = ref(null);
 const longitude = ref(null);
 const locationError = ref(null);
 const location = ref(null);
-const router = useRouter();
 
+const userId = computed(() => userStore.user.id || null);
 
 onMounted(() => {
 	if (navigator.geolocation) {
@@ -36,38 +38,37 @@ onMounted(() => {
 	}
 });
 
-async function reverseGeocode(latValue, longValue) {
+async function reverseGeocode(lat, lon) {
 	try {
-		const url = `https://nominatim.openstreetmap.org/reverse?lat=${latValue}&lon=${longValue}&format=json`
-		const res = await axios.get(url, {withCredentials: false})
-		const {address} = res.data
-		console.log("res.data reverseCode", res.data)
-		const city = address.city || address.town || address.village || ''
-		const county = address.county || ''
-		const country = address.country || ''
-		console.log('reverse geocode result:', "address city", address.city, "nation:", address.country)
-		return {city, county, country}
+		const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`;
+		const res = await axios.get(url, {withCredentials: false});
+		const address = res.data.address;
+		const city = address.city || address.town || address.village || '';
+		const county = address.county || '';
+		const country = address.country || '';
+		return {city, county, country};
 	} catch (err) {
-		console.error('reverse geocoding failed:', err)
-		return null
+		console.error('reverse geocoding failed:', err);
+		return null;
 	}
 }
 
+function handleFileChange(e) {
+	files.value = e.target.files;
+}
+
 async function handleSubmit() {
-	// lager formdata
-	const formData = new FormData()
-	formData.append('Title', title.value)
-	formData.append('Description', description.value)
-	formData.append('Category', category.value)
-	formData.append('Condition', condition.value)
-	formData.append('Price', price.value)
-	formData.append('UserId', userId.value)
+	const formData = new FormData();
+	formData.append('Title', title.value);
+	formData.append('Description', description.value);
+	formData.append('Category', category.value);
+	formData.append('Condition', condition.value);
+	formData.append('Price', price.value);
+	formData.append('UserId', userId.value);
 	formData.append('Latitude', latitude.value);
 	formData.append('Longitude', longitude.value);
 	formData.append('LocationName', `${location.value.city}, ${location.value.county}, ${location.value.country}`);
-	console.log("formdata:", latitude.value, longitude.value)
 
-	// legger til alle bildene(filene)
 	for (let i = 0; i < files.value.length; i++) {
 		formData.append('Files', files.value[i])
 	}
@@ -75,141 +76,150 @@ async function handleSubmit() {
 	try {
 		await axios.post('/api/ads/create-with-files', formData, {
 			withCredentials: true
-		})
-		message.value = "Annonsen ble opprettet!"
-		router.push({name: 'Profile'})
-
+		});
+		message.value = "Annonsen ble opprettet!";
+		router.push({name: 'Profile'});
 	} catch (err) {
-		error.value = "Feil ved opplasting!"
+		error.value = "Feil ved opplasting!";
 	}
-}
-
-function handleFileChange(e) {
-	files.value = e.target.files // oppdaterer files[] med valgte filer
 }
 </script>
 
 <template>
-	<div class="container">
-		<h1>Lag en ny annonse</h1>
-		<form @submit.prevent="handleSubmit">
-			<div class="title">
-				<label>Tittel<i class="fa-solid fa-scroll"></i></label>
-				<br>
-				<input v-model="title" type="text"/>
-			</div>
-			<div class="category">
-				<label>Kategori<i class="fa-solid fa-tags"></i></label>
-				<br>
-				<select v-model="category">
-					<option>Sykler</option>
-					<option>Leker</option>
-					<option>Electronikk</option>
-					<option>Møbler</option>
-					<option>Klær</option>
-					<option>Skytevåpen</option>
-					<option>Hånd-våpen</option>
-				</select>
+	<div class="ad-container">
+		<h1>Ny annonse</h1>
+		<form class="ad-form" @submit.prevent="handleSubmit">
+			<label>Tittel</label>
+			<input v-model="title" placeholder="F.eks. Glock med diamanter" required/>
 
+			<label>Kategori</label>
+			<select v-model="category" required>
+				<option disabled value="">Velg kategori</option>
+				<option>Bøker</option>
+				<option>Leker</option>
+				<option>Elektronikk</option>
+				<option>Annet</option>
+				<option>Klesplagg</option>
+				<option>Skytevåpen</option>
+				<option>Instrumenter</option>
+				<option>Bolig</option>
+				<option>Verktøy</option>
+				<option>Næring</option>
+			</select>
+
+			<label>Pris (kr)</label>
+			<input v-model="price" required type="number"/>
+
+			<label>Beskrivelse</label>
+			<textarea v-model="description" placeholder="Beskriv produktet..." required></textarea>
+
+			<label>Tilstand</label>
+			<select v-model="condition" required>
+				<option disabled value="">Velg tilstand</option>
+				<option>Ny</option>
+				<option>Nesten ny</option>
+				<option>Brukt</option>
+				<option>Godt brukt</option>
+			</select>
+
+			<label>Bilder</label>
+			<input multiple type="file" @change="handleFileChange"/>
+
+
+			<div v-if="previewImages.length" class="preview-box">
+				<img v-for="(src, index) in previewImages" :key="index" :src="src"/>
 			</div>
-			<div>
-				<label>Pris<i class="fa-solid fa-coins"></i></label>
-				<br>
-				<input v-model="price" type="number"/>
-				<br>
-			</div>
-			<div>
-				<label>Beskrivelse<i class="fa-solid fa-pencil"></i></label>
-				<br>
-				<textarea v-model="description" placeholder="Beskriv varen..."></textarea>
-			</div>
-			<div>
-				<label>Tilstand<i class="fa-solid fa-heart"></i></label>
-				<br>
-				<select v-model="condition">
-					<option>Ny</option>
-					<option>Nesten ny</option>
-					<option>Brukt</option>
-					<option>Godt brukt</option>
-				</select>
-			</div>
-			<br>
-			<div>
-				<label>Bilder</label>
-				<br>
-				<label>
-					<span>Legg til bilder<i class="fa-solid fa-circle-plus"></i></span>
-					<input hidden="" multiple type="file" @change.prevent="handleFileChange"/>
-				</label>
-			</div>
-			<button type="submit">Lag en ny annonse<i class="fa-solid fa-file-circle-plus"></i></button>
-			<div>{{ error || message }}</div>
+
+			<button type="submit">Opprett annonse</button>
+			<p v-if="message" class="success">{{ message }}</p>
+			<p v-if="error" class="error">{{ error }}</p>
 		</form>
 	</div>
 </template>
 
 <style scoped>
-
-.container {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	background-color: lightblue;
-	width: 60vw;
-	height: 80vh;
+.ad-container {
+	max-width: 600px;
+	margin: 40px auto;
 	padding: 30px;
-	margin-top: 1vh;
-	border-radius: 10px;
+	background: rgba(255, 255, 255, 0.15);
+	backdrop-filter: blur(10px);
+	border-radius: 20px;
+	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+	color: #00263b;
+	font-family: 'Segoe UI', sans-serif;
 }
 
 h1 {
-	border-bottom: 5px solid black;
-}
-
-input {
-	border: none;
-	border-radius: 5px;
-	max-width: 22vw;
-	width: 22vw;
-}
-
-textarea {
-	border: none;
-	border-radius: 5px;
-	max-width: 22vw;
-	max-height: 15vh;
-	width: 150vw;
-	height: 150vh;
 	text-align: center;
-	align-items: center;
-	justify-content: center;
-	display: flex;
+	margin-bottom: 20px;
 }
 
-select {
-	border: none;
-	border-radius: 5px;
-	max-width: 22vw;
-	width: 22vw;
-
+.ad-form {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
 }
 
 label {
-	font-size: 1.2rem;
-	font-weight: bolder;
-	margin-top: 30px;
+	font-weight: bold;
+}
+
+input,
+select,
+textarea {
+	padding: 10px;
+	border-radius: 8px;
+	border: none;
+	font-size: 1rem;
+}
+
+input[type="file"] {
+	background: white;
+}
+
+textarea {
+	min-height: 100px;
+	resize: vertical;
 }
 
 button {
-	padding: 20px;
-	margin: 10px;
-	font-size: 1.2rem;
+	background-color: #007bff;
+	color: white;
+	padding: 12px;
+	font-weight: bold;
+	border: none;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
 }
 
-i {
-	margin-left: 15px;
-	font-size: 1.5rem;
+button:hover {
+	background-color: #0056b3;
 }
 
+.preview-box {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin-top: 10px;
+}
+
+.preview-box img {
+	width: 80px;
+	height: 80px;
+	object-fit: cover;
+	border-radius: 8px;
+	border: 2px solid #007bff;
+}
+
+.success {
+	color: green;
+	font-weight: bold;
+}
+
+.error {
+	color: red;
+	font-weight: bold;
+}
 </style>

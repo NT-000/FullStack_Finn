@@ -58,87 +58,83 @@ watchEffect(() => {
 <style scoped>
 
 nav {
+	position: sticky;
+	top: 0;
+	z-index: 100;
+	background: rgba(0, 0, 128, 0.7);
+	backdrop-filter: blur(8px);
+	border-radius: 0 0 16px 16px;
+	padding: 16px 24px;
+	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+	margin: 0 auto 20px;
+	max-width: 90vw;
 	display: flex;
-	justify-content: space-evenly;
-	border-radius: 5px;
-	padding: 20px;
-	border-bottom: 6px solid saddlebrown;
-	width: 50vw;
-
+	justify-content: space-between;
+	align-items: center;
+	color: white;
 }
 
+
 .user-display {
-	font-size: 1.2rem;
+	font-size: 1rem;
 	font-weight: 500;
-	color: #00263b;
+	color: #f0f8ff;
+	background: rgba(255, 255, 255, 0.1);
+	padding: 8px 16px;
+	border-radius: 12px;
+	box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.1);
 	display: flex;
 	align-items: center;
-	justify-content: center;
 	gap: 8px;
 }
 
-nav {
-	padding: 20px;
-	background-color: #a3bbb9;
-	width: 60vw;
-	border-radius: 15px;
-}
-
-.logo-container {
-	background-color: transparent;
-}
 
 .nav-bar {
 	display: flex;
-	margin-left: 1vw;
-	gap: 3vw;
-	padding: 10px;
-	border-radius: 8px;
-	width: 50vw;
-}
-
-.nav-bar img {
-	height: 7vh;
-	width: 5vw;
-	border-radius: 10px;
-}
-
-i {
-
-	font-size: 4rem;
-	color: saddlebrown;
-}
-
-button {
-	background-color: #98cbe8;
-	border: none;
-	border-radius: 4px;
-	padding: 6px 10px;
-	color: #ffffff;
-	font-size: 1rem;
-	cursor: pointer;
-	transition: background-color 0.3s ease;
-}
-
-button:hover {
-	background-color: #6cb4da;
-}
-
-button i {
-	font-size: 2rem;
-	margin-right: 4px;
+	gap: 2rem;
+	align-items: center;
 }
 
 nav a {
+	color: white;
 	text-decoration: none;
+	transition: transform 0.2s ease, color 0.2s ease;
 }
 
-nav a.Router-link-exact-active button {
-	background-color: blue;
+i {
+	font-size: 1.8rem;
+	padding: 10px;
+	transition: all 0.3s ease;
+	border-radius: 50%;
 }
 
 i:hover {
 	transform: scale(1.2);
+	background-color: rgba(255, 255, 255, 0.2);
+}
+
+
+.router-link-active i {
+	background-color: rgba(255, 255, 255, 0.25);
+}
+
+
+.nav-bar > div:hover i.fa-lock-open {
+	color: #ff4d4d;
+}
+
+
+@media (max-width: 768px) {
+	nav {
+		flex-direction: column;
+		gap: 16px;
+		width: 90vw;
+	}
+
+	.nav-bar {
+		flex-wrap: wrap;
+		justify-content: center;
+	}
 }
 
 </style>

@@ -1,4 +1,4 @@
-namespace Finn_klone;
+namespace Finn_klone.Backend.Models;
 
 public class ReviewDto
 {

@@ -25,7 +25,7 @@ const handleSubmit = async () => {
 	}
 	try {
 		await axios.post("/api/reviews", review, {headers: {"Content-Type": "application/json"}, withCredentials: true});
-		router.push(`/ads/${adId.value}`);
+		router.push(`/users/${userId.value}`);
 		message.value = "Anmeldelse sendt inn!";
 	} catch (err) {
 		console.log("couldn't submit review", err.message)
