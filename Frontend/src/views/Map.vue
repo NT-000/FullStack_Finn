@@ -1,30 +1,18 @@
 <script setup>
-import {onMounted, ref, watchEffect} from "vue";
+import {onMounted, ref} from "vue";
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png'
-import iconUrl from 'leaflet/dist/images/marker-icon.png'
-import shadowUrl from 'leaflet/dist/images/marker-shadow.png'
 import {useAdStore} from "../stores/adStore.js";
-import {useRoute} from "vue-router";
-import router from "../router/index.js";
 
-const customIcon = L.icon({
-	iconRetinaUrl,
-	iconUrl,
-	shadowUrl,
-	iconSize: [25, 41],
-	iconAnchor: [12, 41],
-	popupAnchor: [1, -34],
-	tooltipAnchor: [16, -28]
-})
+import { useCategories } from '../composables/useCategories.js'
+
+const {categories} = useCategories();
 
 const adStore = useAdStore()
 const mapContainer = ref(null)
 const map = ref(null)
 const categoryMarkers = ref({});
 const activeCategories = ref([])
-const route = useRoute()
 
 
 onMounted(async () => {
@@ -33,7 +21,7 @@ onMounted(async () => {
 	await adStore.fetchAds();
 	map.value = L.map(mapContainer.value, {
 		zoomAnimation: false
-	}).setView([59.91, 10.74], 10)
+	}).setView([59.91, 10.74], 8)
 
 
 	// layoyt
@@ -66,13 +54,6 @@ const handleCat = (cat) => {
 	}
 };
 
-const goToAd = (adId) => {
-	router.push({name: 'AdDetails', params: {id: adId}})
-}
-
-watchEffect(async () => {
-
-})
 
 </script>
 
@@ -82,7 +63,7 @@ watchEffect(async () => {
 
 		<div class="buttons">
 			<button
-					v-for="cat in ['Bøker', 'Elektronikk', 'Annet', 'Klesplagg', 'Våpen', 'Leker', 'Instrumenter','Bolig','Verktøy','Næring']"
+					v-for="cat in categories"
 					:key="cat"
 					:class="{ active: activeCategories.includes(cat) }"
 					@click="handleCat(cat)"

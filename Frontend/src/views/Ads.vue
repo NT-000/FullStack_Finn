@@ -3,12 +3,39 @@
 import {RouterLink} from "vue-router";
 import {computed, onMounted, ref} from "vue";
 import {getRoute} from "../composables/getRoute.js";
+import { useCategories } from '../composables/useCategories.js'
 
+const {categories} = useCategories();
 
 //Henter både brukere og annonser for søkefunksjon
-const {items: users, loading: usersLoading, error: errorUsers, fetchData: fetchUsers} = getRoute('/users');
+const {items: users, fetchData: fetchUsers} = getRoute('/users');
 
-const {items: ads, loading: adsLoading, error: adsError, fetchData: fetchAds} = getRoute('/ads');
+const {items: ads, fetchData: fetchAds} = getRoute('/ads');
+
+const search = ref('');
+const category = ref('')
+const isAd = ref(true);
+const isPerson = ref(true)
+const isOpen = ref(false)
+
+
+const filteredUsers = computed(() => {
+	if (isPerson.value && search.value.length > 0) {
+		return users.value.filter(user =>
+				user.name?.toLowerCase().includes(search.value.toLowerCase()))
+	} else {
+		return []
+	}
+});
+
+const filteredAds = computed(() => {
+	if (!ads.value || ads.value.length === 0) return [];
+	return ads.value.filter(ad => {
+		const matchesSearch = ad.title.toLowerCase().includes(search.value.toLowerCase());
+		const matchesCategory = category.value.toLowerCase() === '' || ad.category.toLowerCase() === category.value.toLowerCase();
+		return matchesSearch && matchesCategory;
+	});
+})
 
 onMounted(async () => {
 	try {
@@ -19,32 +46,7 @@ onMounted(async () => {
 	}
 	console.log("Users:", users.value);
 	console.log("Ads:", ads.value);
-
 })
-
-
-const search = ref('');
-const category = ref('')
-const isAd = ref(true);
-const isPerson = ref(true)
-const isOpen = ref(false)
-const filteredUsers = computed(() => {
-	if (isPerson.value && search.value.length > 0) {
-		return users.value.filter(user =>
-				user.name?.toLowerCase().includes(search.value.toLowerCase()))
-	} else {
-		return []
-	}
-
-});
-const filteredAds = computed(() => {
-	if (!ads.value || ads.value.length === 0) return [];
-	return ads.value.filter(ad => {
-		const matchesSearch = ad.title.toLowerCase().includes(search.value.toLowerCase());
-		const matchesCategory = category.value.toLowerCase() === '' || ad.category.toLowerCase() === category.value.toLowerCase();
-		return matchesSearch && matchesCategory;
-	});
-});
 
 </script>
 
@@ -59,17 +61,8 @@ const filteredAds = computed(() => {
 		<label><input v-model="isPerson" type="checkbox"/> Personer</label>
 		<label><input v-model="isAd" type="checkbox"/> Annonser</label>
 		<select v-model="category">
-			<option></option>
-			<option>Bøker</option>
-			<option>Leker</option>
-			<option>Electronikk</option>
-			<option>Annet</option>
-			<option>Klesplagg</option>
-			<option>Skytevåpen</option>
-			<option>Instrumenter</option>
-			<option>Bolig</option>
-			<option>Verktøy</option>
-			<option>Næring</option>
+			<option disabled value="">Velg en kategori</option>
+			<option v-for="cat in categories">{{cat}}</option>
 		</select>
 	</div>
 
@@ -82,7 +75,6 @@ const filteredAds = computed(() => {
 					<img v-if="user.profileImageUrl" :src="user.profileImageUrl" alt="img">
 					{{ user.name }}
 				</RouterLink>
-				<!--          - <RouterLink :to="{name:'Chat', params:{id:user.id}}">Send Melding <i class="fa-solid fa-envelope fa-bounce"></i></RouterLink>-->
 			</div>
 
 		</div>
@@ -120,10 +112,6 @@ i:hover {
 	border-radius: 5px;
 	display: inline-flex;
 	align-items: center;
-}
-
-h1 {
-
 }
 
 .users {

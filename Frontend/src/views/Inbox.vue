@@ -39,6 +39,7 @@ const markAdAsSold = async (adId) => {
 
 onMounted(async () => {
 	await adStore.fetchAds()
+	error.value = ""
 	console.log("find owned ads:", findOwnedAds.value)
 
 	console.log("interestedPerAd:", interestedPerAd.value);
@@ -160,12 +161,6 @@ p {
 	background-color: rgba(255, 255, 255, 0.8);
 	padding: 10px;
 	border-radius: 8px;
-}
-
-.no-interest {
-	color: #555;
-	font-style: italic;
-	margin-top: 5px;
 }
 
 .sold-label {

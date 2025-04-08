@@ -4,6 +4,10 @@ import axios from 'axios';
 import {useUserStore} from '../stores/useUserStore.js';
 import {useRouter} from 'vue-router';
 
+import { useCategories } from '../composables/useCategories.js'
+
+const {categories} = useCategories();
+
 const userStore = useUserStore();
 const router = useRouter();
 
@@ -13,7 +17,6 @@ const category = ref('');
 const condition = ref('');
 const price = ref(0);
 const files = ref([]);
-const previewImages = ref([]);
 const message = ref('');
 const error = ref('');
 
@@ -95,16 +98,7 @@ async function handleSubmit() {
 			<label>Kategori</label>
 			<select v-model="category" required>
 				<option disabled value="">Velg kategori</option>
-				<option>Bøker</option>
-				<option>Leker</option>
-				<option>Elektronikk</option>
-				<option>Annet</option>
-				<option>Klesplagg</option>
-				<option>Skytevåpen</option>
-				<option>Instrumenter</option>
-				<option>Bolig</option>
-				<option>Verktøy</option>
-				<option>Næring</option>
+				<option v-for="cat in categories">{{cat}}</option>
 			</select>
 
 			<label>Pris (kr)</label>
@@ -124,12 +118,6 @@ async function handleSubmit() {
 
 			<label>Bilder</label>
 			<input multiple type="file" @change="handleFileChange"/>
-
-
-			<div v-if="previewImages.length" class="preview-box">
-				<img v-for="(src, index) in previewImages" :key="index" :src="src"/>
-			</div>
-
 			<button type="submit">Opprett annonse</button>
 			<p v-if="message" class="success">{{ message }}</p>
 			<p v-if="error" class="error">{{ error }}</p>
@@ -196,21 +184,6 @@ button {
 
 button:hover {
 	background-color: #0056b3;
-}
-
-.preview-box {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 10px;
-	margin-top: 10px;
-}
-
-.preview-box img {
-	width: 80px;
-	height: 80px;
-	object-fit: cover;
-	border-radius: 8px;
-	border: 2px solid #007bff;
 }
 
 .success {

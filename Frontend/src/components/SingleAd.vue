@@ -14,7 +14,9 @@ import shadowUrl from 'leaflet/dist/images/marker-shadow.png'
 import axios from "axios";
 import CreateReview from "./CreateReview.vue";
 import {useStarRating} from "../composables/useStarRating.js";
+import { useCategories } from '../composables/useCategories.js'
 
+const {categories} = useCategories();
 const route = useRoute();
 const adId = Number(route.params.id);
 const users = getRoute('/users');
@@ -31,14 +33,6 @@ const selectedBuyerId = ref(null)
 const currentImageIndex = ref(0);
 console.log('route id', route.params.id)
 
-
-L.Marker.prototype.options.icon = L.icon({
-	iconRetinaUrl,
-	iconUrl,
-	shadowUrl,
-	iconSize: [25, 41],
-	iconAnchor: [12, 41]
-})
 const map = ref(null)
 const mapContainer = ref(null)
 const marker = ref(null)
@@ -282,16 +276,7 @@ const handleClickImg = (arrow) => {
 							<label>Kategori:</label>
 							<div v-if="!isUpdating">{{ currentAd.category }}</div>
 							<select v-if="isUpdating" v-model="currentAd.category">
-								<option>Bøker</option>
-								<option>Elektronikk</option>
-								<option>Annet</option>
-								<option>Klesplagg</option>
-								<option>Våpen</option>
-								<option>Leker</option>
-								<option>Instrumenter</option>
-								<option>Bolig</option>
-								<option>Verktøy</option>
-								<option>Næring</option>
+								<option v-for="cat in categories">{{cat}}</option>
 							</select>
 						</div>
 						<br>
