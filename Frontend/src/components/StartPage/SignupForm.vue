@@ -13,7 +13,7 @@ const props = defineProps({
 	isUser: Boolean
 });
 const emit = defineEmits(['update:isUser']);
-
+const error = ref(null);
 function handleFileChange(e) {
 	file.value = e.target.files[0];
 }
@@ -28,8 +28,12 @@ async function handleSubmit() {
 	try {
 		const res = await axios.post('/api/users/register', formData, {withCredentials: true});
 		console.log("response data reg user:", res.data);
-		router.push('/login');
+		toggle()
+		router.push('/');
 	} catch (err) {
+		if(formData.file == null){
+		error.value = "Last opp profilbilde."
+		}
 		console.log("Registration failed", err);
 	}
 }
@@ -51,7 +55,7 @@ const toggle = () => {
 			<input v-model="email" placeholder="epost@domene.no" required type="email"/>
 
 			<label for="password">Passord</label>
-			<input v-model="password" placeholder="••••••••" required type="password"/>
+			<input v-model="password" placeholder="••••••••" required type="new-password"/>
 
 			<label for="file">Profilbilde</label>
 			<div class="file-upload">
@@ -66,6 +70,7 @@ const toggle = () => {
 			</button>
 			<button class="ghost-btn" type="button" @click="toggle">Tilbake til innlogging</button>
 		</form>
+		<div>{{error}}</div>
 	</div>
 </template>
 

@@ -13,6 +13,7 @@ export function useCategories() {
         'Næring',
         'Kjøretøy',
         'Treningsutstyr',
+        'Dyr',
         'Annet',
     ])
 

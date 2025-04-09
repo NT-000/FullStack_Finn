@@ -15,27 +15,35 @@ const {items: ads, fetchData: fetchAds} = getRoute('/ads');
 const search = ref('');
 const category = ref('')
 const isAd = ref(true);
-const isPerson = ref(true)
+const isPerson = ref(false)
 const isOpen = ref(false)
+const price = ref(0)
+const minPrice = ref(0)
+const maxPrice = ref(100000)
+const showCount = ref(10)
 
 
 const filteredUsers = computed(() => {
-	if (isPerson.value && search.value.length > 0) {
-		return users.value.filter(user =>
-				user.name?.toLowerCase().includes(search.value.toLowerCase()))
-	} else {
-		return []
-	}
-});
+	if (isPerson.value && search.value.length > 0) return [];
+	return	users.value.filter(user =>{
+			const username =	user.name?.toLowerCase().includes(search.value.toLowerCase());
+		const email = user.email?.toLowerCase().includes(search.value.toLowerCase())
+		return username && email;
+	})
+})
 
 const filteredAds = computed(() => {
 	if (!ads.value || ads.value.length === 0) return [];
 	return ads.value.filter(ad => {
 		const matchesSearch = ad.title.toLowerCase().includes(search.value.toLowerCase());
 		const matchesCategory = category.value.toLowerCase() === '' || ad.category.toLowerCase() === category.value.toLowerCase();
-		return matchesSearch && matchesCategory;
+		const priceRange = minPrice.value <= ad.price && ad.price <= maxPrice.value;
+		const calculatedPrice = ad.price > price.value;
+		return matchesSearch && matchesCategory && priceRange && calculatedPrice;
 	});
 })
+
+
 
 onMounted(async () => {
 	try {
@@ -52,25 +60,40 @@ onMounted(async () => {
 
 <template>
 	<h1>Søk</h1>
+	<div class="search-box">
 	<input v-model="search" placeholder="Søk..." type="search"/>
-	<div class="searchAlt" @click="isOpen = !isOpen">
-		<span v-if="isOpen">Lukk</span>
-		<span v-else>Søkealternativer</span>
-	</div>
+	<button class="searchAlt" @click="isOpen = !isOpen">
+		<span v-if="isOpen">Lukk søkealternativer</span>
+		<span v-else>Flere søkealternativer</span>
+	</button>
+
 	<div v-if="isOpen">
 		<label><input v-model="isPerson" type="checkbox"/> Personer</label>
 		<label><input v-model="isAd" type="checkbox"/> Annonser</label>
+		<br>
+		<div class="inputNum">
+		Min pris:
+		<input v-model="minPrice" type="number" placeholder="Min pris"/>
+		<br>
+		Maks pris:
+		<input v-model="maxPrice" type="number" placeholder="Maks pris"/>
+		</div>
+		<input v-model="price" type="range" :min="minPrice" :max="maxPrice" step="100"/>
+		<p>Nåværende pris: {{price}} kr</p>
+	</div>
 		<select v-model="category">
 			<option disabled value="">Velg en kategori</option>
+			<option value="">Ingen valgt</option>
 			<option v-for="cat in categories">{{cat}}</option>
 		</select>
 	</div>
 
-	<div v-if="search.length > 0" class="search">
-		<h2>Søkeresultater</h2>
-		<div v-if="filteredUsers.length > 0" class="users">
-			<h3>Brukere<i class="fa-solid fa-person"></i><i class="fa-solid fa-person-dress"></i></h3>
-			<div v-for="user in filteredUsers" :key="user.id" class="userClass">
+	<div v-if="search.length >= 0" class="search">
+		<h3>Søkeresultater <i class="fa-solid fa-magnifying-glass"></i></h3>
+		<br>
+			<h2 @click="isPerson = !isPerson">Brukere<i class="fa-solid fa-person"></i><i class="fa-solid fa-person-dress"></i></h2>
+		<div v-if="filteredUsers.length > 0 && isPerson" class="users">
+			<div v-for="user in filteredUsers.slice(0,5)" :key="user.id" class="userClass">
 				<RouterLink :to="{ name: 'UserProfile', params: { id: user.id } }">
 					<img v-if="user.profileImageUrl" :src="user.profileImageUrl" alt="img">
 					{{ user.name }}
@@ -79,13 +102,19 @@ onMounted(async () => {
 
 		</div>
 
-		<div v-if="filteredAds.length > 0" class="ads">
-			<h3>Annonser<i class="fa-solid fa-rectangle-ad" title="Annonser"></i></h3>
-
-			<div v-for="ad in filteredAds" :key="ad.id" class="ad">
+			<h2 @click="isAd=!isAd">Annonser<i class="fa-solid fa-rectangle-ad" title="Annonser"></i></h2>
+		<div v-if="filteredAds.length && isAd" class="ads">
+			<div v-for="ad in filteredAds.slice(0, showCount)" :key="ad.id" class="ad">
 				<RouterLink :to="{ name: 'AdDetails', params: { id: ad.id } }">
-					<img :src="ad.images[0].imageUrl"> {{ ad.title }} - {{ ad.category }}
+					<img :src="ad.images[0].imageUrl"> {{ ad.title }} - {{ ad.category }} - {{ad.price}} Kr
 				</RouterLink>
+			</div>
+			
+			<div class="moreLess">
+			<div @click="showCount += 5" class="more"><i class="fa-solid fa-square-plus"></i>Vis mer</div>
+			<div v-if="showCount > 5">
+			<div @click="showCount -= 5" class="less"><i class="fa-solid fa-square-minus"></i>Vis mindre</div>
+			</div>
 			</div>
 		</div>
 
@@ -96,22 +125,64 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-i:hover {
-	border: white;
-	color: black;
-	transition: 0.3s;
+
+.search-box {
+	background-color: ghostwhite;
+	padding: 2rem;
+	border-radius: 1rem;
+	margin: 2rem auto;
+	width: 80%;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	
 }
 
+input[type="range"] {
+	width: 60%;
+	accent-color: dodgerblue;
+}
+.inputNum input[type="number"] {
+	width: 10%;
+	height: 5vh;
+}
+input{
+	border: none;
+	border-radius: 1rem;
+	padding: 0.3rem;
+	text-align: center;
+}
+input[type=search]{
+	border: none;
+	border-radius: 1rem;
+	padding: 0.3rem;
+	text-align: center;
+	width: 50%;
+	background-color: white;
+}
+select {
+	padding: 1rem;
+	border-radius: 1rem;
+}
+input:focus{
+border: blue;
+}
 .router-link-exact-active {
 	color: white;
 }
 
-.searchAlt {
+.searchAlt button {
 	text-align: center;
 	border: 1px solid black;
-	border-radius: 5px;
+	height: 1.5rem;
+	padding: 0.5rem;
 	display: inline-flex;
 	align-items: center;
+	border-radius: 0.5rem;
+}
+
+.searchAlt:hover {
+background-color: lightgray;
+	cursor: pointer;
+	opacity: 50%;
 }
 
 .users {
@@ -135,8 +206,8 @@ i:hover {
 
 .ads {
 	padding: 10px;
-
 	border-radius: 5px;
+	text-align: center;
 }
 
 .ad {
@@ -147,11 +218,45 @@ i:hover {
 .ad:hover {
 	transform: scale(1.2);
 	background-color: ghostwhite;
+	border-radius: 1rem;
 }
 
 img {
 	height: 50px;
 	width: 50px;
 	border-radius: 20px;
+}
+
+.more{
+	border-radius: 1rem;
+}
+.more:hover {
+	border-radius: 1rem;
+	transition: 0.5s;
+	cursor: pointer;
+	transform: scale(1.2);
+	color: green;
+}
+
+.less{
+	border-radius: 1rem;
+	
+}
+.less:hover {
+	border-radius: 1rem;
+	transition: 0.5s;
+	cursor: pointer;
+	transform: scale(1.2);
+	color: red;
+}
+
+h2{
+	
+}
+h2:hover{
+	cursor: pointer;
+	background-color: white;
+	opacity: 50%;
+	border-radius: 1rem;
 }
 </style>
