@@ -177,6 +177,10 @@ onMounted(async () => {
 	margin-bottom: 10px;
 }
 
+.profile-image:hover{
+	transform:scale(1.2);
+}
+
 .section-header {
 	cursor: pointer;
 	font-size: 1.4rem;

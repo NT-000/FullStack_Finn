@@ -232,17 +232,18 @@ const handleClickImg = (arrow) => {
 				<div v-if="currentAd && adId">
 					<form v-if="currentAd && seller" @submit.prevent="updateAd">
 						<div class="main-display">
-							<div class="title"><h3>{{ currentAd.title }}</h3></div>
+							<div class="title"><h3>{{ currentAd.title }}								<div v-if="currentAd && favStore && !isOwner && !currentAd.isSold" class="favorite">
+								<div @click="favStore.toggleFav(currentAd.id)">
+									<i :class="favStore.isFavorite(currentAd.id) ? 'fa-solid fa-beat': 'fa-regular'" class="fa-heart"
+									   style="color: red; cursor: pointer;"></i>
+								</div>
+							</div></h3></div>
 							<div v-if="currentAd && currentAd.isSold">
 								<div class="sold">SOLGT</div>
 							</div>
 							<div v-if="currentAd?.images && currentAd.images.length > 0" class="image-box">
+								<div class="image-wrapper">
 								<img :src="currentAd.images[currentImageIndex].imageUrl" alt="" class="mainImage"/>
-								<div v-if="currentAd && favStore && !isOwner && !currentAd.isSold" class="favorite">
-									<div @click="favStore.toggleFav(currentAd.id)">
-										<i :class="favStore.isFavorite(currentAd.id) ? 'fa-solid fa-beat': 'fa-regular'" class="fa-heart"
-										   style="color: red; cursor: pointer;"></i>
-									</div>
 								</div>
 								<div v-if="currentAd.images.length > 1" class="arrow-left" @click="handleClickImg('left')"><i
 										class="fa-solid fa-angles-left"></i></div>
@@ -253,6 +254,7 @@ const handleClickImg = (arrow) => {
 										<img :src="image.imageUrl" alt="Ad image" @click="currentImageIndex = index"/>
 									</div>
 									<div>
+									
 									</div>
 									<br>
 
@@ -389,8 +391,10 @@ a {
 
 .favorite {
 	position: absolute;
-	top: 15px;
-	left: 15px;
+	top: -1rem;
+	right: 5rem;
+	padding: 0.5rem;
+
 }
 
 .title {
@@ -400,6 +404,7 @@ a {
 	margin-bottom: 10px;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 3);
 	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+	position: relative;
 }
 
 h1 {
@@ -435,6 +440,10 @@ h1 {
 	background-color: white;
 	border-radius: 10px;
 	border: 25px solid #4a90e2;
+}
+
+.mainImage:hover {
+transform: scale(2.2);
 }
 
 .imagesReel {
