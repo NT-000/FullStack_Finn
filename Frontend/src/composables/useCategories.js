@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import {ref} from 'vue'
 
 export function useCategories() {
     const categories = ref([
@@ -17,5 +17,5 @@ export function useCategories() {
         'Annet',
     ])
 
-    return { categories }
+    return {categories}
 }

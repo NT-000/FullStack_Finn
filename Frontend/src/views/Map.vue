@@ -4,7 +4,7 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import {useAdStore} from "../stores/adStore.js";
 
-import { useCategories } from '../composables/useCategories.js'
+import {useCategories} from '../composables/useCategories.js'
 
 const {categories} = useCategories();
 

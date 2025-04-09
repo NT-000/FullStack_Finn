@@ -14,6 +14,7 @@ const props = defineProps({
 });
 const emit = defineEmits(['update:isUser']);
 const error = ref(null);
+
 function handleFileChange(e) {
 	file.value = e.target.files[0];
 }
@@ -31,8 +32,8 @@ async function handleSubmit() {
 		toggle()
 		router.push('/');
 	} catch (err) {
-		if(formData.file == null){
-		error.value = "Last opp profilbilde."
+		if (formData.file == null) {
+			error.value = "Last opp profilbilde."
 		}
 		console.log("Registration failed", err);
 	}
@@ -70,7 +71,7 @@ const toggle = () => {
 			</button>
 			<button class="ghost-btn" type="button" @click="toggle">Tilbake til innlogging</button>
 		</form>
-		<div>{{error}}</div>
+		<div>{{ error }}</div>
 	</div>
 </template>
 

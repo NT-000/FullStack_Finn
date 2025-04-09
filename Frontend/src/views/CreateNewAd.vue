@@ -4,7 +4,7 @@ import axios from 'axios';
 import {useUserStore} from '../stores/useUserStore.js';
 import {useRouter} from 'vue-router';
 
-import { useCategories } from '../composables/useCategories.js'
+import {useCategories} from '../composables/useCategories.js'
 
 const {categories} = useCategories();
 
@@ -98,7 +98,7 @@ async function handleSubmit() {
 			<label>Kategori</label>
 			<select v-model="category" required>
 				<option disabled value="">Velg kategori</option>
-				<option v-for="cat in categories">{{cat}}</option>
+				<option v-for="cat in categories">{{ cat }}</option>
 			</select>
 
 			<label>Pris (kr)</label>

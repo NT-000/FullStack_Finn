@@ -8,13 +8,10 @@ import {useFavStore} from "../stores/favStore.js";
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import {getRoute} from "../composables/getRoute.js";
-import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png'
-import iconUrl from 'leaflet/dist/images/marker-icon.png'
-import shadowUrl from 'leaflet/dist/images/marker-shadow.png'
 import axios from "axios";
 import CreateReview from "./CreateReview.vue";
 import {useStarRating} from "../composables/useStarRating.js";
-import { useCategories } from '../composables/useCategories.js'
+import {useCategories} from '../composables/useCategories.js'
 
 const {categories} = useCategories();
 const route = useRoute();
@@ -276,7 +273,7 @@ const handleClickImg = (arrow) => {
 							<label>Kategori:</label>
 							<div v-if="!isUpdating">{{ currentAd.category }}</div>
 							<select v-if="isUpdating" v-model="currentAd.category">
-								<option v-for="cat in categories">{{cat}}</option>
+								<option v-for="cat in categories" :key="cat">{{ cat }}</option>
 							</select>
 						</div>
 						<br>

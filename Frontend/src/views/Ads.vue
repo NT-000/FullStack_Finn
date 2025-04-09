@@ -3,7 +3,7 @@
 import {RouterLink} from "vue-router";
 import {computed, onMounted, ref} from "vue";
 import {getRoute} from "../composables/getRoute.js";
-import { useCategories } from '../composables/useCategories.js'
+import {useCategories} from '../composables/useCategories.js'
 
 const {categories} = useCategories();
 
@@ -24,11 +24,11 @@ const showCount = ref(10)
 
 
 const filteredUsers = computed(() => {
-	if (isPerson.value && search.value.length > 0) return [];
-	return	users.value.filter(user =>{
-			const username =	user.name?.toLowerCase().includes(search.value.toLowerCase());
+	if (!isPerson.value && search.value.length > 0) return [];
+	return users.value.filter(user => {
+		const username = user.name?.toLowerCase().includes(search.value.toLowerCase());
 		const email = user.email?.toLowerCase().includes(search.value.toLowerCase())
-		return username && email;
+		return username || email;
 	})
 })
 
@@ -42,7 +42,6 @@ const filteredAds = computed(() => {
 		return matchesSearch && matchesCategory && priceRange && calculatedPrice;
 	});
 })
-
 
 
 onMounted(async () => {
@@ -61,60 +60,61 @@ onMounted(async () => {
 <template>
 	<h1>Søk</h1>
 	<div class="search-box">
-	<input v-model="search" placeholder="Søk..." type="search"/>
-	<button class="searchAlt" @click="isOpen = !isOpen">
-		<span v-if="isOpen">Lukk søkealternativer</span>
-		<span v-else>Flere søkealternativer</span>
-	</button>
+		<input v-model="search" placeholder="Søk..." type="search"/>
+		<button class="searchAlt" @click="isOpen = !isOpen">
+			<span v-if="isOpen">Lukk søkealternativer</span>
+			<span v-else>Flere søkealternativer</span>
+		</button>
 
-	<div v-if="isOpen">
-		<label><input v-model="isPerson" type="checkbox"/> Personer</label>
-		<label><input v-model="isAd" type="checkbox"/> Annonser</label>
-		<br>
-		<div class="inputNum">
-		Min pris:
-		<input v-model="minPrice" type="number" placeholder="Min pris"/>
-		<br>
-		Maks pris:
-		<input v-model="maxPrice" type="number" placeholder="Maks pris"/>
+		<div v-if="isOpen">
+			<label><input v-model="isPerson" type="checkbox"/> Personer</label>
+			<label><input v-model="isAd" type="checkbox"/> Annonser</label>
+			<br>
+			<div class="inputNum">
+				Min pris:
+				<input v-model="minPrice" placeholder="Min pris" type="number"/>
+				<br>
+				Maks pris:
+				<input v-model="maxPrice" placeholder="Maks pris" type="number"/>
+			</div>
+			<input v-model="price" :max="maxPrice" :min="minPrice" step="100" type="range"/>
+			<p>Nåværende pris: {{ price }} kr</p>
 		</div>
-		<input v-model="price" type="range" :min="minPrice" :max="maxPrice" step="100"/>
-		<p>Nåværende pris: {{price}} kr</p>
-	</div>
 		<select v-model="category">
 			<option disabled value="">Velg en kategori</option>
 			<option value="">Ingen valgt</option>
-			<option v-for="cat in categories">{{cat}}</option>
+			<option v-for="cat in categories" :key="cat">{{ cat }}</option>
 		</select>
 	</div>
 
 	<div v-if="search.length >= 0" class="search">
 		<h3>Søkeresultater <i class="fa-solid fa-magnifying-glass"></i></h3>
 		<br>
-			<h2 @click="isPerson = !isPerson">Brukere<i class="fa-solid fa-person"></i><i class="fa-solid fa-person-dress"></i></h2>
+		<h2 @click="isPerson = !isPerson">Brukere<i class="fa-solid fa-person"></i><i class="fa-solid fa-person-dress"></i>
+		</h2>
 		<div v-if="filteredUsers.length > 0 && isPerson" class="users">
 			<div v-for="user in filteredUsers.slice(0,5)" :key="user.id" class="userClass">
 				<RouterLink :to="{ name: 'UserProfile', params: { id: user.id } }">
 					<img v-if="user.profileImageUrl" :src="user.profileImageUrl" alt="img">
-					{{ user.name }}
+					{{ user.name }} - {{ user.email }}
 				</RouterLink>
 			</div>
 
 		</div>
 
-			<h2 @click="isAd=!isAd">Annonser<i class="fa-solid fa-rectangle-ad" title="Annonser"></i></h2>
+		<h2 @click="isAd=!isAd">Annonser<i class="fa-solid fa-rectangle-ad" title="Annonser"></i></h2>
 		<div v-if="filteredAds.length && isAd" class="ads">
 			<div v-for="ad in filteredAds.slice(0, showCount)" :key="ad.id" class="ad">
 				<RouterLink :to="{ name: 'AdDetails', params: { id: ad.id } }">
-					<img :src="ad.images[0].imageUrl"> {{ ad.title }} - {{ ad.category }} - {{ad.price}} Kr
+					<img :src="ad.images[0].imageUrl"> {{ ad.title }} - {{ ad.category }} - {{ ad.price }} Kr
 				</RouterLink>
 			</div>
-			
+
 			<div class="moreLess">
-			<div @click="showCount += 5" class="more"><i class="fa-solid fa-square-plus"></i>Vis mer</div>
-			<div v-if="showCount > 5">
-			<div @click="showCount -= 5" class="less"><i class="fa-solid fa-square-minus"></i>Vis mindre</div>
-			</div>
+				<div class="more" @click="showCount += 5"><i class="fa-solid fa-square-plus"></i>Vis mer</div>
+				<div v-if="showCount > 5">
+					<div class="less" @click="showCount -= 5"><i class="fa-solid fa-square-minus"></i>Vis mindre</div>
+				</div>
 			</div>
 		</div>
 
@@ -133,24 +133,27 @@ onMounted(async () => {
 	margin: 2rem auto;
 	width: 80%;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-	
+
 }
 
 input[type="range"] {
 	width: 60%;
 	accent-color: dodgerblue;
 }
+
 .inputNum input[type="number"] {
 	width: 10%;
 	height: 5vh;
 }
-input{
+
+input {
 	border: none;
 	border-radius: 1rem;
 	padding: 0.3rem;
 	text-align: center;
 }
-input[type=search]{
+
+input[type=search] {
 	border: none;
 	border-radius: 1rem;
 	padding: 0.3rem;
@@ -158,13 +161,16 @@ input[type=search]{
 	width: 50%;
 	background-color: white;
 }
+
 select {
 	padding: 1rem;
 	border-radius: 1rem;
 }
-input:focus{
-border: blue;
+
+input:focus {
+	border: blue;
 }
+
 .router-link-exact-active {
 	color: white;
 }
@@ -180,7 +186,7 @@ border: blue;
 }
 
 .searchAlt:hover {
-background-color: lightgray;
+	background-color: lightgray;
 	cursor: pointer;
 	opacity: 50%;
 }
@@ -227,9 +233,10 @@ img {
 	border-radius: 20px;
 }
 
-.more{
+.more {
 	border-radius: 1rem;
 }
+
 .more:hover {
 	border-radius: 1rem;
 	transition: 0.5s;
@@ -238,10 +245,11 @@ img {
 	color: green;
 }
 
-.less{
+.less {
 	border-radius: 1rem;
-	
+
 }
+
 .less:hover {
 	border-radius: 1rem;
 	transition: 0.5s;
@@ -250,10 +258,11 @@ img {
 	color: red;
 }
 
-h2{
-	
+h2 {
+
 }
-h2:hover{
+
+h2:hover {
 	cursor: pointer;
 	background-color: white;
 	opacity: 50%;
