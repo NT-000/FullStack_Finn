@@ -118,6 +118,7 @@ h1 {
 	border-bottom: 4px solid #007bff;
 	margin-bottom: 30px;
 	color: #00263b;
+	font-family: 'Futura', 'Arial', sans-serif;
 }
 
 .inbox-grid {

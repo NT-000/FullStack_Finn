@@ -142,7 +142,7 @@ input[type="range"] {
 }
 
 .inputNum input[type="number"] {
-	width: 10%;
+	width: 20%;
 	height: 5vh;
 }
 
@@ -160,6 +160,7 @@ input[type=search] {
 	text-align: center;
 	width: 50%;
 	background-color: white;
+	font-family: 'Futura', 'Arial', sans-serif;
 }
 
 select {
@@ -183,6 +184,7 @@ input:focus {
 	display: inline-flex;
 	align-items: center;
 	border-radius: 0.5rem;
+	font-family: 'Futura', 'Arial', sans-serif;
 }
 
 .searchAlt:hover {
@@ -214,11 +216,13 @@ input:focus {
 	padding: 10px;
 	border-radius: 5px;
 	text-align: center;
+	font-family: 'Futura', 'Arial', sans-serif;
 }
 
 .ad {
 	border-radius: 5px;
 	padding: 10px;
+	font-family: 'Futura', 'Arial', sans-serif;
 }
 
 .ad:hover {
@@ -259,7 +263,7 @@ img {
 }
 
 h2 {
-
+	font-family: 'Futura', 'Arial', sans-serif;
 }
 
 h2:hover {

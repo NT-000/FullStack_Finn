@@ -28,7 +28,6 @@ public class UserController : ControllerBase
         try
         {
             var userId = User.FindFirst("id")?.Value;
-            var email = User.FindFirst("email")?.Value;
             if (userId == null) return Unauthorized("Restricted access to page"); // 401-status code
 
             var query = "SELECT * FROM Users WHERE Id = @Id";
@@ -44,7 +43,7 @@ public class UserController : ControllerBase
         }
     }
 
-    // Henter èn bruker basert på ID, brukes for visning av andres profiler, tatt bort email fra query.
+    // Henter èn bruker basert på ID, brukes for visning av andres profiler.
     [Authorize]
     [HttpGet("profile/{id}")]
     public async Task<IActionResult> GetUser(int id)

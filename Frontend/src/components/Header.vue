@@ -5,23 +5,14 @@
 <template>
 
 	<div class="header">
-		<img src="/sjappa_til_kakkerlakken_med_damer_med_paragraf_upscayl_4x_digital-art-4x.png"/>
+		<img src="https://localhost:5205/uploads/header.png" alt="Header logo" />
 	</div>
 
-</template>
-<style scoped>
-img {
-	display: flex;
-	height: 25vh;
-	width: 51vw;
-	border-radius: 15px;
-	padding: 5px;
-}
 
-.header {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
+</template>
+<style>
+.header img {
+	max-height: 35vh;
+	width: auto;
 }
 </style>

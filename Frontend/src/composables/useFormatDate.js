@@ -1,6 +1,6 @@
 export function useDateFormat() {
     const formatDate = (dateStr) => {
-        return new Date(dateStr).toLocaleString({
+        return new Date(dateStr).toLocaleString(navigator.language,{
             day: "2-digit",
             month: "long",
             year: "numeric",
