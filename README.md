@@ -39,7 +39,7 @@
 - ⚡ **Vite**
 - 📦 **Pinia**
 - 🧭 **Vue Router**
-- 🔗 **Axios** –
+- 🔗 **Axios**
 - 🗺️ **Leaflet**
 - 🌟 **FontAwesome**
 
@@ -64,7 +64,7 @@ cd FullStack_Finn/frontend
 npm install
 npm run dev
 ```
-...Hvis du vil ha dummy-database👇
+...Hvis du vil ha test-databasen👇
 ## 🗄️Opprette database
 
 1. **Åpne SQL Server Management Studio**
