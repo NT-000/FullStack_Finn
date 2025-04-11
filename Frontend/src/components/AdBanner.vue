@@ -7,12 +7,15 @@ const ads = [
 	{ text: '🪳☢️ Nyeste Roach-boy, helt rå! 25% Avslag!!!💥💥💥', image: 'https://localhost:5205/adImages/9.png' },
 	{ text: '👃🏼Snusekoppen 2000, for deg som gir litt f.', image: 'https://localhost:5205/adImages/10.png' },
 	{ text: '🪄Vi tryller vekk høye priser!!! Få tidenes deal på brukte Snusekopper!🫵', image: 'https://localhost:5205/adImages/11.png' },
+	{ text: '💵Vi trenger deg, testpersoner søkes!🫵', image: 'https://localhost:5205/adImages/13.png' },
+	{ text: '🚂Jeg har tatt tog før, har du!?🤷‍♂️', image: 'https://localhost:5205/adImages/14.png' },
 ]
 
 const randomAd = ads[Math.floor(Math.random() * ads.length)]
 </script>
 
 <template>
+	
 	<div class="ad-box">
 		<img :src="randomAd.image" alt="Annonse" />
 		<p>{{ randomAd.text }}</p>
@@ -30,12 +33,20 @@ const randomAd = ads[Math.floor(Math.random() * ads.length)]
 	font-size: 1.2rem;
 	width: 100%;
 	box-sizing: border-box;
+	font-family: 'Overseer', 'Press Start 2P', monospace;
+	height: 100%;
 }
 
+p{
+	font-family: 'Overseer', 'Press Start 2P', monospace;
+	font-size: 1.5rem;
+	color: limegreen;
+}
 .ad-box img {
 	width: 100%;
 	height: 450px;
-	max-height: 50vh;
+	max-height: 600px;
 	margin-bottom: 8px;
+	border: 8px solid darkgreen;
 }
 </style>

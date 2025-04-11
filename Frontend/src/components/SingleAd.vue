@@ -12,6 +12,7 @@ import axios from "axios";
 import CreateReview from "./CreateReview.vue";
 import {useStarRating} from "../composables/useStarRating.js";
 import {useCategories} from '../composables/useCategories.js'
+import LoginTitle from "@/components/LoginTitle.vue";
 
 const {categories} = useCategories();
 const route = useRoute();
@@ -205,17 +206,20 @@ const handleClickImg = (arrow) => {
 <template>
 	<div class="outerContainer">
 		<div>
+			<LoginTitle>
 			<div class="user">
 				<RouterLink v-if="seller && userStore.$state.user.id !== seller.id"
 				            :to="{name: 'UserProfile', params:{id:seller.id}}"><h3 v-if="seller">{{ seller.name }}
 					<img :src="seller.profileImageUrl"></h3>
 				</RouterLink>
 			</div>
+			
 			<div>
 				<RouterLink v-if="seller && userStore.$state.user.id === seller.id" :to="{name: 'Profile'}"><h3
 						v-if="seller"><img :src="seller.profileImageUrl">{{ seller.name }}</h3>
 				</RouterLink>
 			</div>
+			</LoginTitle>
 			<div class="userMap">
 				<div v-if="seller && userStore.$state.user.id !== seller.id && !currentAd.isSold">
 					<RouterLink :to="{name:'Chat', params:{id:seller.id}, query:{adId:currentAd.id}}"
@@ -232,7 +236,7 @@ const handleClickImg = (arrow) => {
 				<div v-if="currentAd && adId">
 					<form v-if="currentAd && seller" @submit.prevent="updateAd">
 						<div class="main-display">
-							<div class="title"><h3>{{ currentAd.title }}								<div v-if="currentAd && favStore && !isOwner && !currentAd.isSold" class="favorite">
+							<div class="title"><h3>{{ currentAd.title }}<div v-if="currentAd && favStore && !isOwner && !currentAd.isSold" class="favorite">
 								<div @click="favStore.toggleFav(currentAd.id)">
 									<i :class="favStore.isFavorite(currentAd.id) ? 'fa-solid fa-beat': 'fa-regular'" class="fa-heart"
 									   style="color: red; cursor: pointer;"></i>
@@ -360,11 +364,11 @@ const handleClickImg = (arrow) => {
 }
 
 a {
-	color: white;
+	color: #00ff66;
 }
 
 .img :hover {
-	border: 5px solid #4a90e2;
+	border: 5px solid green;
 	opacity: 1.7;
 	transition: 0.3s;
 	transform: scale(1.2);
@@ -398,19 +402,19 @@ a {
 }
 
 .title {
-	background-color: lightskyblue;
 	border-radius: 10px;
 	padding: 10px;
 	margin-bottom: 10px;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 3);
 	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
 	position: relative;
+	color:#00ff66;
 }
 
 h1 {
-	font-family: "Shadows Into Light Two", cursive;
+	color: #00ff66;
+	font-family: 'Overseer', 'Press Start 2P', monospace;
 	font-weight: bolder;
-	font-style: italic;
 	padding: 10px;
 	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
 }
@@ -423,15 +427,14 @@ h1 {
 .user {
 	position: relative;
 	display: inline-flex;
-	bottom: 0px;
-	right: 0px;
+	bottom: 0;
+	right: 0;
 }
 
 .userMap {
 	display: flex;
 	position: relative;
 	flex-direction: column;
-	bottom: 0px;
 }
 
 .mainImage {
@@ -439,7 +442,7 @@ h1 {
 	width: auto;
 	background-color: white;
 	border-radius: 10px;
-	border: 25px solid #4a90e2;
+	border: 25px solid green;
 }
 
 .mainImage:hover {
@@ -463,6 +466,16 @@ transform: scale(2.2);
 
 .imageReel img:hover {
 	transform: scale(1.2);
+	animation: pulse 1.8s infinite ease-in-out;
+
+	@keyframes pulse {
+		0%, 100% {
+			box-shadow: 0 0 10px rgba(0, 255, 102, 0.5);
+		}
+		50% {
+			box-shadow: 0 0 30px rgba(0, 255, 102, 0.9);
+		}
+	}
 }
 
 label {
@@ -481,6 +494,7 @@ label {
 }
 
 .price {
+	font-family: 'Overseer', 'Press Start 2P', monospace;
 	font-weight: bold;
 	font-size: 1rem;
 	display: flex;
@@ -488,7 +502,7 @@ label {
 }
 
 .info {
-	font-style: italic;
+	font-family: 'Overseer', 'Press Start 2P', monospace;
 }
 
 img {
@@ -498,13 +512,14 @@ img {
 	align-items: center;
 	transition: transform 0.3s ease;
 	border-radius: 10px;
+	
 }
 
 h3 img {
-	width: 50px;
-	height: 50px;
-	border-radius: 30px;
-	border: 1px solid blue;
+	width: 100px;
+	height: 100px;
+	border-radius: 50px;
+	border: 3px solid green;
 }
 
 .sold {
@@ -513,9 +528,23 @@ h3 img {
 	font-size: 2rem;
 	padding: 10px;
 	background-color: black;
-	color: yellow;
+	color: #00ff66;
 	border-radius: 10px;
+
+	animation: pulse 1.8s infinite ease-in-out;
 }
+.sold[text]{
+	animation: pulse 1.8s infinite ease-in-out;
+}
+
+	@keyframes pulse {
+		0%, 100% {
+			box-shadow: 0 0 10px rgba(0, 255, 102, 0.5);
+		}
+		50% {
+			box-shadow: 0 0 30px rgba(0, 255, 102, 0.9);
+		}
+	}
 
 .map {
 	font-weight: bold;
@@ -523,10 +552,11 @@ h3 img {
 	display: flex;
 	justify-content: center;
 	padding: 1rem;
+
 }
 
 .messageRL {
-	color: white;
+	color: #00ff66;
 	font-size: 0.5rem;
 }
 
@@ -535,16 +565,17 @@ h3 img {
 }
 
 body {
-	background: deepskyblue;
+	background: green;
 	margin: 0;
-	font-family: Arial, sans-serif;
-	color: #333;
+	color: #00ff66;
+	font-family: 'Overseer', 'Press Start 2P', monospace;
 }
 
 i {
 	padding: 10px;
 	font-size: 1rem;
 	color: black;
+	font-family: 'Overseer', 'Press Start 2P', monospace;
 }
 
 i:hover {
@@ -554,7 +585,7 @@ i:hover {
 }
 
 button:hover {
-	background-color: #004080;
+	background-color: green;
 	color: white;
 	transition: all 0.3s ease;
 }
@@ -562,6 +593,8 @@ button:hover {
 input {
 	padding: 5px;
 	border-radius: 5px;
+	font-family: 'Overseer', 'Press Start 2P', monospace;
+	color: #00ff66;
 }
 
 textarea {
@@ -570,21 +603,34 @@ textarea {
 	min-height: 200px;
 	min-width: 60vw;
 	text-align: center;
+	color: #00ff66;
 
 }
 
 .adReview {
-	border: 5px solid #98cbe8;
+	border: 5px solid green;
 	display: inline-block;
-	font-family: "Comic Sans MS", cursive;
+	font-family: 'Overseer', 'Press Start 2P', monospace;
 	padding: 10px;
 	border-radius: 10px;
+	color: #00ff66;
+	animation: pulse 1.8s infinite ease-in-out;
+
 }
+	@keyframes pulse {
+		0%, 100% {
+			box-shadow: 0 0 10px rgba(0, 255, 102, 0.5);
+		}
+		50% {
+			box-shadow: 0 0 30px rgba(0, 255, 102, 0.9);
+		}
+	}
 
 .adReview img {
 	border-radius: 10rem;
-	height: 2rem;
-	width: 2rem;
+	height: 4rem;
+	width: 4rem;
+	border: 1px solid green;
 }
 
 .createReview {

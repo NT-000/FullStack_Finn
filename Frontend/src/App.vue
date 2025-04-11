@@ -7,6 +7,7 @@ import '@fortawesome/fontawesome-free/css/all.css';
 import Footer from "./components/Footer.vue";
 import Header from "./components/Header.vue";
 import AdBanner from "./components/AdBanner.vue";
+import CrtPanel from "@/components/CrtPanel.vue";
 
 const store = useUserStore();
 
@@ -21,13 +22,15 @@ onMounted(() => {
 		<Header />
 		<NavBar v-if="store.isLoggedIn" />
 
-		<div class="content-layout">
-			<AdBanner class="ad-banner" />
-			<main class="main-content">
+	<CrtPanel>
+		<div :class="['content-layout', { active: !store.isLoggedIn  }]">
+			<AdBanner v-if="store.user" :class="['ad-banner',{ active: !store.isLoggedIn}]"/>
+			<main :class="['main-content',{ active: !store.isLoggedIn }]">
 				<RouterView :key="$route.fullPath" />
 			</main>
-			<AdBanner class="ad-banner" />
+			<AdBanner v-if="store.user" :class="['ad-banner',{ active: !store.isLoggedIn}]"/>
 		</div>
+	</CrtPanel>
 
 		<Footer />
 	</div>
@@ -49,14 +52,23 @@ onMounted(() => {
 	padding: 2rem;
 	background-color: #e2e8f0;
 	border-radius: 0.4rem;
+	font-family: 'Overseer', 'Press Start 2P', monospace;
+}
+
+.content-layout.active{
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	background-color: transparent;
 }
 
 .ad-banner {
 	position: sticky;
-	top: 1rem;
 	align-self: start;
-	height: 500px;
+	height: 100%;
 }
+
 
 
 .main-content {
@@ -64,7 +76,16 @@ onMounted(() => {
 	padding: 1rem;
 	border-radius: 8px;
 	box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-	width: 500px;
+	width: 600px;
+}
+
+.main-content.active {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: transparent;
+	border: none;
+	box-shadow: none;
 }
 
 </style>

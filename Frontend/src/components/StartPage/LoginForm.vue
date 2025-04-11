@@ -1,6 +1,7 @@
 <script setup>
 import {ref} from "vue";
-import {useLogin} from "../../composables/useLogin.js";
+import {useLogin} from "@/composables/useLogin.js";
+import LoginTitle from "@/components/LoginTitle.vue";
 
 const email = ref('');
 const password = ref('');
@@ -25,7 +26,7 @@ const toggle = () => {
 	<div class="login-container">
 		<div class="login-card">
 			<form @submit.prevent="checkIn">
-				<h2>Velkommen tilbake 👋</h2>
+				<LoginTitle> <h2>Velkommen tilbake 👋</h2>
 				<div class="form-group">
 					<label><i class="fa-solid fa-at"></i> Email</label>
 					<input v-model="email" placeholder="din@email.com" required type="email"/>
@@ -44,6 +45,7 @@ const toggle = () => {
 						Registrer
 					</button>
 				</div>
+				</LoginTitle>
 			</form>
 		</div>
 	</div>
@@ -86,8 +88,8 @@ input {
 	padding: 12px;
 	border: none;
 	border-radius: 10px;
-	background: rgba(255, 255, 255, 0.9);
-	color: #333;
+	background-color: grey;
+	color: #00ff66;
 	font-size: 1rem;
 	font-weight: 500;
 	box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
@@ -96,7 +98,7 @@ input {
 
 input:focus {
 	outline: none;
-	box-shadow: 0 0 0 3px #00b4db;
+	box-shadow: 0 0 20px rgba(0, 255, 102, 0.2);
 }
 
 
@@ -117,15 +119,19 @@ button {
 	padding: 12px;
 	border: none;
 	border-radius: 10px;
-	background: #00b4db;
+	background-color: #000;
 	color: white;
 	font-weight: bold;
 	cursor: pointer;
 	transition: background 0.3s ease;
+	text-shadow:
+			0 0 4px #00ff66,
+			0 0 10px #00ff66;
 }
 
 button:hover {
-	background: #0095c9;
+	background-color: #000;
+	border: 1px solid #00ff66;
 }
 
 button.ghost {

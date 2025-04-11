@@ -5,6 +5,7 @@ import {useAdStore} from "../stores/adStore.js";
 import {getRoute} from "../composables/getRoute.js";
 import {useDateFormat} from "../composables/useFormatDate.js";
 import {useFavStore} from "../stores/favStore.js";
+import FalloutTitleTheme from "../components/FalloutTitleTheme.vue";
 
 const props = defineProps({
 	user: Object,
@@ -51,20 +52,22 @@ onMounted(async () => {
 	<section v-if="user" class="profile-container">
 		<div class="profile-card">
 			<img :src="user.profileImageUrl" alt="Profilbilde" class="profile-image"/>
-			<h2>{{ user.name }}</h2>
+			<FalloutTitleTheme> <h2>{{ user.name }}</h2>
 			<p><strong>E-post:</strong> {{ user.email }}</p>
-			<p><strong>Vurdering:</strong> <span v-html="getStars(calculateAverageRating)"></span></p>
+			<p><strong>Vurdering:</strong> <span class="user-rating" v-html="getStars(calculateAverageRating)"></span></p></FalloutTitleTheme>
 		</div>
 
 
 		<h3 class="section-header" @click="isFavoriteAds = !isFavoriteAds">
-			<span>Mine favoritter</span>
+			<FalloutTitleTheme><span>Mine favoritter</span></FalloutTitleTheme>
 			<i class="fa-solid fa-heart fa-beat"></i>
 		</h3>
 		<transition name="fade-slide">
 			<div v-if="isFavoriteAds && favStore.favorites.length" class="ad-list">
-				<div v-for="fav in favStore.favorites" :key="fav.id" class="ad-card">
-					<RouterLink :to="{ name: 'AdDetails', params: { id: fav.id } }">
+				<div v-for="fav in favStore.favorites"
+				     :key="fav.id" class="ad-card">
+					<RouterLink 
+							:to="{ name: 'AdDetails', params: { id: fav.id } }">
 						<img :src="fav.images[0]?.imageUrl" alt="img"/>
 						<h4>{{ fav.title }}</h4>
 					</RouterLink>
@@ -74,7 +77,7 @@ onMounted(async () => {
 
 
 		<h3 class="section-header" @click="isActiveAds = !isActiveAds">
-			<span>Aktive annonser</span>
+			<FalloutTitleTheme>	<span>Aktive annonser</span></FalloutTitleTheme>
 			<i class="fa-solid fa-bars"></i>
 		</h3>
 		<transition name="fade-slide">
@@ -90,7 +93,7 @@ onMounted(async () => {
 
 
 		<h3 class="section-header" @click="isActiveBoughtAds = !isActiveBoughtAds">
-			<span>Mine kjøp</span>
+			<FalloutTitleTheme>	<span>Mine kjøp</span></FalloutTitleTheme>
 			<i class="fa-solid fa-cart-shopping"></i>
 		</h3>
 		<transition name="fade-slide">
@@ -105,7 +108,7 @@ onMounted(async () => {
 		</transition>
 
 		<h3 class="section-header" @click="isActiveReviews = !isActiveReviews">
-			<span>Anmeldelser</span>
+			<FalloutTitleTheme>	<span>Anmeldelser</span></FalloutTitleTheme>
 			<i class="fa-solid fa-comment-dots"></i>
 		</h3>
 		<transition name="fade-slide">
@@ -117,13 +120,13 @@ onMounted(async () => {
 							{{ getReviewer(review.fromUserId).name }}
 						</RouterLink>
 					</div>
-					<div class="review-content">
+					<FalloutTitleTheme>	<div class="review-content">
 						<RouterLink :to="{ name: 'AdDetails', params: { id: review.adId } }">
 							<p>{{ review.comment }}</p>
-							<div><span v-html="getStars(review.rating)"></span></div>
+							<div class="rating"><span v-html="getStars(review.rating)"></span></div>
 							<small>{{ dateFormat.formatDate(review.createdAt) }}</small>
 						</RouterLink>
-					</div>
+					</div></FalloutTitleTheme>
 				</div>
 			</div>
 		</transition>
@@ -158,8 +161,8 @@ onMounted(async () => {
 	background: #e0f4ff;
 	border-radius: 16px;
 	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-	color: #00263b;
-	font-family: 'Segoe UI', sans-serif;
+	color: #000000;
+
 }
 
 .profile-card {
@@ -172,20 +175,31 @@ onMounted(async () => {
 	height: 120px;
 	object-fit: cover;
 	border-radius: 50%;
-	border: 4px solid #98cbe8;
+	border: 4px solid #00ff66;;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 	margin-bottom: 10px;
 }
 
 .profile-image:hover{
 	transform:scale(1.2);
+	animation: pulse 1.8s infinite ease-in-out;
 }
+
+@keyframes pulse {
+	0%, 100% {
+		box-shadow: 0 0 10px rgba(0, 255, 102, 0.5);
+	}
+	50% {
+		box-shadow: 0 0 30px rgba(0, 255, 102, 0.9);
+	}
+}
+
 
 .section-header {
 	cursor: pointer;
 	font-size: 1.4rem;
-	background-color: #98cbe8;
-	color: white;
+	background-color: darkgreen;
+	color: #00ff66;
 	border-radius: 8px;
 	padding: 10px 15px;
 	margin: 20px 0 10px;
@@ -193,6 +207,19 @@ onMounted(async () => {
 	align-items: center;
 	justify-content: space-between;
 	box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.section-header:hover {
+	animation: pulse 1.8s infinite ease-in-out;
+}
+
+@keyframes flicker {
+	0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+		opacity: 1;
+	}
+	20%, 24%, 55% {
+		opacity: 0.85;
+	}
 }
 
 .ad-list {
@@ -204,7 +231,7 @@ onMounted(async () => {
 }
 
 .ad-card {
-	background: white;
+	background: black;
 	border-radius: 10px;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 	width: 150px;
@@ -215,8 +242,20 @@ onMounted(async () => {
 
 .ad-card:hover {
 	transform: scale(1.05);
-}
+	animation: pulse 1.8s infinite ease-in-out;
 
+	
+}
+	@keyframes pulse {
+		0%, 100% {
+			box-shadow: 0 0 10px rgba(0, 255, 102, 0.5);
+		}
+		50% {
+			box-shadow: 0 0 30px rgba(0, 255, 102, 0.9);
+		}
+	}
+
+	
 .ad-card img {
 	width: 100%;
 	height: 100px;
@@ -232,7 +271,7 @@ onMounted(async () => {
 
 .review-card {
 	background-color: #ffffff;
-	border-left: 5px solid #98cbe8;
+	border-left: 5px solid #00ff66;
 	padding: 12px;
 	border-radius: 8px;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -250,7 +289,12 @@ onMounted(async () => {
 	width: 40px;
 	height: 40px;
 	object-fit: cover;
-	border-radius: 50%;
-	border: 2px solid #98cbe8;
+	border-radius: 50px;
+	border: 2px solid #00ff66;
+}
+
+.user-rating img{
+	height: 20px;
+	width: 20px;
 }
 </style>

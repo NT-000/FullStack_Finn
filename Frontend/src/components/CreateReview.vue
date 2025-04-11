@@ -43,14 +43,20 @@ const handleSubmit = async () => {
 			<label for="rating">Legg igjen en vurdering</label>
 			<br>
 			<div class="star-rating">
-				<i
+				<div
 						v-for="star in 5"
 						:key="star"
-						:class="rating >= star ? 'fa-solid fa-beat' : 'fa-regular'"
-						class="fa-star "
-						style="color: #FFD43B; cursor: pointer;"
-						@click="rating = star"
-				></i>
+						style ="cursor: pointer;"
+						@click="rating = star">
+				<img v-if="rating >= star"
+				     src="/f1.png"
+				style="height: 40px; width: 40px;"/>
+			<div v-else>
+     <img src="/f4.png"
+      style="height: 40px; width: 40px;"
+          />
+			</div>
+				</div>
 			</div>
 			<br>
 			<button class="submit" type="submit">Send inn tilbakemelding</button>
@@ -67,14 +73,27 @@ const handleSubmit = async () => {
 	justify-content: center;
 	align-items: center;
 	border-radius: 10px;
-	border: 5px solid blue;
-	background-color: lightskyblue;
+	border: 5px solid darkgreen;
+	
+	color: #00ff66;
 }
 
 .star-rating i {
 	font-size: 2rem;
 	margin-right: 0.25rem;
 	transition: transform 0.2s, color 0.2s;
+}
+
+.star-rating img:hover {
+	animation: pulse 1.8s infinite ease-in-out;
+}
+@keyframes pulse {
+	0%, 100% {
+		box-shadow: 0 0 10px rgba(0, 255, 102, 0.5);
+	}
+	50% {
+		box-shadow: 0 0 30px rgba(0, 255, 102, 0.9);
+	}
 }
 
 .fa-star:hover {

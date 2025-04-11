@@ -1,9 +1,9 @@
 export function useStarRating() {
 
     function getStars(rating) {
-        const solidStars = '<i class="fa-solid fa-star" style="color: #FFD43B;"></i>'.repeat(rating);
-        const emptyStars = '<i class="fa-regular fa-star"></i>'.repeat(5 - rating);
-        return solidStars + emptyStars;
+        const solidPip = '<img src="/f1.png" style="height: 40px; width:40px">'.repeat(rating);
+        const emptyPip = '<img src="/f4.png" style="color: white; height: 40px; width:40px">'.repeat(5 - rating);
+        return solidPip + emptyPip;
     }
 
     return {getStars};
