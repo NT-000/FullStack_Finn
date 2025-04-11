@@ -115,10 +115,24 @@ onMounted(async () => {
 }
 
 h1 {
-	border-bottom: 4px solid #007bff;
+	border-bottom: 4px solid darkgreen;
 	margin-bottom: 30px;
-	color: #00263b;
-	font-family: 'Futura', 'Arial', sans-serif;
+	color: #00ff66;
+	text-shadow:
+			0 0 4px #00ff66,
+			0 0 10px #00ff66;
+
+	font-family: 'Overseer', 'Press Start 2P', monospace;
+	animation: pulse 1.8s infinite ease-in-out;
+}
+
+@keyframes pulse {
+	0%, 100% {
+		box-shadow: 0 0 10px rgba(0, 255, 102, 0.5);
+	}
+	50% {
+		box-shadow: 0 0 30px rgba(0, 255, 102, 0.9);
+	}
 }
 
 .inbox-grid {
@@ -128,7 +142,7 @@ h1 {
 }
 
 .inbox-card {
-	background: linear-gradient(145deg, #d0e9ff, #f0faff);
+	background: linear-gradient(145deg, black, #f0faff);
 	border-radius: 16px;
 	box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
 	padding: 20px;
@@ -141,8 +155,8 @@ h1 {
 }
 
 h2 {
-	color: white;
-	background-color: #007bff;
+	color:#00ff66;
+	background-color: black;
 	border-radius: 10px;
 	padding: 10px 15px;
 	font-size: 1.5rem;
@@ -154,36 +168,44 @@ img {
 	max-width: 100%;
 	height: auto;
 	border-radius: 12px;
-	border: 3px solid #007bff;
+	border: 3px solid darkgreen;
 	margin-bottom: 10px;
 }
 
 p {
-	background-color: rgba(255, 255, 255, 0.8);
+	background-color: rgb(2, 2, 2);
 	padding: 10px;
 	border-radius: 8px;
 }
 
 .sold-label {
-	font-family: "Comic Sans MS", cursive;
-	color: red;
-	font-size: 1.8rem;
-	background-color: rgba(0, 0, 0, 0.8);
-	padding: 8px 16px;
+	font-family: "Overseer","Press Start 2P", cursive;
+	color: #00ff66;
+	font-size: 2rem;
+	background-color: transparent;
 	border-radius: 10px;
-	width: fit-content;
-	margin-top: 10px;
+	text-shadow: 0 0 5px #00ff66, 0 0 10px #00ff66;
+	margin: 10px;
+	animation: 0.5s infinite ease-in-out;
 }
-
+@keyframes pulse {
+	0%, 100% {
+		text-shadow: 0 0 10px rgba(0, 255, 102, 0.5);
+	}
+	50% {
+		text-shadow: 0 0 50px rgba(0, 255, 102, 0.9);
+	}
+}
 select {
 	width: 100%;
 	padding: 10px;
 	font-size: 1rem;
 	font-weight: bold;
 	border-radius: 10px;
-	background-color: #f0faff;
+	background-color: black;
 	margin-top: 10px;
 	box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+	color: #00ff66;
 }
 
 </style>

@@ -243,7 +243,7 @@ const handleClickImg = (arrow) => {
 								</div>
 							</div></h3></div>
 							<div v-if="currentAd && currentAd.isSold">
-								<div class="sold">SOLGT</div>
+								<img :src="'/pb1.png'" class="sold"/>
 							</div>
 							<div v-if="currentAd?.images && currentAd.images.length > 0" class="image-box">
 								<div class="image-wrapper">
@@ -531,20 +531,18 @@ h3 img {
 	color: #00ff66;
 	border-radius: 10px;
 
-	animation: pulse 1.8s infinite ease-in-out;
-}
-.sold[text]{
-	animation: pulse 1.8s infinite ease-in-out;
+	animation: glow 1.8s ease-in-out infinite;
+	filter: drop-shadow(0 0 5px #00ff66) drop-shadow(0 0 10px #00ff66);
 }
 
-	@keyframes pulse {
-		0%, 100% {
-			box-shadow: 0 0 10px rgba(0, 255, 102, 0.5);
-		}
-		50% {
-			box-shadow: 0 0 30px rgba(0, 255, 102, 0.9);
-		}
+@keyframes glow {
+	0%, 100% {
+		filter: drop-shadow(0 0 5px #00ff66) drop-shadow(0 0 10px #00ff66);
 	}
+	50% {
+		filter: drop-shadow(0 0 15px #00ff66) drop-shadow(0 0 30px #00ff66);
+	}
+}
 
 .map {
 	font-weight: bold;

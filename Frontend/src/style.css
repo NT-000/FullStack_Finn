@@ -5,7 +5,7 @@
 
     color-scheme: light dark;
     color: #00ff66;;
-    background-color: #242424;
+    background-color: black;
 
     font-synthesis: none;
     text-rendering: optimizeLegibility;
@@ -15,12 +15,12 @@
 
 a {
     font-weight: 500;
-    color: #00ff66;
+    color: darkgreen;
     text-decoration: inherit;
 }
 
 a:hover {
-    color: springgreen;
+    color: darkgreen;
 }
 
 body {
@@ -29,7 +29,7 @@ body {
     place-items: center;
     min-width: 320px;
     min-height: 100vh;
-    background-color: black;
+    background-color: #020202;
 }
 
 h1 {
@@ -38,19 +38,33 @@ h1 {
 }
 
 button {
+    margin: 5px;
     border-radius: 8px;
-    border: 1px solid transparent;
-    padding: 0.6em 1.2em;
+    border: 1px solid darkgreen;
+    padding: 0.8em 1.4em;
     font-size: 1em;
     font-weight: 500;
-    font-family: inherit;
+    font-family: 'Overseer', 'Press Start 2P', monospace;
     background-color: #1a1a1a;
     cursor: pointer;
+    color: #00ff66;
     transition: border-color 0.25s;
 }
 
 button:hover {
-    border-color: #00ff66;;
+    border-color: #00ff66;
+    animation: 1s infinite ease-in-out;
+}
+@keyframes pulse {
+    0%, 100% {
+        box-shadow: 0 0 10px rgba(0, 255, 102, 0.5);
+        border: 3px solid;
+        background-color: #00ff66;
+        color: darkgreen;
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(0, 255, 102, 0.9);
+    }
 }
 
 button:focus,
