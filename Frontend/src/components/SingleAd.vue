@@ -208,20 +208,20 @@ const handleClickImg = (arrow) => {
 		<div>
 			<LoginTitle>
 			<div class="user">
-				<RouterLink v-if="seller && userStore.$state.user.id !== seller.id"
+				<RouterLink v-if="seller && userStore.user.id !== seller.id"
 				            :to="{name: 'UserProfile', params:{id:seller.id}}"><h3 v-if="seller">{{ seller.name }}
 					<img :src="seller.profileImageUrl"></h3>
 				</RouterLink>
 			</div>
 			
 			<div>
-				<RouterLink v-if="seller && userStore.$state.user.id === seller.id" :to="{name: 'Profile'}"><h3
+				<RouterLink v-if="seller && userStore.user.id === seller.id" :to="{name: 'Profile'}"><h3
 						v-if="seller"><img :src="seller.profileImageUrl">{{ seller.name }}</h3>
 				</RouterLink>
 			</div>
 			</LoginTitle>
 			<div class="userMap">
-				<div v-if="seller && userStore.$state.user.id !== seller.id && !currentAd.isSold">
+				<div v-if="seller && userStore.user.id !== seller.id && !currentAd.isSold">
 					<RouterLink :to="{name:'Chat', params:{id:seller.id}, query:{adId:currentAd.id}}"
 					            class="messageRL"><i
 							class="fa-solid fa-envelope">Send melding</i>
@@ -236,15 +236,14 @@ const handleClickImg = (arrow) => {
 				<div v-if="currentAd && adId">
 					<form v-if="currentAd && seller" @submit.prevent="updateAd">
 						<div class="main-display">
-							<div class="title"><h3>{{ currentAd.title }}<div v-if="currentAd && favStore && !isOwner && !currentAd.isSold" class="favorite">
+							<div class="title"><div v-if="currentAd && currentAd.isSold">
+								<img :src="'/pb2.png'" class="sold"/>
+							</div><h3>{{ currentAd.title }}<div v-if="currentAd && favStore && !isOwner && !currentAd.isSold" class="favorite">
 								<div @click="favStore.toggleFav(currentAd.id)">
 									<i :class="favStore.isFavorite(currentAd.id) ? 'fa-solid fa-beat': 'fa-regular'" class="fa-heart"
 									   style="color: red; cursor: pointer;"></i>
 								</div>
 							</div></h3></div>
-							<div v-if="currentAd && currentAd.isSold">
-								<img :src="'/pb1.png'" class="sold"/>
-							</div>
 							<div v-if="currentAd?.images && currentAd.images.length > 0" class="image-box">
 								<div class="image-wrapper">
 								<img :src="currentAd.images[currentImageIndex].imageUrl" alt="" class="mainImage"/>
@@ -527,12 +526,15 @@ h3 img {
 	text-align: center;
 	font-size: 2rem;
 	padding: 10px;
-	background-color: black;
-	color: #00ff66;
+	background-color: #00ff66;
+	color: darkgreen;
 	border-radius: 10px;
 
 	animation: glow 1.8s ease-in-out infinite;
 	filter: drop-shadow(0 0 5px #00ff66) drop-shadow(0 0 10px #00ff66);
+}
+.sold img{
+
 }
 
 @keyframes glow {

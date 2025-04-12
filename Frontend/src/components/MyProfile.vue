@@ -210,7 +210,7 @@ onMounted(async () => {
 }
 
 .section-header:hover {
-	animation: pulse 1.8s infinite ease-in-out;
+	animation: flicker 1.8s infinite ease-in-out;
 }
 
 @keyframes flicker {

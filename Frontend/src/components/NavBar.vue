@@ -32,23 +32,23 @@ watchEffect(() => {
 				</RouterLink>
 
 				<RouterLink to="/ads">
-					<i class="fa-solid fa-rectangle-ad" title="Annonser"></i>
+					<img src="/ads.png" title="Annonser">
 				</RouterLink>
 
 				<RouterLink to="/users/profile">
-					<i class="fa-solid fa-circle-user" title="Min profil"></i>
+					<img src="/profil.png" title="Min profil"></img>
 				</RouterLink>
 
 				<RouterLink to="/ads/create-with-files">
-					<i class="fa-solid fa-file-circle-plus" title="Lag ny annonse"></i>
+					<img src="/newAd.png"  title="Lag ny annonse">
 				</RouterLink>
 
 				<RouterLink to="/inbox">
-					<i class="fa-solid fa-inbox" title="Innboks"></i>
+					<img src="/inbox.png" title="Innboks">
 				</RouterLink>
 
 				<RouterLink to="/map">
-					<i class="fa-solid fa-map-location-dot" title="Kart"></i>
+					<img src="/map.png" title="Kart">
 				</RouterLink>
 			</div>
 		</div>
@@ -95,7 +95,32 @@ nav {
 	gap: 2rem;
 	align-items: center;
 	
+}.nav-bar img {
+	display: flex;
+	gap: 2rem;
+	align-items: center;
+	height: 50px;
+	width: 50px;
 }
+.nav-bar img:hover {
+
+	transform: scale(1.2);
+	background-color: rgba(255, 255, 255, 0.2);
+	animation: pulse 1.8s infinite ease-in-out;
+	border-radius: 50px;
+}
+	@keyframes pulse {
+		0%, 100% {
+			box-shadow: 0 0 10px rgba(0, 255, 102, 0.5);
+			border: 3px solid;
+			background-color: #00ff66;
+			color: darkgreen;
+		}
+		50% {
+			box-shadow: 0 0 30px rgba(0, 255, 102, 0.9);
+		}
+	}
+
 
 nav a {
 	color: #00ff66;

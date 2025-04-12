@@ -60,7 +60,7 @@ onMounted(async () => {
 <template>
 	<h1>Søk</h1>
 	<div class="search-box">
-		<input v-model="search" placeholder="Søk..." type="search"/>
+		<input v-model="search" placeholder="⌕ Søk..." type="search"/>
 		<button class="searchAlt" @click="isOpen = !isOpen">
 			<span v-if="isOpen">Lukk søkealternativer</span>
 			<span v-else>Flere søkealternativer</span>
@@ -127,74 +127,91 @@ onMounted(async () => {
 <style scoped>
 
 .search-box {
-	background-color: ghostwhite;
+	background-color: black;
 	padding: 2rem;
 	border-radius: 1rem;
 	margin: 2rem auto;
 	width: 80%;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-
+	color: #00ff66;
+	border: 5px solid #00ff66;
 }
 
 input[type="range"] {
 	width: 60%;
-	accent-color: dodgerblue;
+	accent-color: darkgreen;
 }
 
 .inputNum input[type="number"] {
 	width: 20%;
 	height: 5vh;
+	color: #00ff66;
 }
 
 input {
-	border: none;
+	border: 2px solid #00ff66;;
 	border-radius: 1rem;
 	padding: 0.3rem;
 	text-align: center;
+	color: #00ff66;
 }
 
 input[type=search] {
-	border: none;
+	border: 5px solid #00ff66;
 	border-radius: 1rem;
 	padding: 0.3rem;
 	text-align: center;
-	width: 50%;
-	background-color: white;
-	font-family: 'Futura', 'Arial', sans-serif;
+	width: 70%;
+	height: 30%;
+	background-color: black;
+	color: #00ff66;
+	font-family: 'Overseer', 'Press Start 2P', monospace;
+	font-size: 2rem;
 }
 
 select {
 	padding: 1rem;
 	border-radius: 1rem;
+	color: #00ff66;
+	font-family: 'Overseer', 'Press Start 2P', monospace;
+}
+select:hover{
+	padding: 1rem;
+	border-radius: 1rem;
+	color: #00ff66;
+	background-color: darkgreen;
+}
+option:hover {
+	background-color: #00ff66;
 }
 
 input:focus {
-	border: blue;
+	border: darkgreen;
 }
 
 .router-link-exact-active {
-	color: white;
+	color: darkgreen;
 }
 
 .searchAlt button {
 	text-align: center;
-	border: 1px solid black;
+	border: 1px solid #00ff66;
 	height: 1.5rem;
 	padding: 0.5rem;
 	display: inline-flex;
 	align-items: center;
 	border-radius: 0.5rem;
-	font-family: 'Futura', 'Arial', sans-serif;
+	font-family: 'Overseer', 'Press Start 2P', monospace;
 }
 
 .searchAlt:hover {
-	background-color: lightgray;
+	background-color: darkgreen;
 	cursor: pointer;
-	opacity: 50%;
+	
 }
 
 .users {
-
+	color: darkgreen;
 	border-radius: 5px;
 	padding: 10px;
 
@@ -209,27 +226,35 @@ input:focus {
 
 .userClass:hover {
 	transform: scale(1.2);
-	background-color: ghostwhite;
+	background-color: darkgreen;
 }
 
 .ads {
 	padding: 10px;
 	border-radius: 5px;
 	text-align: center;
-	font-family: 'Futura', 'Arial', sans-serif;
+	font-family: 'Overseer', 'Press Start 2P', monospace;
+	max-height: 50vh;
+	overflow-x: hidden;
 }
 
 .ad {
 	border-radius: 5px;
 	padding: 10px;
-	font-family: 'Futura', 'Arial', sans-serif;
+	font-family: 'Overseer', 'Press Start 2P', monospace;
+	font-size: 1.2rem;
+	color: #00ff66;
 }
 
 .ad:hover {
-	transform: scale(1.2);
-	background-color: ghostwhite;
+	
+	background-color: darkgreen;
+	font-weight: bold;
 	border-radius: 1rem;
+	color: #00ff66;
+	z-index: 15;
 }
+
 
 img {
 	height: 50px;
@@ -239,6 +264,7 @@ img {
 
 .more {
 	border-radius: 1rem;
+	margin-top: 25px;
 }
 
 .more:hover {
@@ -251,7 +277,8 @@ img {
 
 .less {
 	border-radius: 1rem;
-
+	margin-bottom: 25px;
+	margin-top: 25px;
 }
 
 .less:hover {
@@ -260,16 +287,16 @@ img {
 	cursor: pointer;
 	transform: scale(1.2);
 	color: red;
+	
 }
 
 h2 {
-	font-family: 'Futura', 'Arial', sans-serif;
+	font-family: 'Overseer', 'Press Start 2P', monospace;
 }
 
 h2:hover {
 	cursor: pointer;
-	background-color: white;
-	opacity: 50%;
+	background-color: transparent;
 	border-radius: 1rem;
 }
 </style>

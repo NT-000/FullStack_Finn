@@ -47,10 +47,10 @@ onMounted(() => {
 .content-layout {
 	flex: 1;
 	display: grid;
-	grid-template-columns: 320px 1fr 320px;
+	grid-template-columns: 370px 1fr 370px;
 	gap: 1rem;
-	padding: 2rem;
-	background-color: #e2e8f0;
+	padding: 3rem;
+	background-color: black;
 	border-radius: 0.4rem;
 	font-family: 'Overseer', 'Press Start 2P', monospace;
 }
@@ -69,10 +69,8 @@ onMounted(() => {
 	height: 100%;
 }
 
-
-
 .main-content {
-	background-color: white;
+	background-color: black;
 	padding: 1rem;
 	border-radius: 8px;
 	box-shadow: 0 4px 6px rgba(0,0,0,0.1);

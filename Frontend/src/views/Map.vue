@@ -87,19 +87,22 @@ const handleCat = (cat) => {
 }
 
 h1 {
-	font-family: "Comic Sans MS", cursive;
-	font-size: 3rem;
+	font-family: 'Overseer', 'Press Start 2P', monospace;
+	font-size: 2rem;
 	margin-bottom: 20px;
 	text-align: center;
-	color: #00263b;
+	color: #00FF66E5;
+	border-bottom: 2px solid darkgreen;
 }
 
 .mapbox {
+	display: flex;
+	position: relative;
 	width: 90vw;
-	height: 60vh;
+	height: 50vh;
 	border-radius: 20px;
 	box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
-	margin-top: 20px;
+	margin-top: 150px;
 }
 
 .buttons {
@@ -117,19 +120,27 @@ button {
 	border-radius: 10px;
 	cursor: pointer;
 	border: none;
-	background-color: #d4e8f4;
+	background-color: black;
 	transition: all 0.2s ease;
 }
 
 button:hover {
 	transform: scale(1.05);
-	background-color: #b6def5;
+	background-color: darkgreen;
 }
 
 button.active {
-	background-color: #4a90e2;
-	color: white;
+	border: 5px solid #00FF66E5;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+	animation: 1.8s pulse ease-in-out;
+}
+@keyframes pulse {
+	0%, 100% {
+		box-shadow: 0 0 10px rgba(0, 255, 102, 0.5);
+	}
+	50% {
+		box-shadow: 0 0 30px rgba(0, 255, 102, 0.9);
+	}
 }
 
 button.clear {
@@ -138,7 +149,7 @@ button.clear {
 }
 
 .ad-title {
-	font-family: "Comic Sans MS", cursive;
+	font-family: 'Overseer', 'Press Start 2P', monospace;
 }
 
 </style>

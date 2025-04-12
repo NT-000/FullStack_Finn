@@ -35,6 +35,16 @@ body {
 h1 {
     font-size: 3.2em;
     line-height: 1.1;
+    animation: glow 1.8s ease-in-out infinite;
+    filter: drop-shadow(0 0 5px #00ff66) drop-shadow(0 0 10px #00ff66);
+}
+@keyframes glow {
+    0%, 100% {
+        filter: drop-shadow(0 0 5px #00ff66) drop-shadow(0 0 10px #00ff66);
+    }
+    50% {
+        filter: drop-shadow(0 0 15px #00ff66) drop-shadow(0 0 30px #00ff66);
+    }
 }
 
 button {
@@ -76,11 +86,26 @@ button:focus-visible {
     padding: 2em;
 }
 
+i:hover {
+    animation: glow 1.8s ease-in-out infinite;
+    filter: drop-shadow(0 0 5px #00ff66) drop-shadow(0 0 10px #00ff66);
+}
+@keyframes glow {
+    0%, 100% {
+        filter: drop-shadow(0 0 5px #00ff66) drop-shadow(0 0 10px #00ff66);
+    }
+    50% {
+        filter: drop-shadow(0 0 15px #00ff66) drop-shadow(0 0 30px #00ff66);
+    }
+}
+
 #app {
     max-width: 1880px;
+    min-height: 100vh;
     margin: 0 auto;
     padding: 2rem;
     text-align: center;
+    height: auto;
 }
 
 

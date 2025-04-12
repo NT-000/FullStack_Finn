@@ -68,7 +68,7 @@ const toggle = () => {
 	width: 30vw;
 	max-width: 40vw;
 	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-	color: white;
+	color: #00ff66;
 	text-align: center;
 }
 
