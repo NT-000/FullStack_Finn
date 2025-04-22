@@ -270,7 +270,7 @@ onMounted(async () => {
 }
 
 .review-card {
-	background-color: #ffffff;
+	background-color: black;
 	border-left: 5px solid #00ff66;
 	padding: 12px;
 	border-radius: 8px;

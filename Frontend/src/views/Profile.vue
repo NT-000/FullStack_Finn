@@ -21,8 +21,6 @@ const isOwnProfile = computed(() => {
 onMounted(async () => {
 	await fetchUserProfile(userId.value);
 	await adStore.fetchAds();
-	console.log("computed user", currentUser.value);
-	console.log("computed user profileImage path", currentUser.value.profileImageUrl);
 });
 
 const filteredAds = computed(() => {
@@ -30,9 +28,6 @@ const filteredAds = computed(() => {
 	return adStore.getAdsByUser(routeId || currentUser.value?.id);
 });
 
-watchEffect(() => {
-	console.log("filteredAds:", filteredAds.value);
-});
 </script>
 
 <template>

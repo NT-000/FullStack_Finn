@@ -12,14 +12,13 @@ export const useFavStore = defineStore('favStore', {
         async fetchFavorites() {
             const res = await axios.get('/api/favorites', {withCredentials: true});
             this.favorites = res.data;
-            console.log("fetch favs:", res.data);
         },
         async addFavorite(adId) {
             try {
                 await axios.post(`/api/favorites/${adId}`, {}, {withCredentials: true});
                 await this.fetchFavorites();
             } catch (error) {
-                console.log("error when adding to fav", error)
+                console.error("error when adding to fav", error.message)
             }
         },
         async deleteFavorite(adId) {

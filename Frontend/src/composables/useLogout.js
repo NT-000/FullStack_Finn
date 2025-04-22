@@ -11,10 +11,9 @@ export function useLogout() {
         try {
             await axios.post('/api/users/logout', {withCredentials: true});
             userStore.clearUser();
-            console.log("After logout, user:", userStore.user);
-            router.push('/')
+         await router.push('/')
         } catch (err) {
-            console.log(err);
+            console.error(err.message);
         }
     };
     return {logOut};

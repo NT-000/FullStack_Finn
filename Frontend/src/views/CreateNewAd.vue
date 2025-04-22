@@ -6,7 +6,7 @@ import {useRouter} from 'vue-router';
 
 import {useCategories} from '../composables/useCategories.js'
 
-const {categories} = useCategories();
+const {categories, conditions} = useCategories();
 
 const userStore = useUserStore();
 const router = useRouter();
@@ -93,7 +93,7 @@ async function handleSubmit() {
 		<h1>Ny annonse</h1>
 		<form class="ad-form" @submit.prevent="handleSubmit">
 			<label>Tittel</label>
-			<input v-model="title" placeholder="F.eks. Glock med diamanter" required/>
+			<input v-model="title" placeholder="F.eks. Pip-Boy" required/>
 
 			<label>Kategori</label>
 			<select v-model="category" required>
@@ -110,14 +110,16 @@ async function handleSubmit() {
 			<label>Tilstand</label>
 			<select v-model="condition" required>
 				<option disabled value="">Velg tilstand</option>
-				<option>Ny</option>
-				<option>Nesten ny</option>
-				<option>Brukt</option>
-				<option>Godt brukt</option>
+				<option v-for="state in conditions">{{state}}</option>
 			</select>
 
 			<label>Bilder</label>
-			<input multiple type="file" @change="handleFileChange"/>
+			<button>
+				<span>
+					Legg til bilder<input multiple type="file" @change="handleFileChange" hidden=""/>
+				</span>
+			</button>
+		
 			<button type="submit">Opprett annonse</button>
 			<p v-if="message" class="success">{{ message }}</p>
 			<p v-if="error" class="error">{{ error }}</p>
@@ -134,13 +136,14 @@ async function handleSubmit() {
 	backdrop-filter: blur(10px);
 	border-radius: 20px;
 	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-	color: #00263b;
-	font-family: 'Segoe UI', sans-serif;
+	color: rgba(9, 128, 0, 0.7);
+	font-family: 'Overseer', 'Press Start 2P', monospace;
 }
 
 h1 {
 	text-align: center;
 	margin-bottom: 20px;
+	border-bottom: 5px solid darkgreen;
 }
 
 .ad-form {
@@ -158,12 +161,15 @@ select,
 textarea {
 	padding: 10px;
 	border-radius: 8px;
-	border: none;
+	
 	font-size: 1rem;
+	background-color: black;
+	border: 5px solid darkgreen;
+	color: springgreen;
 }
 
 input[type="file"] {
-	background: white;
+	background: black;
 }
 
 textarea {
@@ -172,7 +178,7 @@ textarea {
 }
 
 button {
-	background-color: #007bff;
+	background-color: #00ff66;
 	color: white;
 	padding: 12px;
 	font-weight: bold;
@@ -183,7 +189,7 @@ button {
 }
 
 button:hover {
-	background-color: #0056b3;
+	background-color: darkgreen;
 }
 
 .success {

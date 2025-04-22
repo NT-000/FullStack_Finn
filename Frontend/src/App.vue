@@ -8,27 +8,27 @@ import Footer from "./components/Footer.vue";
 import Header from "./components/Header.vue";
 import AdBanner from "./components/AdBanner.vue";
 import CrtPanel from "@/components/CrtPanel.vue";
+import {useRouter} from "vue-router";
 
 const store = useUserStore();
-
+const router = useRouter();
 onMounted(() => {
 	store.initializeUser();
-	console.log("running initializeUser()...");
 });
 </script>
 
 <template>
 	<div class="app-layout">
-		<Header />
+<Header />
 		<NavBar v-if="store.isLoggedIn" />
 
 	<CrtPanel>
 		<div :class="['content-layout', { active: !store.isLoggedIn  }]">
-			<AdBanner v-if="store.user" :class="['ad-banner',{ active: !store.isLoggedIn}]"/>
+			<AdBanner v-if="store.user && $route.name !== 'Chat'" :class="['ad-banner',{ active: !store.isLoggedIn}]"/>
 			<main :class="['main-content',{ active: !store.isLoggedIn }]">
 				<RouterView :key="$route.fullPath" />
 			</main>
-			<AdBanner v-if="store.user" :class="['ad-banner',{ active: !store.isLoggedIn}]"/>
+			<AdBanner v-if="store.user && $route.name !== 'Chat'" :class="['ad-banner',{ active: !store.isLoggedIn}]"/>
 		</div>
 	</CrtPanel>
 

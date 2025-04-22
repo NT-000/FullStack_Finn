@@ -49,7 +49,7 @@ export const useAdStore = defineStore('adStore', {
                     });
                 await this.fetchAds();
             } catch (error) {
-                console.error("could not mark as sold, ad:", error);
+                console.error("could not mark as sold, ad:", error.message);
             }
         },
 
@@ -62,7 +62,7 @@ export const useAdStore = defineStore('adStore', {
                 console.log("interested Users:", this.interestedUsers);
                 return this.interestedUsers;
             } catch (error) {
-                console.error("could not fetch interested users:", error);
+                console.error("could not fetch interested users:", error.message);
             }
         },
 

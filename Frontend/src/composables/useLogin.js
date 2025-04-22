@@ -16,11 +16,9 @@ export function useLogin() {
             await axios.post('/api/users/login', {email, password}, {withCredentials: true});
             const userRes = await axios.get('/api/users/profile', {withCredentials: true});
             userStore.setUser(userRes.data)
-            console.log("Logged-in user:", userRes.data);
-            console.log("Logged-in user userstore.user:", userStore.user);
             router.push('/users/profile')
         } catch (err) {
-            console.log('error login', err)
+            console.error('error login', err.message)
             error.value = 'Login failed'
         } finally {
             loading.value = false;

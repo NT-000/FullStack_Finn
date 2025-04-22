@@ -5,7 +5,6 @@ import {useRouter} from "vue-router";
 
 const props = defineProps({
 	currentAd: Object,
-
 })
 
 const router = useRouter();
@@ -48,7 +47,7 @@ const handleSubmit = async () => {
 						:key="star"
 						style ="cursor: pointer;"
 						@click="rating = star">
-				<img v-if="rating >= star"
+				<img v-if="rating>= star" alt=""
 				     src="/f1.png"
 				style="height: 40px; width: 40px;"/>
 			<div v-else>

@@ -18,7 +18,7 @@ const goToChat = (userId, adId) => {
 }
 
 const findOwnedAds = computed(() => {
-	return adStore.ads.filter(ad => ad.userId == userStore.user.id)
+	return adStore.ads.filter(ad => ad.userId === userStore.user.id)
 })
 
 const markAdAsSold = async (adId) => {
@@ -32,7 +32,7 @@ const markAdAsSold = async (adId) => {
 		error.value = "Annonsen markert som solgt!";
 		await adStore.fetchAds();
 	} catch (err) {
-		console.log(err.message);
+		console.error(err.message);
 		error.value = "Noe gikk galt under lagring.";
 	}
 };
@@ -63,7 +63,7 @@ onMounted(async () => {
 
 				<p>{{ ad.description }}</p>
 
-				<div v-if="ad.isSold" class="sold-label">Solgt</div>
+				<div v-if="ad.isSold" class="sold-label"><img :src="'/pb2.png'" class="sold"/></div>
 
 				<div v-if="!ad.isSold && interestedPerAd[ad.id]?.length > 0">
 					<label for="buyer">Velg kjøper:</label>
@@ -153,15 +153,38 @@ h1 {
 	transform: translateY(-3px);
 	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
+.sold {
+	max-width: 10%;
+	max-height: 10%;
+	text-align: center;
+	font-size: 2rem;
+	padding: 10px;
+	background-color: #00ff66;
+	color: darkgreen;
+	border-radius: 10px;
+	
+	animation: glow 1.8s ease-in-out infinite;
+	filter: drop-shadow(0 0 5px #00ff66) drop-shadow(0 0 10px #00ff66);
+}
+
+@keyframes glow {
+	0%, 100% {
+		filter: drop-shadow(0 0 5px #00ff66) drop-shadow(0 0 10px #00ff66);
+	}
+	50% {
+		filter: drop-shadow(0 0 15px #00ff66) drop-shadow(0 0 30px #00ff66);
+	}
+}
 
 h2 {
 	color:#00ff66;
-	background-color: black;
+	background-color: #00000026;
 	border-radius: 10px;
 	padding: 10px 15px;
 	font-size: 1.5rem;
 	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 	margin-bottom: 10px;
+	border-bottom: 4px solid #00ff66;
 }
 
 img {
@@ -186,7 +209,7 @@ p {
 	border-radius: 10px;
 	text-shadow: 0 0 5px #00ff66, 0 0 10px #00ff66;
 	margin: 10px;
-	animation: 0.5s infinite ease-in-out;
+	animation: 0.5s pulse infinite ease-in-out;
 }
 @keyframes pulse {
 	0%, 100% {

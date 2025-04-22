@@ -10,7 +10,7 @@
 	font-size: 1.4rem;
 	color: #00ff66;
 	background-color: #000;
-	padding: 1rem 2rem;
+	padding: 0.5rem 1rem;
 	border-radius: 10px;
 	text-align: center;
 	margin-bottom: 1.5rem;
@@ -21,6 +21,7 @@
 	border: 1px solid #00ff66;
 	letter-spacing: 1px;
 	animation: pulse 1.8s infinite ease-in-out;
+	
 }
 
 @keyframes pulse {

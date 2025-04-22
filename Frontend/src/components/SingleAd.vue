@@ -14,7 +14,7 @@ import {useStarRating} from "../composables/useStarRating.js";
 import {useCategories} from '../composables/useCategories.js'
 import LoginTitle from "@/components/LoginTitle.vue";
 
-const {categories} = useCategories();
+const {categories, conditions} = useCategories();
 const route = useRoute();
 const adId = Number(route.params.id);
 const users = getRoute('/users');
@@ -30,6 +30,7 @@ const isUpdating = ref(false)
 const selectedBuyerId = ref(null)
 const currentImageIndex = ref(0);
 console.log('route id', route.params.id)
+const geoCodeMessage = ref(null)
 
 const map = ref(null)
 const mapContainer = ref(null)
@@ -56,8 +57,6 @@ const reviewer = computed(() => {
 	return users.items.value.find(user => user.id === adReview.value?.fromUserId)
 })
 
-
-console.log('adReview:', adReview)
 const deleteAd = async () => {
 	if (confirm("Slette annonsen?")) {
 		await adStore.deleteAd(adId);
@@ -76,12 +75,8 @@ const markAdAsSold = async () => {
 onMounted(async () => {
 	await adStore.fetchAds();
 	await reviews.fetchData();
-	console.log("All reviews:", reviews.items.value);
-	console.log("Current ad id:", currentAd.value?.id);
-	console.log("Current user id:", userStore.user.id);
 	await users.fetchData();
 	await adStore.getInterestedUsers(adId);
-	console.log("buyer:", reviewer)
 	await favStore.fetchFavorites(adId);
 
 
@@ -133,7 +128,7 @@ const onMapClick = async (e) => {
 				? `${locationData.city}, ${locationData.county}, ${locationData.country}`
 				: 'Ukjent sted'
 
-		updateCoordinates(adId, lat.value, lng.value, locationName)
+	await updateCoordinates(adId, lat.value, lng.value, locationName)
 	}
 }
 
@@ -146,7 +141,7 @@ async function reverseGeocode(latValue, longValue) {
 		const city = address.city || address.town || address.village || ''
 		const county = address.county || ''
 		const country = address.country || ''
-		console.log('reverse geocode result:', "address city", address.city, "nation:", address.country)
+		geoCodeMessage.value = `Location updated to ${city}, ${county}, ${country}`;
 		return {city, county, country}
 	} catch (err) {
 		console.error('reverse geocoding failed:', err)
@@ -210,13 +205,13 @@ const handleClickImg = (arrow) => {
 			<div class="user">
 				<RouterLink v-if="seller && userStore.user.id !== seller.id"
 				            :to="{name: 'UserProfile', params:{id:seller.id}}"><h3 v-if="seller">{{ seller.name }}
-					<img :src="seller.profileImageUrl"></h3>
+					<img :src="seller.profileImageUrl" alt="img"></h3>
 				</RouterLink>
 			</div>
-			
+			<div v-if="geoCodeMessage">{{geoCodeMessage}}</div>
 			<div>
 				<RouterLink v-if="seller && userStore.user.id === seller.id" :to="{name: 'Profile'}"><h3
-						v-if="seller"><img :src="seller.profileImageUrl">{{ seller.name }}</h3>
+						v-if="seller"><img :src="seller.profileImageUrl" alt="img">{{ seller.name }}</h3>
 				</RouterLink>
 			</div>
 			</LoginTitle>
@@ -238,15 +233,17 @@ const handleClickImg = (arrow) => {
 						<div class="main-display">
 							<div class="title"><div v-if="currentAd && currentAd.isSold">
 								<img :src="'/pb2.png'" class="sold"/>
-							</div><h3>{{ currentAd.title }}<div v-if="currentAd && favStore && !isOwner && !currentAd.isSold" class="favorite">
+							</div>
+								<h3>{{ currentAd.title }}</h3>
+								<div v-if="currentAd && favStore && !isOwner && !currentAd.isSold" class="favorite">
 								<div @click="favStore.toggleFav(currentAd.id)">
 									<i :class="favStore.isFavorite(currentAd.id) ? 'fa-solid fa-beat': 'fa-regular'" class="fa-heart"
 									   style="color: red; cursor: pointer;"></i>
 								</div>
-							</div></h3></div>
+							</div></div>
 							<div v-if="currentAd?.images && currentAd.images.length > 0" class="image-box">
 								<div class="image-wrapper">
-								<img :src="currentAd.images[currentImageIndex].imageUrl" alt="" class="mainImage"/>
+								<img :src="currentAd.images[currentImageIndex].imageUrl" alt="img" class="mainImage"/>
 								</div>
 								<div v-if="currentAd.images.length > 1" class="arrow-left" @click="handleClickImg('left')"><i
 										class="fa-solid fa-angles-left"></i></div>
@@ -292,10 +289,9 @@ const handleClickImg = (arrow) => {
 							<label>Tilstand: </label>
 							<div v-if="!isUpdating">{{ currentAd.condition }}</div>
 							<select v-if="isUpdating" v-model="currentAd.condition">
-								<option>Ny</option>
-								<option>Nesten ny</option>
-								<option>Brukt</option>
-								<option>Godt brukt</option>
+								<option v-for="state in conditions">
+									{{state}}
+								</option>
 							</select>
 						</div>
 						<br>
@@ -345,9 +341,6 @@ const handleClickImg = (arrow) => {
 
 <style scoped>
 
-.outerContainer {
-
-}
 
 .container {
 	height: 200px;
@@ -358,9 +351,6 @@ const handleClickImg = (arrow) => {
 	border-radius: 15px;
 }
 
-.main-display {
-
-}
 
 a {
 	color: #00ff66;
@@ -439,7 +429,7 @@ h1 {
 .mainImage {
 	height: 35vh;
 	width: auto;
-	background-color: white;
+	background-color: black;
 	border-radius: 10px;
 	border: 25px solid green;
 }
@@ -529,12 +519,8 @@ h3 img {
 	background-color: #00ff66;
 	color: darkgreen;
 	border-radius: 10px;
-
 	animation: glow 1.8s ease-in-out infinite;
 	filter: drop-shadow(0 0 5px #00ff66) drop-shadow(0 0 10px #00ff66);
-}
-.sold img{
-
 }
 
 @keyframes glow {

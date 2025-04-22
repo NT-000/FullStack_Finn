@@ -49,6 +49,13 @@ onMounted(async() => {
 					:key="msg.id"
 					:class="['chat-msg', msg.senderId === userStore.user.id ? 'sent' : 'received']"
 			>
+			<img v-if="msg.senderId === userStore.user.id"
+			:src="userStore.user.profileImageUrl"
+			class="chatProfilePic">
+				
+				<img v-else
+				:src="receiverUser.profileImageUrl"
+				     class="chatProfilePic">
 				<strong>{{ msg.senderId === userStore.user.id ? 'Deg' : msg.senderName }}</strong>
 				<small>{{ dateFormat.formatDate(msg.timestamp) }}</small>
 				<p>{{ msg.content }}</p>
@@ -68,8 +75,9 @@ onMounted(async() => {
 
 <style scoped>
 .chat-wrapper {
-	max-width: 600px;
-	margin: 0 auto;
+	max-width: 35vw;
+	width: 120vw;
+	margin: 5px auto;
 	padding: 1rem;
 	background-color: #f5f5f5;
 	border-radius: 8px;
@@ -77,7 +85,8 @@ onMounted(async() => {
 }
 
 .chat-messages {
-	max-height: 400px;
+	max-height: 900px;
+	width: 35vw;
 	overflow-y: auto;
 	margin-bottom: 1rem;
 	display: flex;
@@ -90,12 +99,18 @@ onMounted(async() => {
 	border-radius: 10px;
 	background-color: #ddd;
 	align-self: flex-start;
-	max-width: 80%;
+	max-width: 70%;
 	word-break: break-word;
+}
+.chatProfilePic{
+	height: 5rem;
+	width: 5rem;
+	border-radius: 50%;
+	vertical-align: middle;
 }
 
 .chat-msg.sent {
-	background-color: #cce5ff;
+	background-color: darkgreen;
 	align-self: flex-end;
 }
 
@@ -116,6 +131,7 @@ onMounted(async() => {
 .chat-input {
 	display: flex;
 	gap: 0.5rem;
+	
 }
 
 .chat-input input {
@@ -123,13 +139,14 @@ onMounted(async() => {
 	padding: 0.5rem;
 	border-radius: 6px;
 	border: 1px solid #ccc;
+	color: springgreen;
 }
 
 .chat-input button {
 	padding: 0.5rem 1rem;
 	border: none;
-	background-color: #007bff;
-	color: white;
+	background-color: gray;
+	color: springgreen;
 	border-radius: 6px;
 	cursor: pointer;
 }

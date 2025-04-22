@@ -19,11 +19,11 @@ export const useUserStore = defineStore('user', {
             } catch (err) {
                 if (err.response.status === 401) {
                     if (currentPath !== '/') {
-                        console.log("bruker ikke logget inn");
+                        console.error("bruker ikke logget inn");
                     }
 
                 } else {
-                    console.error("something went wrong", err);
+                    console.error("something went wrong", err.message);
                 }
                 this.user = null;
             }

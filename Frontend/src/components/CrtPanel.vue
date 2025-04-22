@@ -20,7 +20,7 @@
 	font-family: 'Overseer', 'Press Start 2P', monospace;
 	animation: flicker 2s infinite alternate;
 	box-shadow: 0 0 15px rgba(0, 255, 102, 0.3);
-	overflow: hidden;
+	
 }
 
 

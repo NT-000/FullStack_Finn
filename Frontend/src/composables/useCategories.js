@@ -16,6 +16,12 @@ export function useCategories() {
         'Dyr',
         'Annet',
     ])
+    const conditions = ref([
+        'Ny',
+        'Nesten ny',
+        'Brukt',
+        'Godt brukt'
+    ])
 
-    return {categories}
+    return {categories, conditions}
 }

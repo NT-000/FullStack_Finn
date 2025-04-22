@@ -10,7 +10,6 @@ const users = getRoute('/users');
 const route = useRoute();
 const chatStore = useChatStore();
 const receiverId = ref(Number(route.params.id));
-console.log("ReceiverId from route:", route.params.id)
 const adId = ref(Number(route.query.adId));
 const receiverUser = computed(() => {
 	if (!users.items.value || users.items.value.length === 0) {
@@ -24,7 +23,6 @@ onMounted(async () => {
 	await chatStore.startChat()
 	await chatStore.loadConversation(receiverId.value)
 	await users.fetchData()
-	console.log("adId chat-vue", adId.value)
 })
 
 </script>

@@ -49,10 +49,8 @@ onMounted(async () => {
 		await fetchUsers();
 		await fetchAds();
 	} catch (err) {
-		console.log("Error fetching data:", err.message);
+		console.error("Error fetching data:", err.message);
 	}
-	console.log("Users:", users.value);
-	console.log("Ads:", ads.value);
 })
 
 </script>
@@ -106,7 +104,7 @@ onMounted(async () => {
 		<div v-if="filteredAds.length && isAd" class="ads">
 			<div v-for="ad in filteredAds.slice(0, showCount)" :key="ad.id" class="ad">
 				<RouterLink :to="{ name: 'AdDetails', params: { id: ad.id } }">
-					<img :src="ad.images[0].imageUrl"> {{ ad.title }} - {{ ad.category }} - {{ ad.price }} Kr
+					<img :src="ad.images[0].imageUrl" alt="img"> {{ ad.title }} - {{ ad.category }} - {{ ad.price }} Kr
 				</RouterLink>
 			</div>
 

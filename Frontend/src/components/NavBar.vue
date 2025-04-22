@@ -28,7 +28,7 @@ watchEffect(() => {
 				</div>
 
 				<RouterLink to="/mainpage">
-					<i class="fa-solid fa-house" title="Hovedside"></i>
+					<img src="/hus.png" title="Hovedside">
 				</RouterLink>
 
 				<RouterLink to="/ads">

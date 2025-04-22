@@ -132,7 +132,7 @@ button:hover {
 button.active {
 	border: 5px solid #00FF66E5;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-	animation: 1.8s pulse ease-in-out;
+	animation: 1.5s pulse ease-in-out;
 }
 @keyframes pulse {
 	0%, 100% {

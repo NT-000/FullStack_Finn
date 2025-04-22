@@ -9,11 +9,9 @@ export function useUser() {
     const fetchUserProfile = async (userId = null) => {
         try {
             const url = userId ? `/api/users/profile/${userId}` : `/api/users/profile`;
-            console.log(`Fetching user profile from: ${url}`);
             const res = await axios.get(url, {withCredentials: true})
             user.value = res.data;
         } catch (err) {
-            console.log(error)
             error.value = 'Something went wrong when loading userprofile'
         } finally {
             loading.value = false

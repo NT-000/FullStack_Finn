@@ -78,7 +78,7 @@ npm run dev
 
 4. **Importer databasen**:
     - Klikk `File` → `Open` → `File...`
-    - Velg `backend/database/Finn.no.sql`
+    - Velg `backend/db/Finn.no.sql`
     - Trykk `F5` for å kjøre scriptet
 
 Dette vil:
@@ -207,6 +207,9 @@ Da bør alt være klart, enjoy!🚀
 - Kobler til SignalR ved chat-start.
 - Henter samtale via `loadConversation`.
 - Sender meldinger med `SendMessage` og lytter på nye.
+
+
+### Skjermbilder
 
   #### [↩ Tilbake til innholdsfortegnelse](#-dokumentasjon) ####
 ---
